@@ -18,6 +18,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/auth/callback";
+import PrivateGallery from "./pages/PrivateGallery";
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -69,42 +70,49 @@ function App() {
   
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light" storageKey="theyaz-theme">
+      <ThemeProvider>
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
-            <div className="min-h-screen bg-background text-foreground antialiased">
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <AuthProvider>
-                  <main className="flex-1">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/photo/:id" element={<PhotoView />} />
-                      <Route path="/upload" element={
-                        <ProtectedRoute>
-                          <Upload />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/my-photos" element={
-                        <ProtectedRoute>
-                          <MyPhotos />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/edit-photo/:id" element={
-                        <ProtectedRoute>
-                          <EditPhoto />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/auth/callback" element={<AuthCallback />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </main>
-                </AuthProvider>
-              </BrowserRouter>
+            <div className="min-h-screen bg-background text-foreground antialiased overflow-x-hidden">
+              <div className="flex min-h-screen flex-col pt-safe-top pb-safe-bottom">
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <AuthProvider>
+                    <main className="flex-1 w-full">
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/gallery" element={
+                          <ProtectedRoute>
+                            <PrivateGallery />
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/photo/:id" element={<PhotoView />} />
+                        <Route path="/upload" element={
+                          <ProtectedRoute>
+                            <Upload />
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/my-photos" element={
+                          <ProtectedRoute>
+                            <MyPhotos />
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/edit-photo/:id" element={
+                          <ProtectedRoute>
+                            <EditPhoto />
+                          </ProtectedRoute>
+                        } />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/auth/callback" element={<AuthCallback />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </main>
+                  </AuthProvider>
+                </BrowserRouter>
+              </div>
             </div>
           </TooltipProvider>
         </QueryClientProvider>

@@ -20,9 +20,9 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
-      className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
+      className="sticky top-safe-top z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-14 sm:h-16 items-center justify-between px-4 sm:px-8">
         <Link 
           to="/" 
           className="flex items-center gap-2 transition-all hover:scale-105"
@@ -39,9 +39,9 @@ const Navbar = () => {
           </span>
         </Link>
         
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-4 sm:gap-6">
           <motion.div 
-            className="flex items-center gap-6"
+            className="flex items-center gap-4 sm:gap-6"
             initial="hidden"
             animate="visible"
             variants={{
@@ -52,7 +52,7 @@ const Navbar = () => {
               }
             }}
           >
-            <motion.div variants={navItemVariants}>
+            <motion.div variants={navItemVariants} className="hidden sm:block">
               <Link 
                 to="/" 
                 className={cn(
@@ -60,12 +60,26 @@ const Navbar = () => {
                   "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
                 )}
               >
-                Gallery
+                Home
               </Link>
             </motion.div>
+
+            {user && (
+              <motion.div variants={navItemVariants} className="hidden sm:block">
+                <Link 
+                  to="/gallery" 
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-secondary",
+                    "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
+                  )}
+                >
+                  Gallery
+                </Link>
+              </motion.div>
+            )}
             
             {user && (
-              <motion.div variants={navItemVariants}>
+              <motion.div variants={navItemVariants} className="hidden sm:block">
                 <Link 
                   to="/my-photos" 
                   className={cn(
@@ -78,7 +92,7 @@ const Navbar = () => {
               </motion.div>
             )}
             
-            <motion.div variants={navItemVariants}>
+            <motion.div variants={navItemVariants} className="hidden sm:block">
               <Link 
                 to="/about" 
                 className={cn(

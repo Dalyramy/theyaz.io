@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import PhotoDetail from '@/components/PhotoDetail';
@@ -22,14 +21,27 @@ const PhotoView = () => {
         setIsLoading(true);
         const { data, error } = await supabase
           .from('photos')
-          .select('*')
+          .select(`
+            *,
+            profile:profiles(
+              username,
+              avatar_url,
+              full_name
+            )
+          `)
           .eq('id', id)
           .single();
         
         if (error) throw error;
         if (!data) throw new Error('Photo not found');
         
-        setPhoto(data);
+        // Transform the data to match the expected format
+        const transformedData = {
+          ...data,
+          profiles: data.profile
+        };
+        
+        setPhoto(transformedData);
       } catch (err: any) {
         console.error('Error fetching photo:', err);
         setError(err.message);

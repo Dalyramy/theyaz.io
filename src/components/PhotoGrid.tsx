@@ -59,7 +59,7 @@ const PhotoGrid = ({ photos, loading = false }: PhotoGridProps) => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
       <motion.div 
         className="text-center"
         initial={{ opacity: 0, y: -20 }}
@@ -73,7 +73,7 @@ const PhotoGrid = ({ photos, loading = false }: PhotoGridProps) => {
       </motion.div>
 
       <motion.div 
-        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        className="grid grid-cols-1 xs:grid-cols-2 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS public.photos (
     likes_count integer DEFAULT 0,
     comments_count integer DEFAULT 0,
     user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
+    profile_id uuid REFERENCES public.profiles(id) ON DELETE CASCADE,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
 );
@@ -198,10 +199,26 @@ CREATE TRIGGER handle_comments_count_delete
 
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS photos_user_id_idx ON public.photos(user_id);
+CREATE INDEX IF NOT EXISTS photos_profile_id_idx ON public.photos(profile_id);
 CREATE INDEX IF NOT EXISTS photos_created_at_idx ON public.photos(created_at);
 CREATE INDEX IF NOT EXISTS photos_tags_idx ON public.photos USING GIN(tags);
 CREATE INDEX IF NOT EXISTS comments_photo_id_idx ON public.comments(photo_id);
 CREATE INDEX IF NOT EXISTS comments_user_id_idx ON public.comments(user_id);
 CREATE INDEX IF NOT EXISTS comments_created_at_idx ON public.comments(created_at);
 CREATE INDEX IF NOT EXISTS likes_photo_id_idx ON public.likes(photo_id);
-CREATE INDEX IF NOT EXISTS likes_user_id_idx ON public.likes(user_id); 
+CREATE INDEX IF NOT EXISTS likes_user_id_idx ON public.likes(user_id);
+
+-- Create function to set profile_id on photo creation
+CREATE OR REPLACE FUNCTION public.set_photo_profile_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.profile_id := NEW.user_id;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create trigger for setting profile_id
+CREATE TRIGGER handle_photo_profile_id
+    BEFORE INSERT ON public.photos
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_photo_profile_id(); 

@@ -6,6 +6,11 @@ interface Photo {
   id: string;
   title: string;
   image_url: string;
+  profiles: {
+    username: string;
+    avatar_url: string;
+    full_name?: string;
+  };
 }
 
 interface PhotoCache {
@@ -89,22 +94,55 @@ export function usePhotoNavigation(currentPhotoId: string) {
       const [prevResult, nextResult] = await Promise.all([
         supabase
           .from('photos')
-          .select('id, title, image_url')
+          .select(`
+            id, 
+            title, 
+            image_url,
+            profile:profiles(
+              username,
+              avatar_url,
+              full_name
+            )
+          `)
           .lt('created_at', currentPhoto.created_at)
           .order('created_at', { ascending: false })
           .limit(1)
           .single(),
         supabase
           .from('photos')
-          .select('id, title, image_url')
+          .select(`
+            id, 
+            title, 
+            image_url,
+            profile:profiles(
+              username,
+              avatar_url,
+              full_name
+            )
+          `)
           .gt('created_at', currentPhoto.created_at)
           .order('created_at', { ascending: true })
           .limit(1)
           .single()
       ]);
 
-      const prevPhoto = prevResult.data;
-      const nextPhoto = nextResult.data;
+      const prevPhoto = prevResult.error ? null : {
+        ...prevResult.data,
+        profiles: prevResult.data?.profile || {
+          username: 'unknown',
+          avatar_url: '',
+          full_name: 'Unknown User'
+        }
+      };
+      
+      const nextPhoto = nextResult.error ? null : {
+        ...nextResult.data,
+        profiles: nextResult.data?.profile || {
+          username: 'unknown',
+          avatar_url: '',
+          full_name: 'Unknown User'
+        }
+      };
 
       // Update cache
       photoCache.current[currentPhotoId] = {

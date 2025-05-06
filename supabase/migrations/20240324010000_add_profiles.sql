@@ -30,6 +30,12 @@ BEGIN
         COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1)),
         COALESCE(NEW.raw_user_meta_data->>'avatar_url', 'https://api.dicebear.com/7.x/avataaars/svg?seed=' || NEW.id)
     );
+    
+    -- Update existing photos to link to the new profile
+    UPDATE public.photos
+    SET profile_id = NEW.id
+    WHERE user_id = NEW.id;
+    
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

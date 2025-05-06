@@ -12,12 +12,29 @@ export default {
 	theme: {
 		container: {
 			center: true,
-			padding: '2rem',
+			padding: {
+				DEFAULT: '1rem',
+				sm: '2rem',
+				lg: '4rem',
+				xl: '5rem',
+				'2xl': '6rem',
+			},
 			screens: {
-				'2xl': '1400px'
+				'xs': '320px',    // iPhone SE
+				'sm': '375px',    // iPhone Mini
+				'md': '390px',    // iPhone Pro
+				'lg': '428px',    // iPhone Pro Max
+				'xl': '768px',    // Tablets
+				'2xl': '1400px'   // Desktop
 			}
 		},
 		extend: {
+			spacing: {
+				'safe-top': 'env(safe-area-inset-top)',
+				'safe-bottom': 'env(safe-area-inset-bottom)',
+				'safe-left': 'env(safe-area-inset-left)',
+				'safe-right': 'env(safe-area-inset-right)',
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

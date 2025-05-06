@@ -22,3 +22,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Keys and sensitive files
+deploy_key
+deploy_key.pub
+*.pem
+*.key
+
+# Supabase
+supabase/.temp/
+.supabase/

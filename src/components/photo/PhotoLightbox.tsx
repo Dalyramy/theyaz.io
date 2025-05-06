@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Download, Heart, MessageCircle, Share2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Link } from 'react-router-dom';
 import PhotoComments from '@/components/social/PhotoComments';
 import ShareButton from '@/components/social/ShareButton';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PhotoLightboxProps {
   photos: Array<{
@@ -11,10 +17,103 @@ interface PhotoLightboxProps {
     title: string;
     image_url: string;
     caption: string;
+    profiles: {
+      username: string;
+      avatar_url: string;
+      full_name?: string;
+    };
   }>;
   initialPhotoId: string;
   onClose: () => void;
 }
+
+const PhotoInfo = ({ photo }: { photo: PhotoLightboxProps['photos'][0] }) => {
+  const { user } = useAuth();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [commentsCount, setCommentsCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const [likesResult, commentsResult, userLikeResult] = await Promise.all([
+          supabase.from('likes').select('id', { count: 'exact' }).eq('photo_id', photo.id),
+          supabase.from('comments').select('id', { count: 'exact' }).eq('photo_id', photo.id),
+          user ? supabase.from('likes').select('id').eq('photo_id', photo.id).eq('user_id', user.id).single() : null
+        ]);
+
+        setLikesCount(likesResult.count || 0);
+        setCommentsCount(commentsResult.count || 0);
+        setIsLiked(!!userLikeResult?.data);
+      } catch (error) {
+        console.error('Error fetching counts:', error);
+      }
+    };
+
+    fetchCounts();
+  }, [photo.id, user]);
+
+  const handleLike = async () => {
+    if (!user) return;
+
+    try {
+      if (isLiked) {
+        await supabase.from('likes').delete().eq('photo_id', photo.id).eq('user_id', user.id);
+        setLikesCount(prev => prev - 1);
+      } else {
+        await supabase.from('likes').insert({ photo_id: photo.id, user_id: user.id });
+        setLikesCount(prev => prev + 1);
+      }
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Link 
+          to={`/profile/${photo.profiles.username}`}
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={photo.profiles.avatar_url} alt={photo.profiles.username} />
+            <AvatarFallback>{photo.profiles.username[0].toUpperCase()}</AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="font-medium">{photo.profiles.full_name || photo.profiles.username}</p>
+            <p className="text-sm text-gray-500">@{photo.profiles.username}</p>
+          </div>
+        </Link>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`flex items-center gap-1 ${isLiked ? 'text-red-500' : ''}`}
+            onClick={handleLike}
+          >
+            <Heart className={`h-5 w-5 ${isLiked ? 'fill-current' : ''}`} />
+            <span>{likesCount}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex items-center gap-1"
+          >
+            <MessageCircle className="h-5 w-5" />
+            <span>{commentsCount}</span>
+          </Button>
+        </div>
+      </div>
+      <Separator />
+      <div>
+        <h3 className="font-medium text-lg mb-2">{photo.title}</h3>
+        <p className="text-gray-600 dark:text-gray-300">{photo.caption}</p>
+      </div>
+    </div>
+  );
+};
 
 const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -217,6 +316,8 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
           onClick={(e) => e.stopPropagation()}
           data-testid="comments-section"
         >
+          <PhotoInfo photo={currentPhoto} />
+          <Separator className="my-6" />
           <PhotoComments photoId={currentPhoto.id} />
         </div>
       </div>
