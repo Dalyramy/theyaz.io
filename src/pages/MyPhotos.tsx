@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Edit, Trash2, Upload, ExternalLink, Calendar, Heart, MessageCircle, Filter } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import {
   DropdownMenu,
@@ -85,8 +85,13 @@ const MyPhotos = () => {
       } catch (err: unknown) {
         console.error('Error fetching user photos:', err);
         let message = 'Unknown error';
-        if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
-          message = (err as any).message;
+        if (
+          err &&
+          typeof err === 'object' &&
+          'message' in err &&
+          typeof (err as { message?: unknown }).message === 'string'
+        ) {
+          message = (err as { message: string }).message;
         }
         toast.error(`Error loading photos: ${message}`);
       } finally {
@@ -122,8 +127,13 @@ const MyPhotos = () => {
     } catch (err: unknown) {
       console.error('Error deleting photo:', err);
       let message = 'Unknown error';
-      if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
-        message = (err as any).message;
+      if (
+        err &&
+        typeof err === 'object' &&
+        'message' in err &&
+        typeof (err as { message?: unknown }).message === 'string'
+      ) {
+        message = (err as { message: string }).message;
       }
       toast.error(`Error deleting photo: ${message}`);
     }

@@ -2,6 +2,7 @@ import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
+import { toast } from "@/components/ui/sonner-toast"
 
 import { cn } from "@/lib/utils"
 

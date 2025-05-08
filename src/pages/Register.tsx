@@ -1,7 +1,6 @@
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,8 +32,17 @@ const Register = () => {
         toast.success('Registration successful! Please check your email for verification.');
         navigate('/login');
       }
-    } catch (error: any) {
-      toast.error('An unexpected error occurred');
+    } catch (error: unknown) {
+      let message = 'An unexpected error occurred';
+      if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        message = (error as { message: string }).message;
+      }
+      toast.error(message);
       console.error(error);
     } finally {
       setIsLoading(false);

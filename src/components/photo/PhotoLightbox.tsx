@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Download, Heart, MessageCircle, Share2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,9 @@ import PhotoComments from '@/components/social/PhotoComments';
 import ShareButton from '@/components/social/ShareButton';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import UserProfileLink from '@/components/ui/UserProfileLink';
 
 interface PhotoLightboxProps {
   photos: Array<{
@@ -73,19 +74,7 @@ const PhotoInfo = ({ photo }: { photo: PhotoLightboxProps['photos'][0] }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Link 
-          to={`/profile/${photo.profiles.username}`}
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-        >
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={photo.profiles.avatar_url} alt={photo.profiles.username} />
-            <AvatarFallback>{photo.profiles.username[0].toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="font-medium">{photo.profiles.full_name || photo.profiles.username}</p>
-            <p className="text-sm text-gray-500">@{photo.profiles.username}</p>
-          </div>
-        </Link>
+        <UserProfileLink user={photo.profiles} avatarClassName="h-8 w-8" nameClassName="font-medium" />
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -120,6 +109,17 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
   const [isZoomed, setIsZoomed] = useState(false);
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
 
+  const navigatePhotos = useCallback((direction: 'prev' | 'next') => {
+    if (isZoomed) return;
+    setCurrentIndex(prev => {
+      if (direction === 'prev') {
+        return prev > 0 ? prev - 1 : photos.length - 1;
+      } else {
+        return prev < photos.length - 1 ? prev + 1 : 0;
+      }
+    });
+  }, [isZoomed, photos.length]);
+
   useEffect(() => {
     const index = photos.findIndex(photo => photo.id === initialPhotoId);
     setCurrentIndex(index >= 0 ? index : 0);
@@ -142,19 +142,7 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex]);
-
-  const navigatePhotos = (direction: 'prev' | 'next') => {
-    if (isZoomed) return;
-    
-    setCurrentIndex(prev => {
-      if (direction === 'prev') {
-        return prev > 0 ? prev - 1 : photos.length - 1;
-      } else {
-        return prev < photos.length - 1 ? prev + 1 : 0;
-      }
-    });
-  };
+  }, [currentIndex, navigatePhotos, onClose]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart({

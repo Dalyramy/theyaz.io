@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { loadScript, LoadingState, extractInstagramUsername } from '@/lib/socialEmbedUtils';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -34,9 +33,9 @@ const InstagramEmbed = ({
     
     try {
       const loadInstagramEmbed = () => {
-        // @ts-ignore - window.instgrm is added by the Instagram script
+        // @ts-expect-error: window.instgrm is added by the Instagram script
         if (window.instgrm) {
-          // @ts-ignore
+          // @ts-expect-error: window.instgrm is added by the Instagram script
           window.instgrm.Embeds.process();
           setState({ isLoading: false, isError: false });
         } else {

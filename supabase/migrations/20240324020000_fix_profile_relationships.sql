@@ -52,8 +52,28 @@ CREATE TABLE public.photos (
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
 );
 
+-- Insert missing profiles for users in photos_temp
+INSERT INTO public.profiles (id, username, full_name, avatar_url, bio, updated_at)
+SELECT DISTINCT pt.user_id, pt.user_id::text, NULL, NULL, NULL, NOW()
+FROM public.photos_temp pt
+LEFT JOIN public.profiles p ON pt.user_id = p.id
+WHERE p.id IS NULL;
+
 -- Restore photos data
-INSERT INTO public.photos 
+INSERT INTO public.photos (
+    id,
+    title,
+    caption,
+    image_url,
+    image_path,
+    tags,
+    likes_count,
+    comments_count,
+    user_id,
+    profile_id,
+    created_at,
+    updated_at
+)
 SELECT 
     id,
     title,
@@ -75,20 +95,24 @@ DROP TABLE public.photos_temp;
 ALTER TABLE public.photos ENABLE ROW LEVEL SECURITY;
 
 -- Recreate photos policies
+DROP POLICY IF EXISTS "Anyone can view photos" ON public.photos;
 CREATE POLICY "Anyone can view photos"
     ON public.photos FOR SELECT
     USING (true);
 
+DROP POLICY IF EXISTS "Users can create photos" ON public.photos;
 CREATE POLICY "Users can create photos"
     ON public.photos FOR INSERT
     TO authenticated
     WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own photos" ON public.photos;
 CREATE POLICY "Users can update own photos"
     ON public.photos FOR UPDATE
     TO authenticated
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own photos" ON public.photos;
 CREATE POLICY "Users can delete own photos"
     ON public.photos FOR DELETE
     TO authenticated
@@ -97,12 +121,15 @@ CREATE POLICY "Users can delete own photos"
 -- Recreate the profile policies
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
 CREATE POLICY "Public profiles are viewable by everyone" ON profiles
     FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
 CREATE POLICY "Users can insert their own profile" ON profiles
     FOR INSERT WITH CHECK (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
 CREATE POLICY "Users can update their own profile" ON profiles
     FOR UPDATE USING (auth.uid() = id);
 
@@ -128,7 +155,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Create trigger for profile updated_at
+DROP TRIGGER IF EXISTS handle_profiles_updated_at ON public.profiles;
 CREATE TRIGGER handle_profiles_updated_at
     BEFORE UPDATE ON public.profiles
     FOR EACH ROW

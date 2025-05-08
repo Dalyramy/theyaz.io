@@ -127,7 +127,8 @@ const GalleryPage = () => {
 
   // Load more photos when reaching the bottom
   useEffect(() => {
-    const lastItem = virtualizer.getVirtualItems().at(-1);
+    const virtualItems = virtualizer.getVirtualItems();
+    const lastItem = virtualItems.at(-1);
     if (!lastItem) return;
 
     if (
@@ -137,7 +138,7 @@ const GalleryPage = () => {
     ) {
       fetchNextPage();
     }
-  }, [virtualizer.getVirtualItems(), photos.length, isFetching, hasNextPage]);
+  }, [photos.length, isFetching, hasNextPage, fetchNextPage, virtualizer]);
 
   const handleSearch = useCallback((value: string) => {
     setSearchQuery(value);

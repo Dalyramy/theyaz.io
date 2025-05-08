@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
+import UserProfileLink from '@/components/ui/UserProfileLink';
 
 interface PhotoDetailProps {
   photo: {
@@ -120,24 +121,6 @@ const PhotoMetadata = memo(({ date, caption, tags }: {
       </div>
     )}
   </>
-));
-
-const UserProfileSection = memo(({ profile }: { profile: PhotoDetailProps['photo']['profiles'] }) => (
-  <div className="flex items-center gap-3">
-    <Avatar className="h-10 w-10 border-2 border-emerald-200 dark:border-emerald-800">
-      <AvatarImage src={profile.avatar_url} alt={profile.username} />
-      <AvatarFallback>{profile.username.charAt(0).toUpperCase()}</AvatarFallback>
-    </Avatar>
-    <div>
-      <Link 
-        to={`/profile/${profile.username}`}
-        className="font-medium text-emerald-800 dark:text-emerald-200 hover:text-emerald-600 dark:hover:text-emerald-400"
-      >
-        {profile.full_name || profile.username}
-      </Link>
-      <p className="text-sm text-emerald-600 dark:text-emerald-400">@{profile.username}</p>
-    </div>
-  </div>
 ));
 
 const PhotoDetail = ({ photo }: PhotoDetailProps) => {
@@ -280,7 +263,7 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
               <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent">
                 {photo.title}
               </h1>
-              <UserProfileSection profile={photo.profiles} />
+              <UserProfileLink user={photo.profiles} className="gap-3" avatarClassName="h-10 w-10 border-2 border-emerald-200 dark:border-emerald-800" nameClassName="font-medium text-emerald-800 dark:text-emerald-200 hover:text-emerald-600 dark:hover:text-emerald-400" />
             </div>
             
             <PhotoMetadata

@@ -52,30 +52,36 @@ ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for photos
+DROP POLICY IF EXISTS "Anyone can view photos" ON public.photos;
 CREATE POLICY "Anyone can view photos"
     ON public.photos FOR SELECT
     USING (true);
 
+DROP POLICY IF EXISTS "Users can create photos" ON public.photos;
 CREATE POLICY "Users can create photos"
     ON public.photos FOR INSERT
     TO authenticated
     WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own photos" ON public.photos;
 CREATE POLICY "Users can update own photos"
     ON public.photos FOR UPDATE
     TO authenticated
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own photos" ON public.photos;
 CREATE POLICY "Users can delete own photos"
     ON public.photos FOR DELETE
     TO authenticated
     USING (auth.uid() = user_id);
 
 -- RLS Policies for profiles
+DROP POLICY IF EXISTS "Anyone can view profiles" ON public.profiles;
 CREATE POLICY "Anyone can view profiles"
     ON public.profiles FOR SELECT
     USING (true);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile"
     ON public.profiles FOR UPDATE
     TO authenticated
@@ -87,35 +93,42 @@ DROP POLICY IF EXISTS "Users can update own comments" ON public.comments;
 DROP POLICY IF EXISTS "Users can delete own comments" ON public.comments;
 DROP POLICY IF EXISTS "Anyone can view comments" ON public.comments;
 
+DROP POLICY IF EXISTS "Authenticated users can create comments" ON public.comments;
 CREATE POLICY "Authenticated users can create comments"
     ON public.comments FOR INSERT
     TO authenticated
     WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Users can update own comments" ON public.comments;
 CREATE POLICY "Users can update own comments"
     ON public.comments FOR UPDATE
     TO authenticated
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own comments" ON public.comments;
 CREATE POLICY "Users can delete own comments"
     ON public.comments FOR DELETE
     TO authenticated
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Anyone can view comments" ON public.comments;
 CREATE POLICY "Anyone can view comments"
     ON public.comments FOR SELECT
     USING (true);
 
 -- RLS Policies for likes
+DROP POLICY IF EXISTS "Anyone can view likes" ON public.likes;
 CREATE POLICY "Anyone can view likes"
     ON public.likes FOR SELECT
     USING (true);
 
+DROP POLICY IF EXISTS "Authenticated users can create likes" ON public.likes;
 CREATE POLICY "Authenticated users can create likes"
     ON public.likes FOR INSERT
     TO authenticated
     WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Users can delete own likes" ON public.likes;
 CREATE POLICY "Users can delete own likes"
     ON public.likes FOR DELETE
     TO authenticated
@@ -131,16 +144,19 @@ END;
 $$ language 'plpgsql';
 
 -- Create triggers for updated_at
+DROP TRIGGER IF EXISTS handle_photos_updated_at ON public.photos;
 CREATE TRIGGER handle_photos_updated_at
     BEFORE UPDATE ON public.photos
     FOR EACH ROW
     EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS handle_profiles_updated_at ON public.profiles;
 CREATE TRIGGER handle_profiles_updated_at
     BEFORE UPDATE ON public.profiles
     FOR EACH ROW
     EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS handle_comments_updated_at ON public.comments;
 CREATE TRIGGER handle_comments_updated_at
     BEFORE UPDATE ON public.comments
     FOR EACH ROW
@@ -164,11 +180,13 @@ END;
 $$ language 'plpgsql';
 
 -- Create triggers for likes count
+DROP TRIGGER IF EXISTS handle_likes_count_insert ON public.likes;
 CREATE TRIGGER handle_likes_count_insert
     AFTER INSERT ON public.likes
     FOR EACH ROW
     EXECUTE FUNCTION public.update_likes_count();
 
+DROP TRIGGER IF EXISTS handle_likes_count_delete ON public.likes;
 CREATE TRIGGER handle_likes_count_delete
     AFTER DELETE ON public.likes
     FOR EACH ROW
@@ -192,11 +210,13 @@ END;
 $$ language 'plpgsql';
 
 -- Create triggers for comments count
+DROP TRIGGER IF EXISTS handle_comments_count_insert ON public.comments;
 CREATE TRIGGER handle_comments_count_insert
     AFTER INSERT ON public.comments
     FOR EACH ROW
     EXECUTE FUNCTION public.update_comments_count();
 
+DROP TRIGGER IF EXISTS handle_comments_count_delete ON public.comments;
 CREATE TRIGGER handle_comments_count_delete
     AFTER DELETE ON public.comments
     FOR EACH ROW
@@ -223,6 +243,7 @@ END;
 $$ language 'plpgsql';
 
 -- Create trigger for setting profile_id
+DROP TRIGGER IF EXISTS handle_photo_profile_id ON public.photos;
 CREATE TRIGGER handle_photo_profile_id
     BEFORE INSERT ON public.photos
     FOR EACH ROW

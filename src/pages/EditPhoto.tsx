@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Save, ArrowLeft } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -50,8 +50,13 @@ const EditPhoto = () => {
       } catch (err: unknown) {
         console.error('Error fetching photo:', err);
         let message = 'Unknown error';
-        if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
-          message = (err as any).message;
+        if (
+          err &&
+          typeof err === 'object' &&
+          'message' in err &&
+          typeof (err as { message?: unknown }).message === 'string'
+        ) {
+          message = (err as { message: string }).message;
         }
         toast.error(`Error loading photo: ${message}`);
         navigate('/my-photos');
@@ -98,8 +103,13 @@ const EditPhoto = () => {
     } catch (error: unknown) {
       console.error('Error updating photo:', error);
       let message = 'Unknown error';
-      if (error && typeof error === 'object' && 'message' in error && typeof (error as any).message === 'string') {
-        message = (error as any).message;
+      if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        message = (error as { message: string }).message;
       }
       toast.error(`Failed to update photo: ${message}`);
     } finally {

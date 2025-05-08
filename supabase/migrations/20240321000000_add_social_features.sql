@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 -- Add indexes for better query performance
-CREATE INDEX likes_photo_id_idx ON likes(photo_id);
-CREATE INDEX comments_photo_id_idx ON comments(photo_id);
+CREATE INDEX IF NOT EXISTS likes_photo_id_idx ON likes(photo_id);
+CREATE INDEX IF NOT EXISTS comments_photo_id_idx ON comments(photo_id);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE likes ENABLE ROW LEVEL SECURITY;
@@ -45,14 +45,18 @@ CREATE POLICY "Anyone can view likes"
     ON public.likes FOR SELECT
     USING (true);
 
+DROP POLICY IF EXISTS "Users can view all comments" ON public.comments;
 CREATE POLICY "Users can view all comments" ON comments
     FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can create their own comments" ON public.comments;
 CREATE POLICY "Users can create their own comments" ON comments
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own comments" ON public.comments;
 CREATE POLICY "Users can update their own comments" ON comments
     FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own comments" ON public.comments;
 CREATE POLICY "Users can delete their own comments" ON comments
     FOR DELETE USING (auth.uid() = user_id); 

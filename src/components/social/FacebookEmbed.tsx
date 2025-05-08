@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { loadScript, LoadingState } from '@/lib/socialEmbedUtils';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -36,9 +35,7 @@ const FacebookEmbed = ({
     
     try {
       const loadFacebookSDK = () => {
-        // @ts-ignore - FB is added by the Facebook script
         if (window.FB) {
-          // @ts-ignore
           window.FB.XFBML.parse();
           setState({ isLoading: false, isError: false });
         } else {

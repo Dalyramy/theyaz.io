@@ -35,8 +35,13 @@ const PhotoViewer = ({ isOpen, onClose, imageUrl, alt, title }: PhotoViewerProps
   };
 
   const handlePinchZoom = (e: unknown) => {
-    if (e && typeof e === 'object' && 'scale' in e && typeof (e as any).scale === 'number') {
-      const newScale = scale * (e as any).scale;
+    if (
+      e &&
+      typeof e === 'object' &&
+      'scale' in e &&
+      typeof (e as { scale?: unknown }).scale === 'number'
+    ) {
+      const newScale = scale * (e as { scale: number }).scale;
       setScale(Math.min(Math.max(1, newScale), 4));
     }
   };

@@ -5,6 +5,8 @@ import { Textarea } from './textarea';
 import { Comment } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
+import { Link } from 'react-router-dom';
+import UserProfileLink from './UserProfileLink';
 
 interface CommentSectionProps {
   photoId: string;
@@ -74,25 +76,7 @@ export function CommentSection({
           <div key={comment.id} className="space-y-2">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage 
-                    src={comment.user_profile?.avatar_url} 
-                    alt={comment.user_profile?.username || 'User avatar'} 
-                  />
-                  <AvatarFallback>
-                    {comment.user_profile?.username?.charAt(0).toUpperCase() || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">
-                    {comment.user_profile?.username || 'Anonymous'}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(comment.created_at), {
-                      addSuffix: true,
-                    })}
-                  </span>
-                </div>
+                <UserProfileLink user={comment.user_profile} avatarClassName="h-8 w-8" nameClassName="text-sm font-medium" />
               </div>
               {currentUserId === comment.user_id && (
                 <Button

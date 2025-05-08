@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Upload, Image, X, Phone, Camera } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 import { cn } from '@/lib/utils';
@@ -143,6 +143,7 @@ const UploadForm = () => {
       // Save photo metadata to the database
       const photoData = {
         user_id: user.id,
+        profile_id: user.id,
         title,
         caption,
         tags: tagArray,
@@ -166,8 +167,13 @@ const UploadForm = () => {
     } catch (error: unknown) {
       console.error('Error uploading image:', error);
       let message = 'Unknown error';
-      if (error && typeof error === 'object' && 'message' in error && typeof (error as any).message === 'string') {
-        message = (error as any).message;
+      if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        message = (error as { message: string }).message;
       }
       toast.error(`Failed to upload image: ${message}`);
       setIsSubmitting(false);

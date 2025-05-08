@@ -7,9 +7,26 @@ import { ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 
+// Define the expected photo type
+interface Photo {
+  id: string;
+  title: string;
+  caption: string;
+  tags: string[];
+  image_url: string;
+  created_at: string;
+  user_id: string;
+  profiles: {
+    username: string;
+    avatar_url: string;
+    full_name?: string;
+  };
+  // Add other fields as needed
+}
+
 const PhotoView = () => {
   const { id } = useParams<{ id: string }>();
-  const [photo, setPhoto] = useState<any | null>(null);
+  const [photo, setPhoto] = useState<Photo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -42,9 +59,18 @@ const PhotoView = () => {
         };
         
         setPhoto(transformedData);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching photo:', err);
-        setError(err.message);
+        let message = 'Unknown error';
+        if (
+          err &&
+          typeof err === 'object' &&
+          'message' in err &&
+          typeof (err as { message?: unknown }).message === 'string'
+        ) {
+          message = (err as { message: string }).message;
+        }
+        setError(message);
       } finally {
         setIsLoading(false);
       }

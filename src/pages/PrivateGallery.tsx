@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import PhotoGrid from '@/components/PhotoGrid';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
@@ -10,9 +10,25 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
+// Define the expected photo type
+interface Photo {
+  id: string;
+  title: string;
+  caption?: string;
+  image_url: string;
+  created_at: string;
+  user_id: string;
+  profile?: {
+    username?: string;
+    avatar_url?: string;
+    full_name?: string;
+  };
+  // Add other fields as needed
+}
+
 const PrivateGallery = () => {
   const { user } = useAuth();
-  const [photos, setPhotos] = useState<any[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // 'all', 'mine', 'shared'
@@ -59,9 +75,18 @@ const PrivateGallery = () => {
         }));
         
         setPhotos(transformedData);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching photos:', err);
-        toast.error(`Failed to load photos: ${err.message}`);
+        let message = 'Unknown error';
+        if (
+          err &&
+          typeof err === 'object' &&
+          'message' in err &&
+          typeof (err as { message?: unknown }).message === 'string'
+        ) {
+          message = (err as { message: string }).message;
+        }
+        toast.error(`Failed to load photos: ${message}`);
       } finally {
         setIsLoading(false);
       }

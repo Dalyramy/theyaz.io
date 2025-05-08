@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -34,8 +34,13 @@ const Login = () => {
       }
     } catch (error: unknown) {
       let message = 'An unexpected error occurred';
-      if (error && typeof error === 'object' && 'message' in error && typeof (error as any).message === 'string') {
-        message = (error as any).message;
+      if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        message = (error as { message: string }).message;
       }
       toast.error(message);
       console.error(error);
@@ -50,8 +55,13 @@ const Login = () => {
       // Note: No need for success toast here since page will redirect
     } catch (error: unknown) {
       let message = 'Failed to sign in with Google';
-      if (error && typeof error === 'object' && 'message' in error && typeof (error as any).message === 'string') {
-        message = (error as any).message;
+      if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        message = (error as { message: string }).message;
       }
       toast.error(message);
       console.error(error);
@@ -64,8 +74,13 @@ const Login = () => {
       // Note: No need for success toast here since page will redirect
     } catch (error: unknown) {
       let message = 'Failed to sign in with Apple';
-      if (error && typeof error === 'object' && 'message' in error && typeof (error as any).message === 'string') {
-        message = (error as any).message;
+      if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        message = (error as { message: string }).message;
       }
       toast.error(message);
       console.error(error);
@@ -78,8 +93,13 @@ const Login = () => {
       // Note: No need for success toast here since page will redirect
     } catch (error: unknown) {
       let message = 'Failed to sign in with Facebook';
-      if (error && typeof error === 'object' && 'message' in error && typeof (error as any).message === 'string') {
-        message = (error as any).message;
+      if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        message = (error as { message: string }).message;
       }
       toast.error(message);
       console.error(error);

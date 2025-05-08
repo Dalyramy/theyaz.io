@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import { Upload, Camera, Phone, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/UserMenu";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 const navItemVariants = {
   hidden: { opacity: 0, y: -20 },

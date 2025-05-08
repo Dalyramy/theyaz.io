@@ -49,8 +49,13 @@ const Index = () => {
       } catch (err: unknown) {
         console.error('Error fetching photos:', err);
         let message = 'Unknown error';
-        if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
-          message = (err as any).message;
+        if (
+          err &&
+          typeof err === 'object' &&
+          'message' in err &&
+          typeof (err as { message?: unknown }).message === 'string'
+        ) {
+          message = (err as { message: string }).message;
         }
         toast.error(`Failed to load photos: ${message}`);
       } finally {

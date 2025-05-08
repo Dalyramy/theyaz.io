@@ -19,6 +19,9 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/auth/callback";
 import PrivateGallery from "./pages/PrivateGallery";
+import ProfilePage from './pages/profile/[userId]';
+import Inbox from './pages/messaging/Inbox';
+import Conversation from './pages/messaging/Conversation';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -107,6 +110,9 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/auth/callback" element={<AuthCallback />} />
+                        <Route path="/profile/:userId" element={<ProfilePage />} />
+                        <Route path="/messaging" element={<Inbox />} />
+                        <Route path="/messaging/:userId" element={<Conversation />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </main>

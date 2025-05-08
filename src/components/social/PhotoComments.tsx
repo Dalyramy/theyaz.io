@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Link } from 'react-router-dom';
 
 interface Comment {
   id: string;
@@ -166,14 +167,18 @@ const PhotoComments = ({ photoId, className = '' }: PhotoCommentsProps) => {
                   className="flex gap-3 items-start"
                 >
                   <Avatar>
-                    <AvatarImage src={comment.user.avatar_url} />
-                    <AvatarFallback>
-                      {comment.user.name.charAt(0).toUpperCase()}
-                    </AvatarFallback>
+                    <Link to={comment.user.name ? `/profile/${comment.user.name}` : '#'}>
+                      <AvatarImage src={comment.user.avatar_url} />
+                      <AvatarFallback>
+                        {comment.user.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Link>
                   </Avatar>
                   <div className="flex-1">
                     <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
-                      <div className="font-medium text-sm mb-1">{comment.user.name}</div>
+                      <Link to={comment.user.name ? `/profile/${comment.user.name}` : '#'} className="font-medium text-sm mb-1">
+                        {comment.user.name}
+                      </Link>
                       <p className="text-sm text-gray-600 dark:text-gray-300">
                         {comment.content}
                       </p>

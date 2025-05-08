@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -36,90 +37,90 @@ export default {
 				'safe-right': 'env(safe-area-inset-right)',
 			},
 			colors: {
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
+				border: 'hsl(215, 20%, 24%)',
+				input: 'hsl(215, 16%, 18%)',
+				ring: 'hsl(215, 20%, 40%)',
+				background: 'hsl(222, 47%, 11%)',
+				foreground: 'hsl(210, 40%, 98%)',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: 'hsl(221, 83%, 53%)',
+					foreground: 'hsl(210, 40%, 98%)',
 				},
 				secondary: {
-					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
+					DEFAULT: 'hsl(215, 16%, 47%)',
+					foreground: 'hsl(210, 40%, 98%)',
 				},
 				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
+					DEFAULT: 'hsl(0, 84%, 60%)',
+					foreground: 'hsl(210, 40%, 98%)',
 				},
 				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
+					DEFAULT: 'hsl(215, 16%, 24%)',
+					foreground: 'hsl(215, 16%, 70%)',
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					DEFAULT: 'hsl(265, 83%, 67%)',
+					foreground: 'hsl(210, 40%, 98%)',
 				},
 				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))'
+					DEFAULT: 'hsl(222, 47%, 15%)',
+					foreground: 'hsl(210, 40%, 98%)',
 				},
 				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
+					DEFAULT: 'hsl(222, 47%, 13%)',
+					foreground: 'hsl(210, 40%, 98%)',
 				},
 				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+					DEFAULT: 'hsl(222, 47%, 9%)',
+					foreground: 'hsl(210, 40%, 98%)',
+					primary: 'hsl(221, 83%, 53%)',
+					'primary-foreground': 'hsl(210, 40%, 98%)',
+					accent: 'hsl(265, 83%, 67%)',
+					'accent-foreground': 'hsl(210, 40%, 98%)',
+					border: 'hsl(215, 20%, 24%)',
+					ring: 'hsl(215, 20%, 40%)',
 				},
 				gallery: {
 					light: 'hsl(210, 40%, 98%)',
 					dark: 'hsl(222, 47%, 11%)',
-					accent: 'hsl(217, 91%, 60%)',
-					muted: 'hsl(215, 16%, 47%)'
+					accent: 'hsl(221, 83%, 53%)',
+					muted: 'hsl(215, 16%, 47%)',
 				}
 			},
 			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				lg: '1rem',
+				md: '0.75rem',
+				sm: '0.5rem',
 			},
 			keyframes: {
 				'accordion-down': {
 					from: { height: '0' },
-					to: { height: 'var(--radix-accordion-content-height)' }
+					to: { height: 'var(--radix-accordion-content-height)' },
 				},
 				'accordion-up': {
 					from: { height: 'var(--radix-accordion-content-height)' },
-					to: { height: '0' }
+					to: { height: '0' },
 				},
 				'fade-in': {
 					'0%': { opacity: '0' },
-					'100%': { opacity: '1' }
+					'100%': { opacity: '1' },
 				},
 				'float': {
 					'0%, 100%': { transform: 'translateY(0)' },
-					'50%': { transform: 'translateY(-10px)' }
-				}
+					'50%': { transform: 'translateY(-10px)' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-in-out',
-				'float': 'float 3s ease-in-out infinite'
+				'float': 'float 3s ease-in-out infinite',
 			},
 			boxShadow: {
-				'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-				'hover': '0 10px 20px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+				soft: '0 2px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.08)',
+				hover: '0 10px 20px -5px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.10)',
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [tailwindcssAnimate],
 } satisfies Config;
