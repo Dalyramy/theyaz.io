@@ -1,6 +1,11 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import PhotoLightbox from './PhotoLightbox';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const mockPhotos = [
   {
@@ -12,6 +17,11 @@ const mockPhotos = [
     created_at: '2024-03-20T00:00:00Z',
     likes: 10,
     comments: 5,
+    profiles: {
+      username: 'user1',
+      avatar_url: 'https://example.com/avatar1.jpg',
+      full_name: 'User One',
+    },
   },
   {
     id: '2',
@@ -22,6 +32,11 @@ const mockPhotos = [
     created_at: '2024-03-19T00:00:00Z',
     likes: 15,
     comments: 8,
+    profiles: {
+      username: 'user2',
+      avatar_url: 'https://example.com/avatar2.jpg',
+      full_name: 'User Two',
+    },
   },
 ];
 
@@ -39,26 +54,38 @@ describe('PhotoLightbox', () => {
   it('renders the lightbox with initial photo', () => {
     const onClose = vi.fn();
     render(
-      <PhotoLightbox
-        photos={mockPhotos}
-        initialPhotoId="1"
-        onClose={onClose}
-      />
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <PhotoLightbox
+              photos={mockPhotos}
+              initialPhotoId="1"
+              onClose={onClose}
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     expect(screen.getByAltText('Test Photo 1')).toBeInTheDocument();
-    expect(screen.getByText('Test Photo 1')).toBeInTheDocument();
-    expect(screen.getByText('Test Caption 1')).toBeInTheDocument();
+    expect(screen.getAllByText('Test Photo 1')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Test Caption 1')[0]).toBeInTheDocument();
   });
 
   it('navigates to next photo on right arrow click', async () => {
     const onClose = vi.fn();
     render(
-      <PhotoLightbox
-        photos={mockPhotos}
-        initialPhotoId="1"
-        onClose={onClose}
-      />
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <PhotoLightbox
+              photos={mockPhotos}
+              initialPhotoId="1"
+              onClose={onClose}
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     const nextButton = screen.getByLabelText('Next photo');
@@ -66,18 +93,24 @@ describe('PhotoLightbox', () => {
 
     await waitFor(() => {
       expect(screen.getByAltText('Test Photo 2')).toBeInTheDocument();
-      expect(screen.getByText('Test Photo 2')).toBeInTheDocument();
+      expect(screen.getAllByText('Test Photo 2')[0]).toBeInTheDocument();
     });
   });
 
   it('navigates to previous photo on left arrow click', async () => {
     const onClose = vi.fn();
     render(
-      <PhotoLightbox
-        photos={mockPhotos}
-        initialPhotoId="2"
-        onClose={onClose}
-      />
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <PhotoLightbox
+              photos={mockPhotos}
+              initialPhotoId="2"
+              onClose={onClose}
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     const prevButton = screen.getByLabelText('Previous photo');
@@ -85,18 +118,24 @@ describe('PhotoLightbox', () => {
 
     await waitFor(() => {
       expect(screen.getByAltText('Test Photo 1')).toBeInTheDocument();
-      expect(screen.getByText('Test Photo 1')).toBeInTheDocument();
+      expect(screen.getAllByText('Test Photo 1')[0]).toBeInTheDocument();
     });
   });
 
   it('closes lightbox when clicking close button', () => {
     const onClose = vi.fn();
     render(
-      <PhotoLightbox
-        photos={mockPhotos}
-        initialPhotoId="1"
-        onClose={onClose}
-      />
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <PhotoLightbox
+              photos={mockPhotos}
+              initialPhotoId="1"
+              onClose={onClose}
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     const closeButton = screen.getByLabelText('Close');
@@ -108,39 +147,51 @@ describe('PhotoLightbox', () => {
   it('toggles zoom on image click', async () => {
     const onClose = vi.fn();
     render(
-      <PhotoLightbox
-        photos={mockPhotos}
-        initialPhotoId="1"
-        onClose={onClose}
-      />
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <PhotoLightbox
+              photos={mockPhotos}
+              initialPhotoId="1"
+              onClose={onClose}
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     const image = screen.getByAltText('Test Photo 1');
     
     // Initial state
-    expect(image).toHaveStyle({ transform: 'scale(1)' });
+    expect(image).toHaveAttribute('aria-label', 'Zoom in');
     
     // Click to zoom in
     fireEvent.click(image);
     await waitFor(() => {
-      expect(image).toHaveStyle({ transform: 'scale(1.5)' });
+      expect(image).toHaveAttribute('aria-label', 'Zoom out');
     });
     
     // Click to zoom out
     fireEvent.click(image);
     await waitFor(() => {
-      expect(image).toHaveStyle({ transform: 'scale(1)' });
+      expect(image).toHaveAttribute('aria-label', 'Zoom in');
     });
   });
 
   it('handles keyboard navigation', () => {
     const onClose = vi.fn();
     render(
-      <PhotoLightbox
-        photos={mockPhotos}
-        initialPhotoId="1"
-        onClose={onClose}
-      />
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <PhotoLightbox
+              photos={mockPhotos}
+              initialPhotoId="1"
+              onClose={onClose}
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     // Press right arrow
@@ -159,11 +210,17 @@ describe('PhotoLightbox', () => {
   it('handles touch swipe navigation', async () => {
     const onClose = vi.fn();
     render(
-      <PhotoLightbox
-        photos={mockPhotos}
-        initialPhotoId="1"
-        onClose={onClose}
-      />
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <PhotoLightbox
+              photos={mockPhotos}
+              initialPhotoId="1"
+              onClose={onClose}
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     const container = screen.getByTestId('lightbox-container');

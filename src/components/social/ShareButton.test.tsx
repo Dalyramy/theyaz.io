@@ -52,7 +52,7 @@ describe('ShareButton', () => {
 
   it('shows dropdown menu when Web Share API is not available', async () => {
     // Remove share API
-    delete (navigator as any).share;
+    delete (navigator as Navigator & { share?: unknown }).share;
 
     render(<ShareButton {...mockProps} />);
     
@@ -67,14 +67,14 @@ describe('ShareButton', () => {
   });
 
   it('copies link to clipboard', async () => {
-    delete (navigator as any).share;
+    delete (navigator as Navigator & { share?: unknown }).share;
 
     render(<ShareButton {...mockProps} />);
     
     const shareButton = screen.getByRole('button');
     fireEvent.click(shareButton);
 
-    const copyButton = screen.getByText('Copy link');
+    const copyButton = await screen.findByText('Copy link');
     fireEvent.click(copyButton);
 
     await waitFor(() => {
@@ -83,14 +83,14 @@ describe('ShareButton', () => {
   });
 
   it('opens Twitter share dialog', async () => {
-    delete (navigator as any).share;
+    delete (navigator as Navigator & { share?: unknown }).share;
 
     render(<ShareButton {...mockProps} />);
     
     const shareButton = screen.getByRole('button');
     fireEvent.click(shareButton);
 
-    const twitterButton = screen.getByText('Share on Twitter');
+    const twitterButton = await screen.findByText('Share on Twitter');
     fireEvent.click(twitterButton);
 
     const expectedUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -107,14 +107,14 @@ describe('ShareButton', () => {
   });
 
   it('opens Facebook share dialog', async () => {
-    delete (navigator as any).share;
+    delete (navigator as Navigator & { share?: unknown }).share;
 
     render(<ShareButton {...mockProps} />);
     
     const shareButton = screen.getByRole('button');
     fireEvent.click(shareButton);
 
-    const facebookButton = screen.getByText('Share on Facebook');
+    const facebookButton = await screen.findByText('Share on Facebook');
     fireEvent.click(facebookButton);
 
     const expectedUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -131,7 +131,7 @@ describe('ShareButton', () => {
   });
 
   it('handles clipboard errors', async () => {
-    delete (navigator as any).share;
+    delete (navigator as Navigator & { share?: unknown }).share;
     navigator.clipboard.writeText = vi.fn().mockRejectedValue(new Error('Failed to copy'));
 
     render(<ShareButton {...mockProps} />);
@@ -139,7 +139,7 @@ describe('ShareButton', () => {
     const shareButton = screen.getByRole('button');
     fireEvent.click(shareButton);
 
-    const copyButton = screen.getByText('Copy link');
+    const copyButton = await screen.findByText('Copy link');
     fireEvent.click(copyButton);
 
     await waitFor(() => {

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -48,9 +47,13 @@ const EditPhoto = () => {
         setCaption(data.caption || '');
         setTags(data.tags ? data.tags.join(', ') : '');
         setImageUrl(data.image_url);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching photo:', err);
-        toast.error(`Error loading photo: ${err.message}`);
+        let message = 'Unknown error';
+        if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
+          message = (err as any).message;
+        }
+        toast.error(`Error loading photo: ${message}`);
         navigate('/my-photos');
       } finally {
         setIsLoading(false);
@@ -92,9 +95,13 @@ const EditPhoto = () => {
       
       toast.success('Photo updated successfully!');
       navigate(`/photo/${id}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating photo:', error);
-      toast.error(`Failed to update photo: ${error.message}`);
+      let message = 'Unknown error';
+      if (error && typeof error === 'object' && 'message' in error && typeof (error as any).message === 'string') {
+        message = (error as any).message;
+      }
+      toast.error(`Failed to update photo: ${message}`);
     } finally {
       setIsSaving(false);
     }

@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { Comment, Like } from './types';
 
@@ -154,7 +153,7 @@ export async function getComments(photoId: string): Promise<Comment[]> {
     const profileMap = (profiles || []).reduce((map, profile) => {
       map[profile.id] = profile;
       return map;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, { id: string; username?: string; avatar_url?: string }>);
     
     // Attach profile data to comments
     const commentsWithProfiles = (comments || []).map(comment => {

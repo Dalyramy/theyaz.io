@@ -26,7 +26,7 @@ const PrivateGallery = () => {
           .from('photos')
           .select(`
             *,
-            profile:profiles(
+            profiles!photos_profile_id_fkey(
               username,
               avatar_url,
               full_name
@@ -55,7 +55,7 @@ const PrivateGallery = () => {
         // Transform the data to match the expected format
         const transformedData = (data || []).map(photo => ({
           ...photo,
-          profiles: photo.profile
+          profile: photo.profiles
         }));
         
         setPhotos(transformedData);

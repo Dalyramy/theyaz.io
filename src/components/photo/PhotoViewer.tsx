@@ -34,9 +34,11 @@ const PhotoViewer = ({ isOpen, onClose, imageUrl, alt, title }: PhotoViewerProps
     }
   };
 
-  const handlePinchZoom = (e: any) => {
-    const newScale = scale * e.scale;
-    setScale(Math.min(Math.max(1, newScale), 4));
+  const handlePinchZoom = (e: unknown) => {
+    if (e && typeof e === 'object' && 'scale' in e && typeof (e as any).scale === 'number') {
+      const newScale = scale * (e as any).scale;
+      setScale(Math.min(Math.max(1, newScale), 4));
+    }
   };
 
   const handleShare = async () => {

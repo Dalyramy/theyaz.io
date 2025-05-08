@@ -67,7 +67,7 @@ vi.mock('@/integrations/supabase/client', () => ({
           })),
         })),
       })),
-    }),
+    })),
   },
 }));
 

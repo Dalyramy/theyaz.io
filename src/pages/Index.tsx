@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import PhotoGrid from '@/components/PhotoGrid';
 import Navbar from '@/components/Navbar';
@@ -12,8 +11,17 @@ import FooterSection from '@/components/home/FooterSection';
 
 const ITEMS_PER_PAGE = 12;
 
+type Photo = {
+  id: string;
+  title: string;
+  caption?: string;
+  image_url: string;
+  created_at: string;
+  // Add other fields as needed
+};
+
 const Index = () => {
-  const [photos, setPhotos] = useState<any[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -38,9 +46,13 @@ const Index = () => {
         if (error) throw error;
         
         setPhotos(data || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching photos:', err);
-        toast.error(`Failed to load photos: ${err.message}`);
+        let message = 'Unknown error';
+        if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
+          message = (err as any).message;
+        }
+        toast.error(`Failed to load photos: ${message}`);
       } finally {
         setIsLoading(false);
       }

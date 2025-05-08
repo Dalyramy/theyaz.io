@@ -18,8 +18,24 @@ import { Badge } from '@/components/ui/badge';
 
 type SortOption = 'newest' | 'oldest' | 'most_liked' | 'most_commented';
 
+type Photo = {
+  id: string;
+  title: string;
+  caption?: string;
+  image_url: string;
+  created_at: string;
+  likes_count?: number;
+  comments_count?: number;
+  profile?: {
+    username?: string;
+    avatar_url?: string;
+    full_name?: string;
+  };
+  // Add other fields as needed
+};
+
 const MyPhotos = () => {
-  const [photos, setPhotos] = useState<any[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const { user } = useAuth();
@@ -66,9 +82,13 @@ const MyPhotos = () => {
         }));
         
         setPhotos(transformedData);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching user photos:', err);
-        toast.error(`Error loading photos: ${err.message}`);
+        let message = 'Unknown error';
+        if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
+          message = (err as any).message;
+        }
+        toast.error(`Error loading photos: ${message}`);
       } finally {
         setIsLoading(false);
       }
@@ -99,9 +119,13 @@ const MyPhotos = () => {
       // Update the UI
       setPhotos(photos => photos.filter(photo => photo.id !== id));
       toast.success('Photo deleted successfully');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error deleting photo:', err);
-      toast.error(`Error deleting photo: ${err.message}`);
+      let message = 'Unknown error';
+      if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
+        message = (err as any).message;
+      }
+      toast.error(`Error deleting photo: ${message}`);
     }
   };
   

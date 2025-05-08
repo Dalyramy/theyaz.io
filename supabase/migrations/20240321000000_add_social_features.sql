@@ -25,15 +25,25 @@ CREATE INDEX comments_photo_id_idx ON comments(photo_id);
 ALTER TABLE likes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 
--- Create RLS policies
-CREATE POLICY "Users can view all likes" ON likes
-    FOR SELECT USING (true);
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Authenticated users can create likes" ON public.likes;
+DROP POLICY IF EXISTS "Users can delete own likes" ON public.likes;
+DROP POLICY IF EXISTS "Anyone can view likes" ON public.likes;
 
-CREATE POLICY "Users can create their own likes" ON likes
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
+-- Create or replace the policies
+CREATE POLICY "Authenticated users can create likes"
+    ON public.likes FOR INSERT
+    TO authenticated
+    WITH CHECK (true);
 
-CREATE POLICY "Users can delete their own likes" ON likes
-    FOR DELETE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own likes"
+    ON public.likes FOR DELETE
+    TO authenticated
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Anyone can view likes"
+    ON public.likes FOR SELECT
+    USING (true);
 
 CREATE POLICY "Users can view all comments" ON comments
     FOR SELECT USING (true);

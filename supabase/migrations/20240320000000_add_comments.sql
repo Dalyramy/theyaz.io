@@ -82,9 +82,10 @@ CREATE POLICY "Users can update own profile"
     USING (auth.uid() = id);
 
 -- RLS Policies for comments
-CREATE POLICY "Anyone can view comments"
-    ON public.comments FOR SELECT
-    USING (true);
+DROP POLICY IF EXISTS "Authenticated users can create comments" ON public.comments;
+DROP POLICY IF EXISTS "Users can update own comments" ON public.comments;
+DROP POLICY IF EXISTS "Users can delete own comments" ON public.comments;
+DROP POLICY IF EXISTS "Anyone can view comments" ON public.comments;
 
 CREATE POLICY "Authenticated users can create comments"
     ON public.comments FOR INSERT
@@ -100,6 +101,10 @@ CREATE POLICY "Users can delete own comments"
     ON public.comments FOR DELETE
     TO authenticated
     USING (auth.uid() = user_id);
+
+CREATE POLICY "Anyone can view comments"
+    ON public.comments FOR SELECT
+    USING (true);
 
 -- RLS Policies for likes
 CREATE POLICY "Anyone can view likes"

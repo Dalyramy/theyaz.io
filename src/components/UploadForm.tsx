@@ -163,9 +163,13 @@ const UploadForm = () => {
       toast.success('Photo uploaded successfully!');
       setIsSubmitting(false);
       navigate(`/photo/${insertedPhoto.id}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error uploading image:', error);
-      toast.error(`Failed to upload image: ${error.message}`);
+      let message = 'Unknown error';
+      if (error && typeof error === 'object' && 'message' in error && typeof (error as any).message === 'string') {
+        message = (error as any).message;
+      }
+      toast.error(`Failed to upload image: ${message}`);
       setIsSubmitting(false);
     }
   };
