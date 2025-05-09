@@ -119,11 +119,11 @@ const EditPhoto = () => {
   
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background text-foreground">
         <Navbar />
         <main className="container py-8">
           <div className="w-full max-w-2xl mx-auto">
-            <Card>
+            <Card className="bg-card text-card-foreground">
               <CardHeader>
                 <Skeleton className="h-8 w-3/4 mb-2" />
                 <Skeleton className="h-4 w-1/2" />
@@ -145,7 +145,7 @@ const EditPhoto = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       
       <main className="container py-8">
@@ -159,7 +159,7 @@ const EditPhoto = () => {
           Back to My Photos
         </Button>
         
-        <Card className="w-full max-w-2xl mx-auto">
+        <Card className="w-full max-w-2xl mx-auto bg-card text-card-foreground">
           <CardHeader>
             <CardTitle className="text-2xl">Edit Photo</CardTitle>
             <CardDescription>Update your photo's details</CardDescription>

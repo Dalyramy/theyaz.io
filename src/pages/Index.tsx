@@ -74,13 +74,13 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
       
       {/* Hero Section */}
       <HeroSection handleExploreClick={handleExploreClick} />
 
-      <main className="container mx-auto px-6 py-20 flex-1 bg-gradient-to-b from-gray-50 to-white dark:from-background dark:to-background/80 backdrop-blur-sm rounded-t-3xl shadow-lg -mt-8 relative z-20">
+      <main className="container mx-auto px-6 py-20 flex-1 bg-background rounded-t-3xl shadow-lg -mt-8 relative z-20 container-type-inline container-query">
         {/* Search Section */}
         <SearchSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Upload, Camera, Phone, Image as ImageIcon } from "lucide-react";
+import { Upload, Camera, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/useAuth";
@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import NotificationBell from '@/components/notifications/NotificationBell';
+import TheyazLogo from '@/components/ui/TheyazLogo';
 
 const navItemVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -21,21 +22,21 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
-      className="sticky top-safe-top z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
+      className="sticky top-safe-top z-50 w-full border-b bg-white/80 border-gray-200 dark:bg-background/80 dark:border-border/40 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60"
     >
-      <div className="container flex h-14 sm:h-16 items-center justify-between px-4 sm:px-8">
+      <div className="container flex h-28 sm:h-32 items-center justify-between px-4 sm:px-8">
         <Link 
           to="/" 
-          className="flex items-center gap-2 transition-all hover:scale-105"
+          className="flex items-center gap-4 transition-all hover:scale-105"
         >
           <motion.div 
-            className="flex items-center justify-center w-8 h-8"
+            className="flex items-center justify-center w-16 aspect-[401/622]"
             whileHover={{ rotate: 360 }}
             transition={{ duration: 0.5 }}
           >
-            <Phone className="w-6 h-6 text-secondary" />
+            <TheyazLogo size="100%" className="drop-shadow-[0_0_12px_#3b82f6] h-full w-full" />
           </motion.div>
-          <span className="text-lg font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+          <span className="text-4xl font-bold tracking-tight flex items-center text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary">
             theyaz.io
           </span>
         </Link>
@@ -57,7 +58,7 @@ const Navbar = () => {
               <Link 
                 to="/" 
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-secondary",
+                  "text-2xl font-bold transition-colors hover:text-secondary text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary",
                   "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
                 )}
               >
@@ -70,7 +71,7 @@ const Navbar = () => {
                 <Link 
                   to="/gallery" 
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-secondary",
+                    "text-2xl font-bold transition-colors hover:text-secondary text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary",
                     "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
                   )}
                 >
@@ -84,7 +85,7 @@ const Navbar = () => {
                 <Link 
                   to="/my-photos" 
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-secondary",
+                    "text-2xl font-bold transition-colors hover:text-secondary text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary",
                     "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
                   )}
                 >
@@ -97,7 +98,7 @@ const Navbar = () => {
               <Link 
                 to="/about" 
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-secondary",
+                  "text-2xl font-bold transition-colors hover:text-secondary text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary",
                   "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
                 )}
               >

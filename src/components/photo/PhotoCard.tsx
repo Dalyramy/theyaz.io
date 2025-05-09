@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Heart, MessageSquare, Share2 } from 'lucide-react';
+import Logo from '@/components/ui/Logo';
 import { motion } from 'framer-motion';
 import PhotoViewer from './PhotoViewer';
 
@@ -76,7 +77,7 @@ const PhotoCard = ({ photo }: PhotoCardProps) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
                   <div className="flex items-center gap-1 rounded-full bg-black/20 px-2 py-1 text-xs text-white backdrop-blur-md">
-                    <Phone className="h-3 w-3" />
+                    <Logo size={12} className="drop-shadow-[0_0_8px_#3b82f6]" />
                     <span>iPhone 16 Pro Max</span>
                   </div>
                   <motion.button

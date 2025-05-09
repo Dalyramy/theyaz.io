@@ -1,5 +1,10 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
+import typography from '@tailwindcss/typography';
+import forms from '@tailwindcss/forms';
+import aspectRatio from '@tailwindcss/aspect-ratio';
+import lineClamp from '@tailwindcss/line-clamp';
+import containerQueries from '@tailwindcss/container-queries';
 
 export default {
 	darkMode: ["class"],
@@ -85,12 +90,32 @@ export default {
 					dark: 'hsl(222, 47%, 11%)',
 					accent: 'hsl(221, 83%, 53%)',
 					muted: 'hsl(215, 16%, 47%)',
-				}
+				},
+				success: {
+					DEFAULT: 'hsl(142, 71%, 45%)', // green
+					foreground: 'hsl(210, 40%, 98%)',
+				},
+				warning: {
+					DEFAULT: 'hsl(48, 96%, 53%)', // yellow
+					foreground: 'hsl(210, 40%, 98%)',
+				},
+				info: {
+					DEFAULT: 'hsl(201, 96%, 53%)', // blue
+					foreground: 'hsl(210, 40%, 98%)',
+				},
+				brand: {
+					DEFAULT: '#059669', // your main green
+					light: '#34d399',
+					dark: '#065f46',
+					foreground: '#fff',
+				},
 			},
 			borderRadius: {
 				lg: '1rem',
 				md: '0.75rem',
 				sm: '0.5rem',
+				xl: '1.5rem',
+				'2xl': '2rem',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -119,8 +144,50 @@ export default {
 			boxShadow: {
 				soft: '0 2px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.08)',
 				hover: '0 10px 20px -5px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.10)',
-			}
+				card: '0 4px 24px 0 rgba(5, 150, 105, 0.08)',
+				modal: '0 8px 32px 0 rgba(0,0,0,0.18)',
+			},
+			// --- Typography Customization ---
+			typography: (theme) => ({
+				DEFAULT: {
+					css: {
+						color: theme('colors.foreground'),
+						a: { color: theme('colors.primary.DEFAULT'), textDecoration: 'underline', fontWeight: '500' },
+						h1: { color: theme('colors.primary.DEFAULT') },
+						h2: { color: theme('colors.primary.DEFAULT') },
+						h3: { color: theme('colors.primary.DEFAULT') },
+						strong: { color: theme('colors.primary.DEFAULT') },
+						code: { color: theme('colors.accent.DEFAULT'), backgroundColor: theme('colors.muted.DEFAULT'), padding: '0.2em 0.4em', borderRadius: '0.25rem' },
+						blockquote: { color: theme('colors.secondary.DEFAULT'), borderLeftColor: theme('colors.primary.DEFAULT'), fontStyle: 'italic' },
+						'ol > li::marker': { color: theme('colors.primary.DEFAULT') },
+						'ul > li::marker': { color: theme('colors.accent.DEFAULT') },
+						pre: { backgroundColor: theme('colors.muted.DEFAULT'), color: theme('colors.accent.DEFAULT'), borderRadius: '0.5rem' },
+					},
+				},
+				dark: {
+					css: {
+						color: theme('colors.foreground'),
+						a: { color: theme('colors.primary.DEFAULT') },
+						h1: { color: theme('colors.primary.DEFAULT') },
+						h2: { color: theme('colors.primary.DEFAULT') },
+						h3: { color: theme('colors.primary.DEFAULT') },
+						strong: { color: theme('colors.primary.DEFAULT') },
+						code: { color: theme('colors.accent.DEFAULT'), backgroundColor: theme('colors.muted.DEFAULT'), padding: '0.2em 0.4em', borderRadius: '0.25rem' },
+						blockquote: { color: theme('colors.secondary.DEFAULT'), borderLeftColor: theme('colors.primary.DEFAULT'), fontStyle: 'italic' },
+						'ol > li::marker': { color: theme('colors.primary.DEFAULT') },
+						'ul > li::marker': { color: theme('colors.accent.DEFAULT') },
+						pre: { backgroundColor: theme('colors.muted.DEFAULT'), color: theme('colors.accent.DEFAULT'), borderRadius: '0.5rem' },
+					},
+				},
+			}),
 		}
 	},
-	plugins: [tailwindcssAnimate],
+	plugins: [
+		tailwindcssAnimate,
+		typography,
+		forms,
+		aspectRatio,
+		lineClamp,
+		containerQueries,
+	],
 } satisfies Config;

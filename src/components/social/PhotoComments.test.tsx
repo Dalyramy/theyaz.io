@@ -3,6 +3,7 @@ import { vi } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PhotoComments from './PhotoComments';
 import { supabase } from '@/integrations/supabase/client';
+import { MemoryRouter } from 'react-router-dom';
 
 // Mock Supabase client
 vi.mock('@/integrations/supabase/client', () => ({
@@ -81,9 +82,11 @@ const queryClient = new QueryClient({
 
 const renderWithQueryClient = (ui: React.ReactElement) => {
   return render(
-    <QueryClientProvider client={queryClient}>
-      {ui}
-    </QueryClientProvider>
+    <MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        {ui}
+      </QueryClientProvider>
+    </MemoryRouter>
   );
 };
 

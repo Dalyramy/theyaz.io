@@ -76,49 +76,49 @@ function App() {
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
-            <div className="min-h-screen bg-background text-foreground antialiased overflow-x-hidden">
-              <div className="flex min-h-screen flex-col pt-safe-top pb-safe-bottom">
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <AuthProvider>
-                    <main className="flex-1 w-full">
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/gallery" element={
-                          <ProtectedRoute>
-                            <PrivateGallery />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/photo/:id" element={<PhotoView />} />
-                        <Route path="/upload" element={
-                          <ProtectedRoute>
-                            <Upload />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/my-photos" element={
-                          <ProtectedRoute>
-                            <MyPhotos />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/edit-photo/:id" element={
-                          <ProtectedRoute>
-                            <EditPhoto />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/auth/callback" element={<AuthCallback />} />
-                        <Route path="/profile/:userId" element={<ProfilePage />} />
-                        <Route path="/messaging" element={<Inbox />} />
-                        <Route path="/messaging/:userId" element={<Conversation />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </main>
-                  </AuthProvider>
-                </BrowserRouter>
-              </div>
+            <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center">
+              {/* Remove the top logo image */}
+              {/* <img src="/icons/theyaz-logo.svg" alt="theyaz.io logo" style={{ height: 96, width: 'auto', marginBottom: 24, filter: 'drop-shadow(0 4px 16px #00f2ff88)' }} /> */}
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <AuthProvider>
+                  <main className="flex-1 w-full">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/gallery" element={
+                        <ProtectedRoute>
+                          <PrivateGallery />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/photo/:id" element={<PhotoView />} />
+                      <Route path="/upload" element={
+                        <ProtectedRoute>
+                          <Upload />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/my-photos" element={
+                        <ProtectedRoute>
+                          <MyPhotos />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/edit-photo/:id" element={
+                        <ProtectedRoute>
+                          <EditPhoto />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/auth/callback" element={<AuthCallback />} />
+                      <Route path="/profile/:userId" element={<ProfilePage />} />
+                      <Route path="/messaging" element={<Inbox />} />
+                      <Route path="/messaging/:userId" element={<Conversation />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </main>
+                </AuthProvider>
+              </BrowserRouter>
             </div>
           </TooltipProvider>
         </QueryClientProvider>

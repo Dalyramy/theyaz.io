@@ -81,7 +81,7 @@ const PhotoView = () => {
   
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background text-foreground">
         <Navbar />
         <div className="container py-8">
           <div className="mb-6">
@@ -92,10 +92,9 @@ const PhotoView = () => {
               </Link>
             </Button>
           </div>
-          
           <div className="w-full">
-            <div className="relative aspect-video md:aspect-[16/9] lg:aspect-[16/10] overflow-hidden bg-muted">
-              <Skeleton className="h-full w-full" />
+            <div className="relative aspect-video md:aspect-[16/9] lg:aspect-[16/10] overflow-hidden bg-muted rounded-xl">
+              <Skeleton className="h-full w-full rounded-xl" />
             </div>
             <div className="p-6">
               <Skeleton className="h-8 w-3/4 mb-4" />
@@ -112,14 +111,14 @@ const PhotoView = () => {
   
   if (error || !photo) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background text-foreground">
         <Navbar />
-        <div className="container py-20 text-center">
+        <div className="container py-20 text-center prose dark:prose-invert">
           <h1 className="text-3xl font-bold mb-4">Photo Not Found</h1>
           <p className="text-lg text-muted-foreground mb-8">
             {error || "The photo you're looking for doesn't exist or has been removed."}
           </p>
-          <Button asChild>
+          <Button asChild variant="primary">
             <Link to="/">Return to Gallery</Link>
           </Button>
         </div>
@@ -128,10 +127,9 @@ const PhotoView = () => {
   }
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      
-      <main className="container py-8">
+      <main className="container py-8 container-type-inline container-query">
         <div className="mb-6">
           <Button 
             variant="ghost" 
@@ -145,7 +143,6 @@ const PhotoView = () => {
             </Link>
           </Button>
         </div>
-        
         <PhotoDetail photo={photo} />
       </main>
     </div>

@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { Phone, Filter, SlidersHorizontal, Heart, MessageSquare } from 'lucide-react';
+import Logo from '@/components/ui/Logo';
 import { Link } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
@@ -153,19 +154,19 @@ const GalleryPage = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8 text-center"
       >
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent mb-4">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4">
           Photo Gallery
         </h1>
         <div className="flex items-center gap-2 justify-center mb-6">
-          <Phone className="h-5 w-5 text-emerald-600" />
-          <span className="text-emerald-700 dark:text-emerald-300">
+          <Logo size={20} className="drop-shadow-[0_0_8px_#3b82f6]" />
+          <span className="text-primary">
             Shot on iPhone 16 Pro Max
           </span>
         </div>
@@ -268,12 +269,12 @@ const GalleryPage = () => {
               transform: `translateY(${virtualizer.getVirtualItems()[0]?.start ?? 0}px)`,
             }}
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 container-type-inline container-query">
               {virtualizer.getVirtualItems().map((virtualRow) => {
                 const photo = photos[virtualRow.index];
                 if (!photo) {
                   return hasNextPage ? (
-                    <div key={virtualRow.index} className="aspect-[4/5]">
+                    <div key={virtualRow.index} className="aspect-[4/5] rounded-2xl">
                       <Skeleton className="w-full h-full rounded-2xl" />
                     </div>
                   ) : null;
@@ -301,7 +302,7 @@ const GalleryPage = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform">
-                        <h3 className="font-medium text-lg mb-1">{photo.title}</h3>
+                        <h3 className="font-medium text-lg mb-1 line-clamp-2">{photo.title}</h3>
                         <div className="flex items-center gap-3 text-sm">
                           <span className="flex items-center gap-1">
                             <Heart className="h-4 w-4" />
@@ -327,9 +328,9 @@ const GalleryPage = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center py-12"
+          className="text-center py-12 prose dark:prose-invert"
         >
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-muted-foreground">
             No photos found. Try adjusting your filters or search query.
           </p>
         </motion.div>

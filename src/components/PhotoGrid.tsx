@@ -4,6 +4,7 @@ import PhotoLoading from '@/components/photo/PhotoLoading';
 import EmptyState from '@/components/photo/EmptyState';
 import { ArrowDown, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Logo from '@/components/ui/Logo';
 
 interface Photo {
   id: string;
@@ -67,7 +68,7 @@ const PhotoGrid = ({ photos, loading = false }: PhotoGridProps) => {
         transition={{ duration: 0.6 }}
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10">
-          <Phone className="w-4 h-4 text-secondary" />
+          <Logo size={16} className="drop-shadow-[0_0_8px_#3b82f6]" />
           <span className="text-sm font-medium text-secondary">Shot on iPhone 16 Pro Max</span>
         </div>
       </motion.div>

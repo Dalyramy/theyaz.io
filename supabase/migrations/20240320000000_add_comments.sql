@@ -1,3 +1,60 @@
+-- Create profiles table FIRST so other tables can reference it
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+    username TEXT UNIQUE,
+    full_name TEXT,
+    avatar_url TEXT,
+    bio TEXT,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()),
+    CONSTRAINT username_length CHECK (char_length(username) >= 3)
+);
+
+-- Enable Row Level Security
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Create policies
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
+CREATE POLICY "Public profiles are viewable by everyone" ON profiles
+    FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
+CREATE POLICY "Users can insert their own profile" ON profiles
+    FOR INSERT WITH CHECK (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+CREATE POLICY "Users can update their own profile" ON profiles
+    FOR UPDATE USING (auth.uid() = id);
+
+-- Create a secure function to handle new user profiles
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+    INSERT INTO public.profiles (
+        id, 
+        username, 
+        full_name,
+        avatar_url,
+        bio
+    )
+    VALUES (
+        NEW.id,
+        COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1)),
+        NEW.raw_user_meta_data->>'full_name',
+        COALESCE(NEW.raw_user_meta_data->>'avatar_url', 'https://api.dicebear.com/7.x/avataaars/svg?seed=' || NEW.id),
+        NEW.raw_user_meta_data->>'bio'
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger the function every time a user is created
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE OR REPLACE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW
+    EXECUTE FUNCTION handle_new_user();
+
 -- Create photos table if not exists
 CREATE TABLE IF NOT EXISTS public.photos (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -10,17 +67,6 @@ CREATE TABLE IF NOT EXISTS public.photos (
     comments_count integer DEFAULT 0,
     user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
     profile_id uuid REFERENCES public.profiles(id) ON DELETE CASCADE,
-    created_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
-    updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
-);
-
--- Create profiles table if not exists
-CREATE TABLE IF NOT EXISTS public.profiles (
-    id uuid REFERENCES auth.users(id) PRIMARY KEY,
-    username text UNIQUE,
-    full_name text,
-    avatar_url text,
-    bio text,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
 );
@@ -47,7 +93,6 @@ CREATE TABLE IF NOT EXISTS public.likes (
 
 -- Enable RLS on all tables
 ALTER TABLE public.photos ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
 
@@ -74,18 +119,6 @@ CREATE POLICY "Users can delete own photos"
     ON public.photos FOR DELETE
     TO authenticated
     USING (auth.uid() = user_id);
-
--- RLS Policies for profiles
-DROP POLICY IF EXISTS "Anyone can view profiles" ON public.profiles;
-CREATE POLICY "Anyone can view profiles"
-    ON public.profiles FOR SELECT
-    USING (true);
-
-DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
-CREATE POLICY "Users can update own profile"
-    ON public.profiles FOR UPDATE
-    TO authenticated
-    USING (auth.uid() = id);
 
 -- RLS Policies for comments
 DROP POLICY IF EXISTS "Authenticated users can create comments" ON public.comments;
@@ -147,12 +180,6 @@ $$ language 'plpgsql';
 DROP TRIGGER IF EXISTS handle_photos_updated_at ON public.photos;
 CREATE TRIGGER handle_photos_updated_at
     BEFORE UPDATE ON public.photos
-    FOR EACH ROW
-    EXECUTE FUNCTION public.handle_updated_at();
-
-DROP TRIGGER IF EXISTS handle_profiles_updated_at ON public.profiles;
-CREATE TRIGGER handle_profiles_updated_at
-    BEFORE UPDATE ON public.profiles
     FOR EACH ROW
     EXECUTE FUNCTION public.handle_updated_at();
 

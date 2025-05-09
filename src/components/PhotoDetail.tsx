@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
 import UserProfileLink from '@/components/ui/UserProfileLink';
+import Logo from '@/components/ui/Logo';
 
 interface PhotoDetailProps {
   photo: {
@@ -83,13 +84,13 @@ const PhotoMetadata = memo(({ date, caption, tags }: {
   tags: string[];
 }) => (
   <>
-    <div className="flex items-center gap-4 text-sm text-emerald-700 dark:text-emerald-300">
+    <div className="flex items-center gap-4 text-sm text-primary">
       <div className="flex items-center gap-2">
         <Calendar className="h-4 w-4" />
         <time dateTime={date}>{date}</time>
       </div>
       <div className="flex items-center gap-2">
-        <Phone className="h-4 w-4" />
+        <Logo size={16} className="drop-shadow-[0_0_8px_#3b82f6]" />
         <span>Shot on iPhone</span>
       </div>
       <div className="flex items-center gap-2">
@@ -97,22 +98,19 @@ const PhotoMetadata = memo(({ date, caption, tags }: {
         <span>Nature-inspired</span>
       </div>
     </div>
-
-    <Separator className="bg-emerald-200/50 dark:bg-emerald-800/50" />
-    
-    <div className="prose prose-emerald dark:prose-invert max-w-none">
-      <p className="text-lg leading-relaxed text-emerald-900 dark:text-emerald-100">{caption}</p>
+    <Separator className="bg-muted/50" />
+    <div className="prose prose-primary dark:prose-invert max-w-none">
+      <p className="text-lg leading-relaxed text-foreground">{caption}</p>
     </div>
-    
     {tags && tags.length > 0 && (
       <div className="flex flex-wrap items-center gap-2">
-        <Tag className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+        <Tag className="h-4 w-4 text-primary" />
         <div className="flex flex-wrap gap-2">
           {tags.map(tag => (
             <Badge 
               key={tag} 
               variant="secondary"
-              className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-800/60 border border-emerald-200 dark:border-emerald-800"
+              className="bg-muted text-primary hover:bg-accent border border-muted"
             >
               #{tag}
             </Badge>
@@ -155,7 +153,7 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
     setTouchStart(null);
   }, [touchStart, nextPhoto, previousPhoto, navigateToPhoto]);
 
-  const buttonClassName = "h-12 w-12 rounded-full bg-emerald-900/20 backdrop-blur-md hover:bg-emerald-800/40 text-white shadow-lg shadow-emerald-900/10";
+  const buttonClassName = "h-12 w-12 rounded-full bg-primary/20 backdrop-blur-md hover:bg-primary/40 text-primary-foreground shadow-lg shadow-primary/10";
 
   return (
     <motion.div
@@ -221,7 +219,7 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
       </div>
 
       <Card 
-        className="overflow-hidden backdrop-blur-sm bg-gradient-to-b from-white/80 to-emerald-50/80 dark:from-gray-900/80 dark:to-emerald-950/80 border-0 shadow-xl shadow-emerald-900/10"
+        className="overflow-hidden backdrop-blur-sm bg-card text-card-foreground border-0 shadow-xl"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -244,9 +242,9 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
             loading="eager"
             decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
           <div className="absolute top-4 left-4">
-            <div className="flex items-center gap-2 rounded-full bg-emerald-900/20 px-3 py-1.5 text-sm text-white backdrop-blur-md border border-emerald-500/20">
+            <div className="flex items-center gap-2 rounded-full bg-primary/20 px-3 py-1.5 text-sm text-primary-foreground backdrop-blur-md border border-primary/20">
               <Camera className="h-4 w-4" />
               <span>iPhone 16 Pro Max</span>
             </div>
@@ -260,10 +258,10 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {photo.title}
               </h1>
-              <UserProfileLink user={photo.profiles} className="gap-3" avatarClassName="h-10 w-10 border-2 border-emerald-200 dark:border-emerald-800" nameClassName="font-medium text-emerald-800 dark:text-emerald-200 hover:text-emerald-600 dark:hover:text-emerald-400" />
+              <UserProfileLink user={photo.profiles} className="gap-3" avatarClassName="h-10 w-10 border-2 border-primary/20" nameClassName="font-medium text-primary hover:text-accent" />
             </div>
             
             <PhotoMetadata
@@ -273,7 +271,7 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
             />
           </div>
 
-          <Separator className="bg-emerald-200/50 dark:bg-emerald-800/50" />
+          <Separator className="bg-muted/50" />
           
           <PhotoSocialFeatures
             photoId={photo.id}
@@ -287,7 +285,7 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="mt-4 text-center text-sm text-emerald-600 dark:text-emerald-400"
+        className="mt-4 text-center text-sm text-primary"
       >
         <p>Use arrow keys or swipe to navigate between photos</p>
       </motion.div>

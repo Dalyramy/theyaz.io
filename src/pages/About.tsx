@@ -24,13 +24,13 @@ const fadeIn = {
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       
-      <main className="container py-12 px-4 sm:px-6 lg:px-8">
+      <main className="container py-12 px-4 sm:px-6 lg:px-8 container-type-inline container-query">
         {/* Hero Section */}
         <motion.div 
-          className="max-w-4xl mx-auto text-center mb-16"
+          className="max-w-4xl mx-auto text-center mb-16 prose dark:prose-invert"
           initial="hidden"
           animate="visible"
           variants={fadeIn}
@@ -53,7 +53,7 @@ const About = () => {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Card className="overflow-hidden hover-lift">
+            <Card className="overflow-hidden hover-lift rounded-2xl">
               <CardContent className="p-8">
                 <div className="flex items-start gap-6">
                   <div className="hidden sm:block">
@@ -78,7 +78,7 @@ const About = () => {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <Card className="overflow-hidden hover-lift">
+            <Card className="overflow-hidden hover-lift rounded-2xl">
               <CardContent className="p-8">
                 <div className="flex items-start gap-6">
                   <div className="hidden sm:block">
@@ -170,7 +170,7 @@ const About = () => {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <Card className="overflow-hidden hover-lift">
+            <Card className="overflow-hidden hover-lift rounded-2xl">
               <CardContent className="p-8">
                 <div className="flex items-start gap-6">
                   <div className="hidden sm:block">
@@ -193,7 +193,7 @@ const About = () => {
 
           {/* Quote Section */}
           <motion.div 
-            className="text-center"
+            className="text-center prose dark:prose-invert"
             initial="hidden"
             animate="visible"
             variants={fadeIn}
