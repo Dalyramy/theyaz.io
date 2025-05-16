@@ -30,6 +30,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 65002
-          source: "./dist/"
+          source: "./dist/*"
           target: "/home/u709922866/public_html/"
           debug: true
