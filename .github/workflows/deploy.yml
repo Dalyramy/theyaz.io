@@ -32,3 +32,4 @@ jobs:
           port: 65002
           source: "./dist/"
           target: "/public_html/"
+          debug: true
