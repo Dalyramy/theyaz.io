@@ -3,7 +3,6 @@ import tailwindcssAnimate from "tailwindcss-animate";
 import typography from '@tailwindcss/typography';
 import forms from '@tailwindcss/forms';
 import aspectRatio from '@tailwindcss/aspect-ratio';
-import lineClamp from '@tailwindcss/line-clamp';
 import containerQueries from '@tailwindcss/container-queries';
 
 export default {
@@ -187,7 +186,6 @@ export default {
 		typography,
 		forms,
 		aspectRatio,
-		lineClamp,
 		containerQueries,
 	],
 } satisfies Config;

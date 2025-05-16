@@ -32,16 +32,19 @@ const Navbar = () => {
           to="/"
           className="flex items-center gap-4 transition-all hover:scale-105"
         >
-          <span className="text-2xl sm:text-4xl font-bold tracking-tight flex items-center text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary">
+          <span
+            className="text-2xl sm:text-4xl font-bold tracking-tight flex items-center"
+            style={{
+              fontFamily: "'Orbitron', sans-serif",
+              background: "linear-gradient(90deg, #00ff00 0%, #4b94cc 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              letterSpacing: "0.05em"
+            }}
+          >
             theyaz.io
           </span>
         </Link>
-        <div
-          className="flex-shrink-0 flex items-center justify-center"
-        >
-          <Logo size={120} className="mx-2 block sm:hidden" />
-          <Logo size={333} className="mx-6 hidden sm:block" />
-        </div>
         <nav className="flex items-center gap-2 sm:gap-6 h-full">
           <motion.div 
             className="flex items-center gap-4 sm:gap-6"
