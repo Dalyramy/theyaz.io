@@ -23,11 +23,11 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to Hostinger via SFTP
+      - name: Deploy to Hostinger via SFTP (SSH Key)
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./dist/"
           target: "/public_html/"
