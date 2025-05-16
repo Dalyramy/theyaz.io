@@ -11,7 +11,6 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
 import UserProfileLink from '@/components/ui/UserProfileLink';
-import Logo from '@/components/ui/Logo';
 
 interface PhotoDetailProps {
   photo: {
@@ -90,7 +89,6 @@ const PhotoMetadata = memo(({ date, caption, tags }: {
         <time dateTime={date}>{date}</time>
       </div>
       <div className="flex items-center gap-2">
-        <Logo size={16} className="drop-shadow-[0_0_8px_#3b82f6]" />
         <span>Shot on iPhone</span>
       </div>
       <div className="flex items-center gap-2">

@@ -12,7 +12,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import Logo from '@/components/ui/Logo';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ACCEPTED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -199,7 +198,6 @@ const UploadForm = () => {
               Share Your iPhone Moment
             </CardTitle>
             <CardDescription className="flex items-center gap-2 mt-2">
-              <Logo size={16} className="drop-shadow-[0_0_8px_#3b82f6]" />
               Shot on iPhone 16 Pro Max
             </CardDescription>
           </motion.div>

@@ -2,7 +2,6 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { Phone, Filter, SlidersHorizontal, Heart, MessageSquare } from 'lucide-react';
-import Logo from '@/components/ui/Logo';
 import { Link } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
@@ -165,7 +164,6 @@ const GalleryPage = () => {
           Photo Gallery
         </h1>
         <div className="flex items-center gap-2 justify-center mb-6">
-          <Logo size={20} className="drop-shadow-[0_0_8px_#3b82f6]" />
           <span className="text-primary">
             Shot on iPhone 16 Pro Max
           </span>

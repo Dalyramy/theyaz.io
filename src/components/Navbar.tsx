@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import NotificationBell from '@/components/notifications/NotificationBell';
-import TheyazLogo from '@/components/ui/TheyazLogo';
+import Logo from '@/components/ui/Logo';
 
 const navItemVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -24,24 +24,25 @@ const Navbar = () => {
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
       className="sticky top-safe-top z-50 w-full border-b bg-white/80 border-gray-200 dark:bg-background/80 dark:border-border/40 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60"
     >
-      <div className="container flex h-28 sm:h-32 items-center justify-between px-4 sm:px-8">
-        <Link 
-          to="/" 
+      <div
+        className="container flex items-center justify-between px-4 sm:px-8"
+        style={{ height: undefined }}
+      >
+        <Link
+          to="/"
           className="flex items-center gap-4 transition-all hover:scale-105"
         >
-          <motion.div 
-            className="flex items-center justify-center w-16 aspect-[401/622]"
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.5 }}
-          >
-            <TheyazLogo size="100%" className="drop-shadow-[0_0_12px_#3b82f6] h-full w-full" />
-          </motion.div>
-          <span className="text-4xl font-bold tracking-tight flex items-center text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary">
+          <span className="text-2xl sm:text-4xl font-bold tracking-tight flex items-center text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary">
             theyaz.io
           </span>
         </Link>
-        
-        <nav className="flex items-center gap-4 sm:gap-6">
+        <div
+          className="flex-shrink-0 flex items-center justify-center"
+        >
+          <Logo size={120} className="mx-2 block sm:hidden" />
+          <Logo size={333} className="mx-6 hidden sm:block" />
+        </div>
+        <nav className="flex items-center gap-2 sm:gap-6 h-full">
           <motion.div 
             className="flex items-center gap-4 sm:gap-6"
             initial="hidden"

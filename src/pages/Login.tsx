@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
 import { Camera } from 'lucide-react';
-import Logo from '@/components/ui/Logo';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },

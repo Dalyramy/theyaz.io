@@ -77,8 +77,6 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
             <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center">
-              {/* Remove the top logo image */}
-              {/* <img src="/icons/theyaz-logo.svg" alt="theyaz.io logo" style={{ height: 96, width: 'auto', marginBottom: 24, filter: 'drop-shadow(0 4px 16px #00f2ff88)' }} /> */}
               <Toaster />
               <Sonner />
               <BrowserRouter>
