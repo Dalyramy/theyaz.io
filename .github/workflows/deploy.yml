@@ -29,5 +29,6 @@ jobs:
           host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 65002
           source: "./dist/"
           target: "/public_html/"
