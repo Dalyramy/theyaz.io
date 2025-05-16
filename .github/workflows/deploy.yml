@@ -31,5 +31,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 65002
           source: "./dist/"
-          target: "/public_html/"
+          target: "/home/u709922866/public_html/"
           debug: true
