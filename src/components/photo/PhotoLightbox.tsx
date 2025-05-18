@@ -257,7 +257,7 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
             onClick={(e) => e.stopPropagation()}
           >
             <motion.img
-              key={currentPhoto.id}
+              layoutId={`photo-${currentPhoto.id}`}
               src={currentPhoto.image_url}
               alt={currentPhoto.title}
               className="max-w-full max-h-[90vh] object-contain cursor-zoom-in"

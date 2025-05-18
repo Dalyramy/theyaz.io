@@ -118,7 +118,7 @@ const PhotoView = () => {
           <p className="text-lg text-muted-foreground mb-8">
             {error || "The photo you're looking for doesn't exist or has been removed."}
           </p>
-          <Button asChild variant="primary">
+          <Button asChild variant="default">
             <Link to="/">Return to Gallery</Link>
           </Button>
         </div>

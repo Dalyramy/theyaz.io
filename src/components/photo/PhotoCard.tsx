@@ -89,47 +89,35 @@ const PhotoCard = ({ photo }: PhotoCardProps) => {
                 </div>
               </div>
               
-              <div className="space-y-3 p-4">
-                <div className="flex items-start justify-between">
-                  <h3 className="font-medium line-clamp-1">{photo.title}</h3>
-                  <div className="flex items-center gap-3 text-muted-foreground">
-                    <motion.div 
-                      className="flex items-center gap-1"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
+              <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHovered ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                  className="bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 text-white rounded-b-lg"
+                  style={{ pointerEvents: 'auto' }}
+                >
+                  <div className="flex items-center gap-4 mb-2">
+                    <span className="flex items-center gap-1">
                       <Heart className="h-4 w-4" />
-                      <span className="text-xs">{photo.likes || 0}</span>
-                    </motion.div>
-                    <motion.div 
-                      className="flex items-center gap-1"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
+                      {photo.likes || 0}
+                    </span>
+                    <span className="flex items-center gap-1">
                       <MessageSquare className="h-4 w-4" />
-                      <span className="text-xs">{photo.comments || 0}</span>
-                    </motion.div>
+                      {photo.comments || 0}
+                    </span>
+                    {photo.tags && photo.tags.length > 0 && (
+                      <span className="flex flex-wrap gap-1 ml-2">
+                        {photo.tags.slice(0, 2).map((tag, i) => (
+                          <span key={i} className="bg-white/20 rounded-full px-2 py-0.5 text-xs font-medium">#{tag}</span>
+                        ))}
+                        {photo.tags.length > 2 && <span className="text-xs ml-1">+{photo.tags.length - 2}</span>}
+                      </span>
+                    )}
                   </div>
-                </div>
-                
-                <p className="line-clamp-2 text-sm text-muted-foreground">
-                  {photo.caption}
-                </p>
-                
-                {photo.tags && photo.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {photo.tags.map((tag, i) => (
-                      <motion.span
-                        key={i}
-                        className="inline-flex items-center rounded-full bg-secondary/10 px-2.5 py-0.5 text-xs font-medium text-secondary"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        #{tag}
-                      </motion.span>
-                    ))}
-                  </div>
-                )}
+                  <div className="font-semibold text-lg line-clamp-1">{photo.title}</div>
+                  <div className="text-xs opacity-80 line-clamp-2">{photo.caption}</div>
+                </motion.div>
               </div>
             </CardContent>
           </Card>
