@@ -55,7 +55,7 @@ CREATE OR REPLACE TRIGGER on_auth_user_created
     FOR EACH ROW
     EXECUTE FUNCTION handle_new_user();
 
--- Create photos table if not exists
+-- Create photos table (no profile_id)
 CREATE TABLE IF NOT EXISTS public.photos (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     title text NOT NULL,
@@ -66,12 +66,11 @@ CREATE TABLE IF NOT EXISTS public.photos (
     likes_count integer DEFAULT 0,
     comments_count integer DEFAULT 0,
     user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
-    profile_id uuid REFERENCES public.profiles(id) ON DELETE CASCADE,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
 );
 
--- Create comments table if not exists
+-- Create comments table
 CREATE TABLE IF NOT EXISTS public.comments (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     photo_id uuid REFERENCES public.photos(id) ON DELETE CASCADE,
@@ -82,7 +81,7 @@ CREATE TABLE IF NOT EXISTS public.comments (
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
 );
 
--- Create likes table if not exists
+-- Create likes table
 CREATE TABLE IF NOT EXISTS public.likes (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     photo_id uuid REFERENCES public.photos(id) ON DELETE CASCADE,
@@ -126,25 +125,21 @@ DROP POLICY IF EXISTS "Users can update own comments" ON public.comments;
 DROP POLICY IF EXISTS "Users can delete own comments" ON public.comments;
 DROP POLICY IF EXISTS "Anyone can view comments" ON public.comments;
 
-DROP POLICY IF EXISTS "Authenticated users can create comments" ON public.comments;
 CREATE POLICY "Authenticated users can create comments"
     ON public.comments FOR INSERT
     TO authenticated
     WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Users can update own comments" ON public.comments;
 CREATE POLICY "Users can update own comments"
     ON public.comments FOR UPDATE
     TO authenticated
     USING (auth.uid() = user_id);
 
-DROP POLICY IF EXISTS "Users can delete own comments" ON public.comments;
 CREATE POLICY "Users can delete own comments"
     ON public.comments FOR DELETE
     TO authenticated
     USING (auth.uid() = user_id);
 
-DROP POLICY IF EXISTS "Anyone can view comments" ON public.comments;
 CREATE POLICY "Anyone can view comments"
     ON public.comments FOR SELECT
     USING (true);
@@ -251,27 +246,10 @@ CREATE TRIGGER handle_comments_count_delete
 
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS photos_user_id_idx ON public.photos(user_id);
-CREATE INDEX IF NOT EXISTS photos_profile_id_idx ON public.photos(profile_id);
 CREATE INDEX IF NOT EXISTS photos_created_at_idx ON public.photos(created_at);
 CREATE INDEX IF NOT EXISTS photos_tags_idx ON public.photos USING GIN(tags);
 CREATE INDEX IF NOT EXISTS comments_photo_id_idx ON public.comments(photo_id);
 CREATE INDEX IF NOT EXISTS comments_user_id_idx ON public.comments(user_id);
 CREATE INDEX IF NOT EXISTS comments_created_at_idx ON public.comments(created_at);
 CREATE INDEX IF NOT EXISTS likes_photo_id_idx ON public.likes(photo_id);
-CREATE INDEX IF NOT EXISTS likes_user_id_idx ON public.likes(user_id);
-
--- Create function to set profile_id on photo creation
-CREATE OR REPLACE FUNCTION public.set_photo_profile_id()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.profile_id := NEW.user_id;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
--- Create trigger for setting profile_id
-DROP TRIGGER IF EXISTS handle_photo_profile_id ON public.photos;
-CREATE TRIGGER handle_photo_profile_id
-    BEFORE INSERT ON public.photos
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_photo_profile_id(); 
+CREATE INDEX IF NOT EXISTS likes_user_id_idx ON public.likes(user_id); 

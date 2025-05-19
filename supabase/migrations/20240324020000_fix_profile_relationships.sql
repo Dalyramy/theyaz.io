@@ -32,7 +32,7 @@ FROM temp_profiles;
 
 DROP TABLE temp_profiles;
 
--- Drop and recreate the photos table to ensure proper relationships
+-- Drop and recreate the photos table to ensure proper relationships (no profile_id)
 CREATE TABLE IF NOT EXISTS public.photos_temp AS SELECT * FROM public.photos;
 
 DROP TABLE IF EXISTS public.photos CASCADE;
@@ -47,7 +47,6 @@ CREATE TABLE public.photos (
     likes_count integer DEFAULT 0,
     comments_count integer DEFAULT 0,
     user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
-    profile_id uuid REFERENCES public.profiles(id) ON DELETE CASCADE,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
 );
@@ -59,7 +58,7 @@ FROM public.photos_temp pt
 LEFT JOIN public.profiles p ON pt.user_id = p.id
 WHERE p.id IS NULL;
 
--- Restore photos data
+-- Restore photos data (no profile_id)
 INSERT INTO public.photos (
     id,
     title,
@@ -70,7 +69,6 @@ INSERT INTO public.photos (
     likes_count,
     comments_count,
     user_id,
-    profile_id,
     created_at,
     updated_at
 )
@@ -84,7 +82,6 @@ SELECT
     likes_count,
     comments_count,
     user_id,
-    user_id as profile_id,
     created_at,
     updated_at
 FROM public.photos_temp;
