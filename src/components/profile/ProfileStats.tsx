@@ -15,6 +15,7 @@ const ProfileStats = ({ userId }: ProfileStatsProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followingOpen, setFollowingOpen] = useState(false);
+  const [photoCount, setPhotoCount] = useState(0);
 
   useEffect(() => {
     async function fetchStats() {
@@ -28,8 +29,14 @@ const ProfileStats = ({ userId }: ProfileStatsProps) => {
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId);
 
+      const { count: photoCountValue } = await supabase
+        .from('photos')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+
       setFollowers(followersCount || 0);
       setFollowing(followingCount || 0);
+      setPhotoCount(photoCountValue || 0);
 
       if (user && user.id !== userId) {
         const { data } = await supabase
@@ -65,6 +72,9 @@ const ProfileStats = ({ userId }: ProfileStatsProps) => {
 
   return (
     <div className="flex items-center gap-6 mt-2">
+      <div>
+        <span className="font-bold">{photoCount}</span> Photos
+      </div>
       <div>
         <button onClick={() => setFollowersOpen(true)}>
           <span className="font-bold">{followers}</span> Followers
