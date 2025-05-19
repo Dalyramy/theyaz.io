@@ -9,6 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/useAuth';
 
 interface Comment {
   id: string;
@@ -32,6 +33,7 @@ const PhotoComments = ({ photoId, className = '' }: PhotoCommentsProps) => {
   const [newComment, setNewComment] = useState('');
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Fetch comments
   const { data: comments = [], isLoading, error } = useQuery({
@@ -53,6 +55,21 @@ const PhotoComments = ({ photoId, className = '' }: PhotoCommentsProps) => {
 
       if (error) throw error;
       return data as Comment[];
+    },
+  });
+
+  // Fetch which comments the current user has liked
+  const { data: likedComments = [] } = useQuery({
+    queryKey: ['comment_likes', photoId, user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('comment_likes')
+        .select('comment_id')
+        .eq('user_id', user.id)
+        .in('comment_id', comments.map(c => c.id));
+      if (error) throw error;
+      return data?.map(like => like.comment_id) || [];
     },
   });
 
@@ -91,20 +108,27 @@ const PhotoComments = ({ photoId, className = '' }: PhotoCommentsProps) => {
     },
   });
 
-  // Like comment mutation
-  const likeCommentMutation = useMutation({
+  // Like/unlike comment mutation
+  const toggleLikeMutation = useMutation({
     mutationFn: async (commentId: string) => {
-      const { data, error } = await supabase
-        .from('comments')
-        .update({ likes: comments.find(c => c.id === commentId)?.likes + 1 })
-        .eq('id', commentId)
-        .select();
-
-      if (error) throw error;
-      return data;
+      if (!user) return;
+      if (likedComments.includes(commentId)) {
+        // Unlike
+        await supabase
+          .from('comment_likes')
+          .delete()
+          .eq('comment_id', commentId)
+          .eq('user_id', user.id);
+      } else {
+        // Like
+        await supabase
+          .from('comment_likes')
+          .insert({ comment_id: commentId, user_id: user.id });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', photoId] });
+      queryClient.invalidateQueries({ queryKey: ['comment_likes', photoId, user?.id] });
     },
   });
 
@@ -185,10 +209,11 @@ const PhotoComments = ({ photoId, className = '' }: PhotoCommentsProps) => {
                     </div>
                     <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
                       <button
-                        onClick={() => likeCommentMutation.mutate(comment.id)}
-                        className="flex items-center gap-1 hover:text-emerald-600 transition-colors"
+                        onClick={() => toggleLikeMutation.mutate(comment.id)}
+                        className={`flex items-center gap-1 transition-colors ${likedComments.includes(comment.id) ? 'text-emerald-600' : 'hover:text-emerald-600'}`}
+                        disabled={!user}
                       >
-                        <Heart className="h-4 w-4" />
+                        <Heart className={`h-4 w-4 ${likedComments.includes(comment.id) ? 'fill-emerald-600' : ''}`} />
                         {comment.likes}
                       </button>
                       <span className="text-xs">
