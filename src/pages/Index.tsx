@@ -32,7 +32,7 @@ const Index = () => {
         setIsLoading(true);
         let query = supabase
           .from('photos')
-          .select('id, title, caption, image_url, created_at, tags, profiles:profile_id(id, username, avatar_url, full_name)')
+          .select('id, title, caption, image_url, created_at, tags, user_id, profiles(id, username, avatar_url, full_name)')
           .order('created_at', { ascending: false });
 
         if (debouncedSearch) {

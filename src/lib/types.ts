@@ -1,4 +1,3 @@
-
 export interface Like {
   id: string;
   user_id: string;
@@ -16,6 +15,7 @@ export interface Comment {
     username: string;
     avatar_url: string;
   };
+  likes?: number;
 }
 
 // Add type declarations for global objects added by third-party scripts

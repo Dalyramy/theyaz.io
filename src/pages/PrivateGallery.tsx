@@ -42,7 +42,7 @@ const PrivateGallery = () => {
           .from('photos')
           .select(`
             *,
-            profiles!photos_profile_id_fkey(
+            profiles(
               username,
               avatar_url,
               full_name

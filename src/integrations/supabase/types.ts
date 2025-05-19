@@ -123,7 +123,6 @@ export type Database = {
           image_path: string
           image_url: string
           likes_count: number | null
-          profile_id: string | null
           tags: string[] | null
           title: string
           updated_at: string | null
@@ -137,7 +136,6 @@ export type Database = {
           image_path: string
           image_url: string
           likes_count?: number | null
-          profile_id?: string | null
           tags?: string[] | null
           title: string
           updated_at?: string | null
@@ -151,21 +149,12 @@ export type Database = {
           image_path?: string
           image_url?: string
           likes_count?: number | null
-          profile_id?: string | null
           tags?: string[] | null
           title?: string
           updated_at?: string | null
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "photos_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {

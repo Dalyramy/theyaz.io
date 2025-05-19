@@ -103,3 +103,10 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 ## acid-25
 
 > Capturing moments, creating memories, and sharing stories through the lens. Join the theyaz.io community today!
+
+## [2024-06] Schema Improvements
+
+- Removed redundant `profile_id` from `photos` table (use `user_id` for joins to `profiles`)
+- Added `updated_at` field and update trigger to `messages` table
+- Ensured all relevant foreign keys use `ON DELETE CASCADE` for data integrity
+- Verified/added trigger to keep `photos.likes_count` in sync with `likes` table

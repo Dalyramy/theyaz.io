@@ -77,17 +77,34 @@ export function CommentSection({
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2">
                 <UserProfileLink user={comment.user_profile} avatarClassName="h-8 w-8" nameClassName="text-sm font-medium" />
+                <span className="ml-2 text-xs text-gray-500">
+                  {comment.user_profile?.username || comment.user_id}
+                </span>
+                <span className="ml-2 text-xs text-gray-400">
+                  {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
+                </span>
               </div>
-              {currentUserId === comment.user_id && (
+              <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onDeleteComment(comment.id)}
-                  className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                  className="h-8 w-8 p-0 hover:bg-emerald-100 hover:text-emerald-600 flex items-center gap-1"
+                  type="button"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" /></svg>
+                  <span className="text-xs">{comment.likes || 0}</span>
                 </Button>
-              )}
+                {currentUserId === comment.user_id && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDeleteComment(comment.id)}
+                    className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
             <p className="text-sm pl-10">{comment.content}</p>
           </div>

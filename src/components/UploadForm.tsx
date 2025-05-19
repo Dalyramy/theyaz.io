@@ -143,7 +143,6 @@ const UploadForm = () => {
       // Save photo metadata to the database
       const photoData = {
         user_id: user.id,
-        profile_id: user.id,
         title,
         caption,
         tags: tagArray,
