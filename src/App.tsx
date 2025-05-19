@@ -10,7 +10,6 @@ import { ThemeProvider } from "@/contexts/ThemeProvider";
 import Index from "./pages/Index";
 import PhotoView from "./pages/PhotoView";
 import Upload from "./pages/Upload";
-import MyPhotos from "./pages/MyPhotos";
 import EditPhoto from "./pages/EditPhoto";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
@@ -93,11 +92,6 @@ function App() {
                       <Route path="/upload" element={
                         <ProtectedRoute>
                           <Upload />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/my-photos" element={
-                        <ProtectedRoute>
-                          <MyPhotos />
                         </ProtectedRoute>
                       } />
                       <Route path="/edit-photo/:id" element={
