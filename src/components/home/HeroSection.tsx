@@ -4,26 +4,27 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import Logo from '@/components/ui/Logo';
 
-interface HeroSectionProps {
-  handleExploreClick: () => void;
-}
+interface HeroSectionProps {}
 
-const HeroSection = ({ handleExploreClick }: HeroSectionProps) => {
+const HeroSection = () => {
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
     navigate('/upload');
   };
+  const handleExploreClick = () => {
+    navigate('/public-gallery');
+  };
 
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-background">
+    <section className="relative min-h-screen w-screen flex items-center justify-center overflow-hidden bg-background">
       {/* Watermark Logo */}
-      <div className="absolute inset-0 z-0 pointer-events-none select-none">
+      <div className="absolute inset-0 z-0 pointer-events-none select-none flex items-center justify-center">
         <Logo 
           width="100vw" 
-          height="100vw" 
-          className="opacity-10 blur-sm mx-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{ maxWidth: '1200px', maxHeight: '1200px' }}
+          height="100vh" 
+          className="opacity-10 blur-sm"
+          style={{ maxWidth: '100vw', maxHeight: '100vh' }}
         />
       </div>
       <div className="absolute inset-0 opacity-30 z-10">
@@ -37,23 +38,22 @@ const HeroSection = ({ handleExploreClick }: HeroSectionProps) => {
         className="container relative z-20 mx-auto px-4"
       >
         <div className="mx-auto max-w-3xl text-center">
-          <Logo width={180} height={180} className="mx-auto mb-8" />
+          <Logo width={666} height={666} className="mx-auto mb-8" />
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-6 text-5xl font-bold leading-tight tracking-tighter sm:text-6xl md:text-7xl text-foreground"
           >
-            Capture. Create. Connect.
           </motion.h1>
+          test
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mb-8 text-lg text-muted-foreground md:text-xl"
           >
-            Join a vibrant community of creators and explorers. Share your unique moments, discover inspiration, and let your photography shine.
-          </motion.p>
+test          </motion.p>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

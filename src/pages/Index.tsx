@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import HeroSection from '@/components/home/HeroSection';
 import SearchSection from '@/components/home/SearchSection';
 import FooterSection from '@/components/home/FooterSection';
+import { Link } from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -79,6 +80,10 @@ const Index = () => {
       
       {/* Hero Section */}
       <HeroSection handleExploreClick={handleExploreClick} />
+
+      <div className="flex gap-4 justify-center my-6">
+        <Link to="/categories" className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondary/80 transition">Categories</Link>
+      </div>
 
       <main className="container mx-auto px-6 py-20 flex-1 bg-background rounded-t-3xl shadow-lg -mt-8 relative z-20 container-type-inline container-query">
         {/* Search Section */}

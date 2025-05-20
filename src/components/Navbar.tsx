@@ -73,7 +73,7 @@ const Navbar = () => {
             {user && (
               <motion.div variants={navItemVariants} className="hidden sm:block">
                 <Link 
-                  to="/gallery" 
+                  to="/public-gallery" 
                   className={cn(
                     "text-2xl font-bold transition-colors hover:text-secondary text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary",
                     "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"

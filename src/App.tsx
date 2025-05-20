@@ -21,6 +21,9 @@ import PrivateGallery from "./pages/PrivateGallery";
 import ProfilePage from './pages/profile/[userId]';
 import Inbox from './pages/messaging/Inbox';
 import Conversation from './pages/messaging/Conversation';
+import GalleryPage from './components/gallery/GalleryPage';
+import AlbumPage from './components/gallery/AlbumPage';
+import CategoryList from './components/gallery/CategoryList';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -78,16 +81,14 @@ function App() {
             <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center">
               <Toaster />
               <Sonner />
-              <BrowserRouter>
+              <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                 <AuthProvider>
                   <main className="flex-1 w-full">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/gallery" element={
-                        <ProtectedRoute>
-                          <PrivateGallery />
-                        </ProtectedRoute>
-                      } />
+                      <Route path="/public-gallery" element={<GalleryPage />} />
+                      <Route path="/albums/:albumId" element={<AlbumPage />} />
+                      <Route path="/categories" element={<CategoryList />} />
                       <Route path="/photo/:id" element={<PhotoView />} />
                       <Route path="/upload" element={
                         <ProtectedRoute>

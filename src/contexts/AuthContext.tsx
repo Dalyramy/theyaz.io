@@ -13,6 +13,7 @@ type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
+  isAdmin: boolean;
   signUp: (email: string, password: string, metadata?: { full_name?: string, username?: string }) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signInWithGoogle: () => Promise<void>;
@@ -30,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +41,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(newSession);
         setUser(newSession?.user ?? null);
         setIsLoading(false);
+        if (newSession?.user) fetchIsAdmin(newSession.user.id);
+        else setIsAdmin(false);
       }
     );
 
@@ -47,10 +51,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setIsLoading(false);
+      if (currentSession?.user) fetchIsAdmin(currentSession.user.id);
+      else setIsAdmin(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchIsAdmin = async (userId: string) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', userId)
+      .single();
+    setIsAdmin(!!(data && (data as any).is_admin));
+  };
 
   const signUp = async (
     email: string, 
@@ -115,6 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user, 
         session, 
         isLoading, 
+        isAdmin,
         signUp, 
         signIn, 
         signInWithGoogle, 
