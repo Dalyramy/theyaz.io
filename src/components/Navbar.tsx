@@ -22,16 +22,16 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
-      className="sticky top-safe-top z-50 w-full border-b bg-white/80 border-gray-200 dark:bg-background/80 dark:border-border/40 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-background/60"
+      className="sticky top-safe-top z-50 w-full border-b border-gray-200 dark:border-border/40 bg-white/60 dark:bg-background/60 backdrop-blur-xl shadow-lg rounded-b-2xl supports-[backdrop-filter]:bg-white/40 dark:supports-[backdrop-filter]:bg-background/40"
     >
       <div
-        className="container flex items-center justify-between px-4 sm:px-8"
-        style={{ height: undefined }}
+        className="container flex items-center justify-between px-4 sm:px-8 py-2 sm:py-3 gap-4"
       >
         <Link
           to="/"
-          className="flex items-center gap-4 transition-all hover:scale-105"
+          className="flex items-center gap-3 sm:gap-5 transition-all hover:scale-105"
         >
+          <Logo style={{ width: 40, height: 40 }} />
           <span
             className="text-2xl sm:text-4xl font-bold tracking-tight flex items-center"
             style={{
@@ -62,8 +62,8 @@ const Navbar = () => {
               <Link 
                 to="/" 
                 className={cn(
-                  "text-2xl font-bold transition-colors hover:text-secondary text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary",
-                  "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
+                  "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
+                  "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
                 )}
               >
                 Home
@@ -75,8 +75,8 @@ const Navbar = () => {
                 <Link 
                   to="/public-gallery" 
                   className={cn(
-                    "text-2xl font-bold transition-colors hover:text-secondary text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary",
-                    "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
+                    "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
+                    "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
                   )}
                 >
                   Gallery
@@ -88,8 +88,8 @@ const Navbar = () => {
               <Link 
                 to="/about" 
                 className={cn(
-                  "text-2xl font-bold transition-colors hover:text-secondary text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary",
-                  "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-secondary after:transition-transform hover:after:scale-x-100"
+                  "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
+                  "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
                 )}
               >
                 About
@@ -107,7 +107,7 @@ const Navbar = () => {
                   asChild
                   variant="default" 
                   size="sm" 
-                  className="h-8 rounded-full px-4 text-sm font-medium bg-secondary hover:bg-secondary/90"
+                  className="h-8 rounded-full px-4 text-sm font-medium bg-secondary hover:bg-secondary/90 shadow-md"
                 >
                   <Link to="/upload" className="flex items-center gap-2">
                     <ImageIcon className="h-4 w-4" />

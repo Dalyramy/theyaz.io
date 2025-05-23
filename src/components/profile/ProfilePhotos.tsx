@@ -31,7 +31,10 @@ const ProfilePhotos = ({ userId }: { userId: string }) => {
   );
   if (!photos.length) return (
     <div className="flex flex-col items-center justify-center py-12">
-      <img src="/icons/empty-gallery.svg" alt="No photos" className="w-32 h-32 mb-4 opacity-60" />
+      <picture>
+        <source srcSet="/icons/empty-gallery.webp" type="image/webp" />
+        <img src="/icons/empty-gallery.svg" alt="No photos" className="w-32 h-32 mb-4 opacity-60" loading="lazy" />
+      </picture>
       <p className="text-lg text-gray-500 mb-2">No photos yet.</p>
       <a href="/upload" className="px-4 py-2 bg-primary text-white rounded-full mt-2">Upload your first photo</a>
     </div>
@@ -40,11 +43,14 @@ const ProfilePhotos = ({ userId }: { userId: string }) => {
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {photos.map(photo => (
         <div key={photo.id} className="flex flex-col items-center">
-          <img
-            src={photo.image_url}
-            alt={photo.title}
-            className="rounded-lg object-cover aspect-[4/5] w-full"
-          />
+          <picture>
+            <source srcSet={photo.image_url.replace(/\.(jpg|jpeg|png|svg)$/i, '.webp')} type="image/webp" />
+            <img
+              src={photo.image_url}
+              alt={photo.title}
+              className="rounded-lg object-cover aspect-[4/5] w-full"
+            />
+          </picture>
           <div className="mt-2 w-full text-center">
             <div className="font-semibold text-sm truncate">{photo.title}</div>
             {photo.caption && <div className="text-xs text-gray-500 truncate">{photo.caption}</div>}

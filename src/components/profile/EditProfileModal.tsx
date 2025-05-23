@@ -69,7 +69,12 @@ const EditProfileModal = ({ profile, isOpen, onClose, onProfileUpdated }: EditPr
         <label className="block mb-4">
           Avatar
           <input type="file" accept="image/*" onChange={handleAvatarChange} className="block mt-1" />
-          {avatarUrl && <img src={avatarUrl} className="w-16 h-16 rounded-full mt-2" />}
+          {avatarUrl && (
+            <picture>
+              <source srcSet={avatarUrl.replace(/\.(jpg|jpeg|png|svg)$/i, '.webp')} type="image/webp" />
+              <img src={avatarUrl} className="w-16 h-16 rounded-full mt-2" loading="lazy" alt="User avatar" />
+            </picture>
+          )}
         </label>
         <div className="flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-1 rounded bg-gray-300">Cancel</button>

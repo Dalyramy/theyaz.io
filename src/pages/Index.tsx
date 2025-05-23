@@ -77,31 +77,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
-      
       {/* Hero Section */}
       <HeroSection handleExploreClick={handleExploreClick} />
-
-      <div className="flex gap-4 justify-center my-6">
-        <Link to="/categories" className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondary/80 transition">Categories</Link>
-      </div>
-
-      <main className="container mx-auto px-6 py-20 flex-1 bg-background rounded-t-3xl shadow-lg -mt-8 relative z-20 container-type-inline container-query">
-        {/* Search Section */}
-        <SearchSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
-        {/* Photo Grid */}
-        <motion.div
-          id="photo-grid"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <PhotoGrid photos={photos} loading={isLoading} />
-        </motion.div>
-      </main>
-
-      {/* Footer */}
-      <FooterSection />
     </div>
   );
 };

@@ -13,7 +13,8 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "optimize-images": "node scripts/optimize-images.cjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -109,6 +110,10 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "gh-pages": "^6.3.0",
     "globals": "^15.9.0",
+    "imagemin": "^9.0.1",
+    "imagemin-cli": "^8.0.0",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-webp": "^8.0.0",
     "jsdom": "^24.0.0",
     "lovable-tagger": "^1.1.8",
     "postcss": "^8.4.47",
@@ -117,6 +122,7 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
+    "vite-plugin-compression": "^0.5.1",
     "vitest": "^1.6.1"
   },
   "homepage": "https://dalyramy.github.io/theyaz.io/"

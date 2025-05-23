@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 import PhotoLightbox from '@/components/photo/PhotoLightbox';
+import Logo from '@/components/ui/Logo';
 
 interface Photo {
   id: string;
@@ -153,7 +154,12 @@ const GalleryPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
+      {/* Watermark Logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0">
+        <Logo style={{ maxWidth: '70vw', maxHeight: '70vh', opacity: 0.07 }} />
+      </div>
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

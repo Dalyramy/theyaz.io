@@ -17,66 +17,19 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen w-screen flex items-center justify-center overflow-hidden bg-background">
-      {/* Watermark Logo */}
-      <div className="absolute inset-0 z-0 pointer-events-none select-none flex items-center justify-center">
-        <Logo 
-          width="100vw" 
-          height="100vh" 
-          className="opacity-10 blur-sm"
-          style={{ maxWidth: '100vw', maxHeight: '100vh' }}
-        />
-      </div>
+    <section className="fixed inset-0 min-h-screen w-screen flex items-center justify-center overflow-hidden bg-background z-0">
+      {/* Watermark Logo removed */}
       <div className="absolute inset-0 opacity-30 z-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-muted via-background to-background"></div>
       </div>
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="container relative z-20 mx-auto px-4"
+        className="container relative z-20 mx-auto px-4 h-full flex items-center justify-center"
       >
-        <div className="mx-auto max-w-3xl text-center">
-          <Logo width={666} height={666} className="mx-auto mb-8" />
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-6 text-5xl font-bold leading-tight tracking-tighter sm:text-6xl md:text-7xl text-foreground"
-          >
-          </motion.h1>
-          test
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mb-8 text-lg text-muted-foreground md:text-xl"
-          >
-test          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row justify-center gap-4"
-          >
-            <Button 
-              size="lg" 
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={handleUploadClick}
-            >
-              <Camera className="mr-2 h-5 w-5" />
-              📸 Upload Your Photo
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-border text-foreground hover:bg-muted/10"
-              onClick={handleExploreClick}
-            >
-              Explore Gallery
-            </Button>
-          </motion.div>
+        <div className="flex items-center justify-center w-full h-full">
+          <Logo style={{ maxWidth: '90vw', maxHeight: '90vh', width: '100%', height: '100%' }} />
         </div>
       </motion.div>
 

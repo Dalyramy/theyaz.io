@@ -211,7 +211,10 @@ export default function GalleryPage() {
                   <div style={style} key={album.id} className="p-2">
                     <div className="rounded-xl shadow bg-gray-900 border border-gray-800 p-0 flex flex-col items-center relative group transition-transform hover:-translate-y-1 hover:shadow-2xl">
                       <Link to={`/albums/${album.id}`} className="block w-full">
-                        <img src={album.cover_photo?.thumbnail_url || album.cover_photo?.image_url || '/default-cover.jpg'} alt={album.title} loading="lazy" className="w-full h-48 object-cover rounded-t-xl group-hover:scale-105 transition-transform" />
+                        <picture>
+                          <source srcSet={(album.cover_photo?.thumbnail_url || album.cover_photo?.image_url || '/default-cover.jpg').replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
+                          <img src={album.cover_photo?.thumbnail_url || album.cover_photo?.image_url || '/default-cover.jpg'} alt={album.title} loading="lazy" className="w-full h-48 object-cover rounded-t-xl group-hover:scale-105 transition-transform duration-200" />
+                        </picture>
                         <div className="text-base font-medium text-white text-center py-3 truncate px-2" title={album.title}>{album.title}</div>
                         <div className="flex flex-wrap justify-center px-2 pb-2">
                           {(album.tags || []).map((tag: string) => (
