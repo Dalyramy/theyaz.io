@@ -29,7 +29,7 @@ const HeroSection = () => {
         className="container relative z-20 mx-auto px-4 h-full flex items-center justify-center"
       >
         <div className="flex items-center justify-center w-full h-full">
-          <Logo style={{ maxWidth: '90vw', maxHeight: '90vh', width: '100%', height: '100%' }} />
+          <Logo style={{ maxWidth: '90vw', maxHeight: '90vh' }} />
         </div>
       </motion.div>
 
