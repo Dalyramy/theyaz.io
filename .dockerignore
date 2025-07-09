@@ -1,17 +1,82 @@
-node_modules
-npm-debug.log
-dist
-.git
+# Node.js dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Test and coverage artifacts
+test/
+tests/
+coverage/
+*.log
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Version control
+.git/
 .gitignore
-.env
-.env.*
-coverage
+.github/
+
+# Docker files
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Documentation
+*.md
+README*
+DOCKER_TESTING.md
+LEARNING_WORKFLOW_GUIDE.md
+OPTIMIZE.md
+
+# Public static files (if not needed in build context)
+# (Uncomment if public/ is not needed)
+# public/
+
+# Environment and secrets
+.env*
+*.env
+*.pem
+*.key
+*.crt
+config.local.*
+*.local.yml
+
+# Temporary and local files
+tmp/
+temp/
+.local/
+local/
+*.tmp
+
+# Supabase local state and temp files
+supabase/.branches/
 supabase/.temp/
-*.local
-.vscode
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+
+# Miscellaneous
+*.DS_Store
+.htaccess
+
+# Exclude Python, Go, Java, and other language-specific artifacts (for completeness)
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+/vendor/
+*.test
+.go-cache/
+target/
+*.class
+.gradle/
+.svn/
+.hg/
+
+# Exclude project-specific cursor file
+.cursor

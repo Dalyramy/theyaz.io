@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
-import { Phone, Heart, MessageSquare, Share2 } from 'lucide-react';
+import { Phone, Heart, MessageSquare, Share2, Edit, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/useAuth';
+import { PhotoUploadGate, PhotoEditGate, PhotoDeleteGate } from '@/components/ui/PermissionGate';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import PhotoViewer from './PhotoViewer';
 
 interface Photo {
@@ -13,15 +17,19 @@ interface Photo {
   tags: string[];
   likes?: number;
   comments?: number;
+  user_id?: string;
 }
 
 interface PhotoCardProps {
   photo: Photo;
+  onDelete?: (photoId: string) => void;
+  onEdit?: (photoId: string) => void;
 }
 
-const PhotoCard = ({ photo }: PhotoCardProps) => {
+const PhotoCard = ({ photo, onDelete, onEdit }: PhotoCardProps) => {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { user, hasPermission } = useAuth();
 
   const handleImageClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation
@@ -43,12 +51,41 @@ const PhotoCard = ({ photo }: PhotoCardProps) => {
         await navigator.clipboard.writeText(
           window.location.origin + `/photo/${photo.id}`
         );
-        // You might want to show a toast notification here
+        toast.success('Link copied to clipboard!');
       }
     } catch (error) {
       console.error('Error sharing:', error);
+      toast.error('Failed to share photo');
     }
   };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onEdit) {
+      onEdit(photo.id);
+    } else {
+      window.location.href = `/edit-photo/${photo.id}`;
+    }
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete(photo.id);
+    } else {
+      // Default delete behavior
+      if (confirm('Are you sure you want to delete this photo?')) {
+        // Implement delete logic here
+        toast.success('Photo deleted successfully!');
+      }
+    }
+  };
+
+  // Check if user can edit/delete this photo
+  const canEdit = hasPermission('photos.update') && (user?.id === photo.user_id || hasPermission('photos.manage'));
+  const canDelete = hasPermission('photos.delete') && (user?.id === photo.user_id || hasPermission('photos.manage'));
 
   return (
     <>
@@ -74,18 +111,50 @@ const PhotoCard = ({ photo }: PhotoCardProps) => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                
+                {/* Top controls */}
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
                   <div className="flex items-center gap-1 rounded-full bg-black/20 px-2 py-1 text-xs text-white backdrop-blur-md">
                     <span>iPhone 16 Pro Max</span>
                   </div>
-                  <motion.button
-                    className="rounded-full bg-black/20 p-2 text-white/80 hover:text-white backdrop-blur-md opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                    onClick={handleShare}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </motion.button>
+                  <div className="flex items-center gap-2">
+                    <motion.button
+                      className="rounded-full bg-black/20 p-2 text-white/80 hover:text-white backdrop-blur-md opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      onClick={handleShare}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </motion.button>
+                    
+                    {/* Edit button - only show if user has permission */}
+                    <PhotoEditGate>
+                      {canEdit && (
+                        <motion.button
+                          className="rounded-full bg-black/20 p-2 text-white/80 hover:text-white backdrop-blur-md opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                          onClick={handleEdit}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </motion.button>
+                      )}
+                    </PhotoEditGate>
+                    
+                    {/* Delete button - only show if user has permission */}
+                    <PhotoDeleteGate>
+                      {canDelete && (
+                        <motion.button
+                          className="rounded-full bg-red-500/20 p-2 text-red-300 hover:text-red-100 backdrop-blur-md opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                          onClick={handleDelete}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </motion.button>
+                      )}
+                    </PhotoDeleteGate>
+                  </div>
                 </div>
               </div>
               

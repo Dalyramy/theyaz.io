@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Upload, Camera, Image as ImageIcon, Shield } from "lucide-react";
+import { Upload, Camera, Image as ImageIcon, Shield, Users, BarChart3, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/useAuth";
@@ -8,7 +8,14 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import NotificationBell from '@/components/notifications/NotificationBell';
 import Logo from '@/components/ui/Logo';
-import { AdminGate } from '@/components/ui/PermissionGate';
+import { 
+  AdminGate, 
+  UploaderGate, 
+  ModeratorGate, 
+  PhotoUploadGate,
+  ContentManagerGate,
+  FullAdminGate
+} from '@/components/ui/PermissionGate';
 
 const navItemVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -85,6 +92,7 @@ const Navbar = () => {
               </motion.div>
             )}
 
+            {/* Admin Navigation */}
             <AdminGate>
               <motion.div variants={navItemVariants} className="hidden sm:block">
                 <Link 
@@ -99,6 +107,38 @@ const Navbar = () => {
                 </Link>
               </motion.div>
             </AdminGate>
+
+            {/* Moderator Navigation */}
+            <ModeratorGate>
+              <motion.div variants={navItemVariants} className="hidden sm:block">
+                <Link 
+                  to="/moderate" 
+                  className={cn(
+                    "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
+                    "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100 flex items-center gap-2"
+                  )}
+                >
+                  <MessageSquare className="h-5 w-5" />
+                  Moderate
+                </Link>
+              </motion.div>
+            </ModeratorGate>
+
+            {/* Content Manager Navigation */}
+            <ContentManagerGate>
+              <motion.div variants={navItemVariants} className="hidden sm:block">
+                <Link 
+                  to="/analytics" 
+                  className={cn(
+                    "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
+                    "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100 flex items-center gap-2"
+                  )}
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  Analytics
+                </Link>
+              </motion.div>
+            </ContentManagerGate>
             
             <motion.div variants={navItemVariants} className="hidden sm:block">
               <Link 
@@ -114,24 +154,27 @@ const Navbar = () => {
           </motion.div>
           
           <div className="flex items-center gap-3">
-            {user && (
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button 
-                  asChild
-                  variant="default" 
-                  size="sm" 
-                  className="h-8 rounded-full px-4 text-sm font-medium bg-secondary hover:bg-secondary/90 shadow-md"
+            {/* Upload Button - Show for users with upload permission */}
+            <PhotoUploadGate>
+              {user && (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Link to="/upload" className="flex items-center gap-2">
-                    <ImageIcon className="h-4 w-4" />
-                    <span>Share</span>
-                  </Link>
-                </Button>
-              </motion.div>
-            )}
+                  <Button 
+                    asChild
+                    variant="default" 
+                    size="sm" 
+                    className="h-8 rounded-full px-4 text-sm font-medium bg-secondary hover:bg-secondary/90 shadow-md"
+                  >
+                    <Link to="/upload" className="flex items-center gap-2">
+                      <ImageIcon className="h-4 w-4" />
+                      <span>Share</span>
+                    </Link>
+                  </Button>
+                </motion.div>
+              )}
+            </PhotoUploadGate>
             
             <motion.div
               whileHover={{ scale: 1.05 }}

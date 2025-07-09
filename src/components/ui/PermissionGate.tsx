@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useAuth } from '@/contexts/useAuth';
 import { UserRoleType, PERMISSIONS } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface PermissionGateProps {
   children: ReactNode;
@@ -10,6 +11,10 @@ interface PermissionGateProps {
   requiredAction?: string;
   fallback?: ReactNode;
   showWhenUnauthorized?: boolean;
+  loadingFallback?: ReactNode;
+  multiplePermissions?: string[];
+  multipleRoles?: UserRoleType[];
+  requireAll?: boolean; // If true, requires ALL permissions/roles, otherwise ANY
 }
 
 const PermissionGate = ({
@@ -19,9 +24,18 @@ const PermissionGate = ({
   requiredResource,
   requiredAction,
   fallback = null,
-  showWhenUnauthorized = false
+  showWhenUnauthorized = false,
+  loadingFallback = <Skeleton className="h-8 w-24" />,
+  multiplePermissions = [],
+  multipleRoles = [],
+  requireAll = false
 }: PermissionGateProps) => {
-  const { user, hasPermission, canPerformAction, hasRole } = useAuth();
+  const { user, hasPermission, canPerformAction, hasRole, isLoading } = useAuth();
+
+  // Show loading fallback while auth is loading
+  if (isLoading) {
+    return <>{loadingFallback}</>;
+  }
 
   // If no user, show fallback or nothing
   if (!user) {
@@ -30,13 +44,24 @@ const PermissionGate = ({
 
   let hasAccess = true;
 
-  // Check role-based access
-  if (requiredRole && !hasRole(requiredRole)) {
+  // Check multiple roles
+  if (multipleRoles.length > 0) {
+    const roleChecks = multipleRoles.map(role => hasRole(role));
+    hasAccess = requireAll ? roleChecks.every(Boolean) : roleChecks.some(Boolean);
+  }
+  // Check single role
+  else if (requiredRole && !hasRole(requiredRole)) {
     hasAccess = false;
   }
 
-  // Check permission-based access
-  if (requiredPermission && !hasPermission(requiredPermission)) {
+  // Check multiple permissions
+  if (multiplePermissions.length > 0) {
+    const permissionChecks = multiplePermissions.map(permission => hasPermission(permission));
+    const permissionAccess = requireAll ? permissionChecks.every(Boolean) : permissionChecks.some(Boolean);
+    hasAccess = hasAccess && permissionAccess;
+  }
+  // Check single permission
+  else if (requiredPermission && !hasPermission(requiredPermission)) {
     hasAccess = false;
   }
 
@@ -67,6 +92,12 @@ export const UploaderGate = ({ children, ...props }: Omit<PermissionGateProps, '
 
 export const ModeratorGate = ({ children, ...props }: Omit<PermissionGateProps, 'requiredRole'>) => (
   <PermissionGate requiredRole="moderator" {...props}>
+    {children}
+  </PermissionGate>
+);
+
+export const ViewerGate = ({ children, ...props }: Omit<PermissionGateProps, 'requiredRole'>) => (
+  <PermissionGate requiredRole="viewer" {...props}>
     {children}
   </PermissionGate>
 );
@@ -109,6 +140,31 @@ export const CommentModerateGate = ({ children, ...props }: Omit<PermissionGateP
 
 export const UserManageGate = ({ children, ...props }: Omit<PermissionGateProps, 'requiredPermission'>) => (
   <PermissionGate requiredPermission={PERMISSIONS.USERS.MANAGE} {...props}>
+    {children}
+  </PermissionGate>
+);
+
+// Advanced gates for multiple permissions
+export const ContentManagerGate = ({ children, ...props }: Omit<PermissionGateProps, 'multiplePermissions'>) => (
+  <PermissionGate 
+    multiplePermissions={[
+      PERMISSIONS.PHOTOS.CREATE,
+      PERMISSIONS.PHOTOS.UPDATE,
+      PERMISSIONS.ALBUMS.CREATE
+    ]}
+    requireAll={false}
+    {...props}
+  >
+    {children}
+  </PermissionGate>
+);
+
+export const FullAdminGate = ({ children, ...props }: Omit<PermissionGateProps, 'multipleRoles'>) => (
+  <PermissionGate 
+    multipleRoles={['admin', 'moderator']}
+    requireAll={false}
+    {...props}
+  >
     {children}
   </PermissionGate>
 );

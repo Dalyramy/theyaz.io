@@ -9,12 +9,14 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "strict": true,
     "noImplicitAny": false,
     "noUnusedParameters": false,
     "skipLibCheck": true,
     "allowJs": true,
     "noUnusedLocals": false,
     "strictNullChecks": false,
+    "forceConsistentCasingInFileNames": true,
     "types": ["vitest/globals"]
   }
 }

@@ -1,0 +1,50 @@
+services:
+  typescript-app:
+    # Main application service (React/Vite/Supabase client)
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: typescript-app
+    init: true
+    restart: unless-stopped
+    ports:
+      - "8080:8080"  # Vite dev server now mapped to 8080
+      # - "5173:5173"  # Old port mapping, now commented out
+    # env_file: ./.env  # Uncomment if .env file exists
+    environment:
+      VITE_SUPABASE_URL: https://bkbqkpfzrqykrzzvzyrg.supabase.co
+      VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrYnFrcGZ6cnF5a3J6enZ6eXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMzk5OTksImV4cCI6MjA2MTcxNTk5OX0.7wLFlI5VFlBGyroUtZTBu2MyM1bPbpW01yAik-oNb5s
+    networks:
+      - appnet
+    depends_on:
+      - supabase-db
+
+  supabase-db:
+    # PostgreSQL database for Supabase
+    image: postgres:latest
+    container_name: supabase-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - supabase-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
+
+volumes:
+  supabase-db-data:
+    # Persistent storage for PostgreSQL

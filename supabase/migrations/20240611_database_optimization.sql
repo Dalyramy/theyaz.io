@@ -5,7 +5,8 @@
 CREATE INDEX IF NOT EXISTS photos_user_created_idx ON public.photos(user_id, created_at DESC);
 
 -- Composite index for photos with tags (for tag-based searches)
-CREATE INDEX IF NOT EXISTS photos_tags_created_idx ON public.photos USING GIN(tags, created_at DESC);
+CREATE INDEX IF NOT EXISTS photos_tags_idx ON public.photos USING GIN(tags);
+CREATE INDEX IF NOT EXISTS photos_created_idx ON public.photos(created_at DESC);
 
 -- Composite index for comments with photo_id and created_at
 CREATE INDEX IF NOT EXISTS comments_photo_created_idx ON public.comments(photo_id, created_at DESC);

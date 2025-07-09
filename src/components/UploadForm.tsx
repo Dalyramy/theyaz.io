@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Upload, Image, X, Phone, Camera } from 'lucide-react';
+import { Upload, Image, X, Phone, Camera, Lock } from 'lucide-react';
 import { useAuth } from '@/contexts/useAuth';
+import { PhotoUploadGate } from '@/components/ui/PermissionGate';
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 import { cn } from '@/lib/utils';
@@ -26,7 +27,10 @@ const UploadForm = () => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, hasPermission } = useAuth();
+
+  // Check if user has upload permission
+  const canUpload = hasPermission('photos.create');
 
   const validateFile = (file: File): string | null => {
     if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
@@ -100,6 +104,12 @@ const UploadForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!canUpload) {
+      toast.error('You do not have permission to upload photos.');
+      return;
+    }
+    
     setIsSubmitting(true);
     
     // Validate form
@@ -184,206 +194,236 @@ const UploadForm = () => {
     }
   };
 
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="container mx-auto py-8 px-4 max-w-3xl"
-    >
+  // If user doesn't have upload permission, show restricted access
+  if (!canUpload) {
+    return (
       <Card className="backdrop-blur-sm bg-white/80 dark:bg-gray-900/80 border-0 shadow-xl">
-        <CardHeader className="space-y-1">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Share Your iPhone Moment
-            </CardTitle>
-            <CardDescription className="flex items-center gap-2 mt-2">
-              Shot on iPhone 16 Pro Max
-            </CardDescription>
-          </motion.div>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lock className="h-5 w-5 text-red-500" />
+            Upload Restricted
+          </CardTitle>
+          <CardDescription>
+            You don't have permission to upload photos. Please contact an administrator to request upload access.
+          </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-6">
-            {/* Image Upload */}
-            <motion.div 
-              className="space-y-2"
+        <CardContent>
+          <div className="text-center py-8">
+            <Upload className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">
+              Upload functionality is restricted to users with appropriate permissions.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <PhotoUploadGate>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto py-8 px-4 max-w-3xl"
+      >
+        <Card className="backdrop-blur-sm bg-white/80 dark:bg-gray-900/80 border-0 shadow-xl">
+          <CardHeader className="space-y-1">
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.2 }}
             >
-              <Label htmlFor="image" className="text-sm font-medium">Photo</Label>
-              <div 
-                className="relative"
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
+              <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                <Upload className="h-6 w-6" />
+                Upload a New Photo
+              </CardTitle>
+              <CardDescription>
+                Share your moments with the community. Upload high-quality photos with descriptions and tags.
+              </CardDescription>
+            </motion.div>
+          </CardHeader>
+
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-6">
+              {/* File Upload Area */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-4"
               >
-                <AnimatePresence mode="wait">
-                  {preview ? (
-                    <motion.div 
-                      key="preview"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-black"
-                    >
-                      <img
-                        src={preview}
-                        alt="Preview"
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                        <Camera className="h-5 w-5 text-white" />
-                        <span className="text-sm font-medium text-white">iPhone 16 Pro Max</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleRemoveImage}
-                        className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-colors"
-                        aria-label="Remove image"
+                <Label htmlFor="image" className="text-base font-medium">
+                  Photo
+                </Label>
+                
+                <div
+                  className={cn(
+                    "relative border-2 border-dashed rounded-lg p-8 text-center transition-colors",
+                    isDragging
+                      ? "border-primary bg-primary/10"
+                      : "border-gray-300 dark:border-gray-600 hover:border-primary/50",
+                    preview && "border-green-500 bg-green-50 dark:bg-green-900/20"
+                  )}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    id="image"
+                    accept={ACCEPTED_FILE_TYPES.join(',')}
+                    onChange={handleFileInputChange}
+                    className="hidden"
+                    aria-label="Upload image file"
+                  />
+                  
+                  <AnimatePresence mode="wait">
+                    {preview ? (
+                      <motion.div
+                        key="preview"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="space-y-4"
                       >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="upload"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      onClick={handleUploadClick}
-                      className={cn(
-                        "flex aspect-[4/5] w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed transition-all duration-200",
-                        isDragging
-                          ? "border-primary bg-primary/5 scale-[1.02]"
-                          : "border-gray-200 hover:border-primary hover:bg-primary/5 dark:border-gray-700"
-                      )}
-                    >
-                      <div className="flex flex-col items-center gap-3 text-center p-8">
-                        <div className={cn(
-                          "rounded-full p-4 transition-colors",
-                          isDragging ? "bg-primary/10" : "bg-gray-100 dark:bg-gray-800"
-                        )}>
-                          <Upload className={cn(
-                            "h-6 w-6 transition-colors",
-                            isDragging ? "text-primary" : "text-gray-400"
-                          )} />
+                        <div className="relative inline-block">
+                          <img
+                            src={preview}
+                            alt="Preview"
+                            className="max-h-64 rounded-lg shadow-lg"
+                          />
+                                                      <button
+                              type="button"
+                              onClick={handleRemoveImage}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                              aria-label="Remove image"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                        </div>
+                        <p className="text-sm text-green-600 dark:text-green-400">
+                          ✓ Image selected successfully
+                        </p>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="upload"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="space-y-4"
+                      >
+                        <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                          <Camera className="h-8 w-8 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            {isDragging ? "Drop your photo here" : "Click to upload or drag and drop"}
+                          <p className="text-lg font-medium">
+                            Drop your photo here or click to browse
                           </p>
-                          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                            JPEG, PNG, or WebP up to 10MB
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Supports JPEG, PNG, and WebP up to 10MB
                           </p>
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <Input
-                  ref={fileInputRef}
-                  id="image"
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={handleFileInputChange}
-                  className="hidden"
-                />
-              </div>
-            </motion.div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleUploadClick}
+                          className="mt-4"
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Choose File
+                        </Button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
 
-            {/* Title */}
-            <motion.div 
-              className="space-y-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Label htmlFor="title" className="text-sm font-medium">Title</Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Give your photo a title"
-                className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
-                required
-              />
-            </motion.div>
-
-            {/* Caption */}
-            <motion.div 
-              className="space-y-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <Label htmlFor="caption" className="text-sm font-medium">Caption</Label>
-              <Textarea
-                id="caption"
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-                placeholder="Tell the story behind your photo"
-                className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm resize-none"
-                rows={4}
-                required
-              />
-            </motion.div>
-
-            {/* Tags */}
-            <motion.div 
-              className="space-y-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <Label htmlFor="tags" className="text-sm font-medium">Tags</Label>
-              <Input
-                id="tags"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                placeholder="Add tags separated by commas (e.g. nature, portrait, street)"
-                className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Popular tags: #shotoniphone #iphonephotography #minimal #portrait
-              </p>
-            </motion.div>
-          </CardContent>
-          <CardFooter>
-            <Button 
-              type="submit" 
-              disabled={isSubmitting} 
-              className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white shadow-lg"
-            >
-              {isSubmitting ? (
-                <motion.div 
-                  className="flex items-center gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <motion.span
-                    className="h-4 w-4 rounded-full border-2 border-current border-t-transparent"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              {/* Form Fields */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-4"
+              >
+                <div>
+                  <Label htmlFor="title">Title *</Label>
+                  <Input
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Enter photo title"
+                    required
                   />
-                  Uploading...
-                </motion.div>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <Camera className="h-5 w-5" />
-                  Share Photo
-                </span>
-              )}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-    </motion.div>
+                </div>
+
+                <div>
+                  <Label htmlFor="caption">Caption *</Label>
+                  <Textarea
+                    id="caption"
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                    placeholder="Describe your photo..."
+                    rows={3}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="tags">Tags</Label>
+                  <Input
+                    id="tags"
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                    placeholder="Enter tags separated by commas (e.g., nature, landscape, sunset)"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Tags help others discover your photos
+                  </p>
+                </div>
+              </motion.div>
+            </CardContent>
+
+            <CardFooter>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="flex gap-3 w-full"
+              >
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate(-1)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || !imageFile || !title || !caption}
+                  className="flex-1"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-2" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Photo
+                    </>
+                  )}
+                </Button>
+              </motion.div>
+            </CardFooter>
+          </form>
+        </Card>
+      </motion.div>
+    </PhotoUploadGate>
   );
 };
 
