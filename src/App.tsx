@@ -4,8 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { Component, ErrorInfo, ReactNode } from "react";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 import Index from "./pages/Index";
 import PhotoView from "./pages/PhotoView";
@@ -24,44 +24,9 @@ import Conversation from './pages/messaging/Conversation';
 import GalleryPage from './components/gallery/GalleryPage';
 import AlbumPage from './components/gallery/AlbumPage';
 import CategoryList from './components/gallery/CategoryList';
-
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="max-w-md p-8 rounded-lg shadow-soft bg-card animate-fade-in">
-            <h1 className="text-2xl font-bold text-destructive mb-4">Something went wrong</h1>
-            <p className="text-muted-foreground mb-4">
-              {this.state.error?.message || 'An unexpected error occurred'}
-            </p>
-            <button
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors hover-lift"
-              onClick={() => window.location.reload()}
-            >
-              Reload page
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
+import AdminDashboard from './pages/AdminDashboard';
+import Unauthorized from './pages/Unauthorized';
+import RBACTest from './components/RBACTest';
 
 function App() {
   const queryClient = new QueryClient({
@@ -91,7 +56,7 @@ function App() {
                       <Route path="/categories" element={<CategoryList />} />
                       <Route path="/photo/:id" element={<PhotoView />} />
                       <Route path="/upload" element={
-                        <ProtectedRoute>
+                        <ProtectedRoute requiredPermission="photos.create">
                           <Upload />
                         </ProtectedRoute>
                       } />
@@ -107,6 +72,9 @@ function App() {
                       <Route path="/profile/:userId" element={<ProfilePage />} />
                       <Route path="/messaging" element={<Inbox />} />
                       <Route path="/messaging/:userId" element={<Conversation />} />
+                      <Route path="/admin" element={<AdminDashboard />} />
+                      <Route path="/unauthorized" element={<Unauthorized />} />
+                      <Route path="/rbac-test" element={<RBACTest />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>

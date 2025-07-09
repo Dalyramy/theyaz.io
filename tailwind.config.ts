@@ -35,6 +35,11 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'sans': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				'mono': ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+				'display': ['Orbitron', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+			},
 			spacing: {
 				'safe-top': 'env(safe-area-inset-top)',
 				'safe-bottom': 'env(safe-area-inset-bottom)',
@@ -157,11 +162,22 @@ export default {
 						h2: { color: theme('colors.primary.DEFAULT') },
 						h3: { color: theme('colors.primary.DEFAULT') },
 						strong: { color: theme('colors.primary.DEFAULT') },
-						code: { color: theme('colors.accent.DEFAULT'), backgroundColor: theme('colors.muted.DEFAULT'), padding: '0.2em 0.4em', borderRadius: '0.25rem' },
+						code: { 
+							color: theme('colors.accent.DEFAULT'), 
+							backgroundColor: theme('colors.muted.DEFAULT'), 
+							padding: '0.2em 0.4em', 
+							borderRadius: '0.25rem',
+							fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, monospace'
+						},
 						blockquote: { color: theme('colors.secondary.DEFAULT'), borderLeftColor: theme('colors.primary.DEFAULT'), fontStyle: 'italic' },
 						'ol > li::marker': { color: theme('colors.primary.DEFAULT') },
 						'ul > li::marker': { color: theme('colors.accent.DEFAULT') },
-						pre: { backgroundColor: theme('colors.muted.DEFAULT'), color: theme('colors.accent.DEFAULT'), borderRadius: '0.5rem' },
+						pre: { 
+							backgroundColor: theme('colors.muted.DEFAULT'), 
+							color: theme('colors.accent.DEFAULT'), 
+							borderRadius: '0.5rem',
+							fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, monospace'
+						},
 					},
 				},
 				dark: {
@@ -172,11 +188,22 @@ export default {
 						h2: { color: theme('colors.primary.DEFAULT') },
 						h3: { color: theme('colors.primary.DEFAULT') },
 						strong: { color: theme('colors.primary.DEFAULT') },
-						code: { color: theme('colors.accent.DEFAULT'), backgroundColor: theme('colors.muted.DEFAULT'), padding: '0.2em 0.4em', borderRadius: '0.25rem' },
+						code: { 
+							color: theme('colors.accent.DEFAULT'), 
+							backgroundColor: theme('colors.muted.DEFAULT'), 
+							padding: '0.2em 0.4em', 
+							borderRadius: '0.25rem',
+							fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, monospace'
+						},
 						blockquote: { color: theme('colors.secondary.DEFAULT'), borderLeftColor: theme('colors.primary.DEFAULT'), fontStyle: 'italic' },
 						'ol > li::marker': { color: theme('colors.primary.DEFAULT') },
 						'ul > li::marker': { color: theme('colors.accent.DEFAULT') },
-						pre: { backgroundColor: theme('colors.muted.DEFAULT'), color: theme('colors.accent.DEFAULT'), borderRadius: '0.5rem' },
+						pre: { 
+							backgroundColor: theme('colors.muted.DEFAULT'), 
+							color: theme('colors.accent.DEFAULT'), 
+							borderRadius: '0.5rem',
+							fontFamily: 'JetBrains Mono, ui-monospace, SFMono-Regular, monospace'
+						},
 					},
 				},
 			}),

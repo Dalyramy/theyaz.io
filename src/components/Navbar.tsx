@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Upload, Camera, Image as ImageIcon } from "lucide-react";
+import { Upload, Camera, Image as ImageIcon, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/useAuth";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import NotificationBell from '@/components/notifications/NotificationBell';
 import Logo from '@/components/ui/Logo';
+import { AdminGate } from '@/components/ui/PermissionGate';
 
 const navItemVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -30,12 +31,12 @@ const Navbar = () => {
         <Link
           to="/"
           className="flex items-center gap-3 sm:gap-5 transition-all hover:scale-105"
+          aria-label="Go to homepage"
         >
           <Logo style={{ width: 40, height: 40 }} />
           <span
-            className="text-2xl sm:text-4xl font-bold tracking-tight flex items-center"
+            className="text-2xl sm:text-4xl font-display font-bold tracking-tight flex items-center"
             style={{
-              fontFamily: "'Orbitron', sans-serif",
               background: "linear-gradient(90deg, #00ff00 0%, #4b94cc 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -83,6 +84,21 @@ const Navbar = () => {
                 </Link>
               </motion.div>
             )}
+
+            <AdminGate>
+              <motion.div variants={navItemVariants} className="hidden sm:block">
+                <Link 
+                  to="/admin" 
+                  className={cn(
+                    "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
+                    "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100 flex items-center gap-2"
+                  )}
+                >
+                  <Shield className="h-5 w-5" />
+                  Admin
+                </Link>
+              </motion.div>
+            </AdminGate>
             
             <motion.div variants={navItemVariants} className="hidden sm:block">
               <Link 

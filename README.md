@@ -98,6 +98,20 @@ VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
+## Typography
+
+The application uses a carefully selected typography system for optimal readability and visual appeal:
+
+- **Inter** (Sans-serif): Primary font for body text and general content
+- **Orbitron** (Display): Used for headings and display text with a futuristic appearance
+- **JetBrains Mono** (Monospace): Perfect for code blocks and technical content
+
+### Font Classes
+
+- `font-sans`: Inter font family
+- `font-display`: Orbitron font family  
+- `font-mono`: JetBrains Mono font family
+
 ## License
 
 ## acid-25

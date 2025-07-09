@@ -92,6 +92,15 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Font family utilities */
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+
+  .font-display {
+    font-family: 'Orbitron', ui-sans-serif, system-ui, sans-serif;
+  }
 }
 
 /* Custom animations */

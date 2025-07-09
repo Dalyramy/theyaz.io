@@ -14,7 +14,8 @@ import {
   ExternalLink,
   Heart,
   Image as ImageIcon,
-  MessageSquare
+  MessageSquare,
+  Type
 } from 'lucide-react';
 
 const fadeIn = {
@@ -191,13 +192,79 @@ const About = () => {
             </Card>
           </motion.section>
 
+          {/* Font Demonstration Section */}
+          <motion.section 
+            className="mb-16"
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
+            <Card className="overflow-hidden hover-lift rounded-2xl">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <div className="hidden sm:block">
+                    <Type className="w-8 h-8 text-secondary" />
+                  </div>
+                  <div className="w-full">
+                    <h2 className="text-2xl font-semibold mb-4">Typography Showcase</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-6">
+                      Our website uses carefully selected fonts to enhance readability and visual appeal. Here's a demonstration of our typography system:
+                    </p>
+                    
+                    <div className="space-y-6">
+                      {/* Inter Font (Sans) */}
+                      <div className="border-l-4 border-primary pl-4">
+                        <h3 className="font-sans text-lg font-semibold mb-2">Inter (Sans-serif)</h3>
+                        <p className="font-sans text-muted-foreground">
+                          This is the primary font used for body text and general content. It's clean, modern, and highly readable.
+                        </p>
+                      </div>
+
+                      {/* Orbitron Font (Display) */}
+                      <div className="border-l-4 border-secondary pl-4">
+                        <h3 className="font-display text-lg font-semibold mb-2">Orbitron (Display)</h3>
+                        <p className="font-display text-muted-foreground">
+                          Used for headings and display text. It has a futuristic, tech-inspired appearance.
+                        </p>
+                      </div>
+
+                      {/* JetBrains Mono Font (Mono) */}
+                      <div className="border-l-4 border-accent pl-4">
+                        <h3 className="font-mono text-lg font-semibold mb-2">JetBrains Mono (Monospace)</h3>
+                        <p className="font-mono text-muted-foreground">
+                          Perfect for code blocks, technical content, and when you need fixed-width characters.
+                        </p>
+                        
+                        {/* Code Example */}
+                        <div className="mt-4 bg-muted/50 rounded-lg p-4">
+                          <pre className="font-mono text-sm text-accent">
+{`// Example code block
+function captureMoment() {
+  const photo = {
+    timestamp: new Date(),
+    location: "theyaz.io",
+    style: "creative"
+  };
+  return photo;
+}`}
+                          </pre>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.section>
+
           {/* Quote Section */}
           <motion.div 
             className="text-center prose dark:prose-invert"
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            transition={{ duration: 0.6, delay: 1 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
           >
             <blockquote className="text-xl italic text-muted-foreground">
               "Photography is the story I fail to put into words."

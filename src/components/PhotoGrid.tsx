@@ -1,6 +1,7 @@
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import PhotoCard from '@/components/photo/PhotoCard';
 import PhotoLoading from '@/components/photo/PhotoLoading';
+import { GallerySkeleton } from '@/components/ui/skeleton';
 import EmptyState from '@/components/photo/EmptyState';
 import { ArrowDown, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -12,6 +13,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -123,7 +125,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (active.id !== over?.id) {
       const oldIndex = dndPhotos.findIndex((p) => p.id === active.id);
@@ -190,7 +192,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
   }, [displayedItems]);
 
   if (loading) {
-    return <PhotoLoading />;
+    return <GallerySkeleton />;
   }
 
   if (!photos.length) {
