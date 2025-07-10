@@ -132,7 +132,7 @@ export default function AlbumPage() {
   const [page, setPage] = useState(0);
   const PHOTOS_PER_PAGE = 24;
   const galleryRef = useRef<HTMLDivElement>(null);
-  const { isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [editPhoto, setEditPhoto] = useState<any>(null);
   const [editOpen, setEditOpen] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor));
@@ -162,7 +162,7 @@ export default function AlbumPage() {
   const fetchAlbum = async () => {
     const { data } = await (supabase as any)
       .from('albums')
-      .select('id, title, description, cover_photo_id')
+      .select('id, title, description, cover_photo_id, user_id, is_featured')
       .eq('id', albumId)
       .single();
     setAlbum(data);
@@ -255,6 +255,15 @@ export default function AlbumPage() {
     setPage(nextPage);
     setLoadingMore(false);
   };
+
+  if (
+    album &&
+    user &&
+    album.user_id !== user.id &&
+    !album.is_featured
+  ) {
+    return <div className="text-center text-red-500 py-16">You are not authorized to view this album.</div>;
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">

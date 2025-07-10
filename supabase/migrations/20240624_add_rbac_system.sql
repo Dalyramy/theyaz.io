@@ -214,12 +214,12 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Function to check if user has permission
-CREATE OR REPLACE FUNCTION public.has_permission(user_uuid uuid, permission_name text)
+CREATE OR REPLACE FUNCTION public.has_permission(user_uuid uuid, perm_name text)
 RETURNS boolean AS $$
 BEGIN
     RETURN EXISTS (
         SELECT 1 FROM public.get_user_permissions(user_uuid) 
-        WHERE permission_name = $2
+        WHERE permission_name = perm_name
     );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
