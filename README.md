@@ -23,22 +23,49 @@ Explore and share creative moments through a curated photo gallery. theyaz.io is
 
 - Node.js (v18+ recommended)
 - npm or bun
+- Supabase account and project
 
-### Installation
+### Quick Setup
 
-```bash
-npm install
-# or
-bun install
-```
+1. **Clone and Install**:
+   ```bash
+   npm install
+   # or
+   bun install
+   ```
 
-### Development
+2. **Environment Setup**:
+   ```bash
+   cp env.example .env
+   ```
+   Edit `.env` with your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url_here
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+   ```
 
-```bash
-npm run dev
-```
+3. **Database Setup**:
+   ```bash
+   # Apply migrations to fix account creation issues
+   supabase db reset
+   ```
+
+4. **Create Admin Account**:
+   ```bash
+   ./scripts/create-admin.sh admin@yourdomain.com yourpassword
+   ```
+
+5. **Start Development**:
+   ```bash
+   npm run dev
+   ```
 
 Visit [http://localhost:8080](http://localhost:8080) in your browser.
+
+### Troubleshooting Account Creation
+
+If you're having issues creating accounts, see the [Setup Guide](SETUP_GUIDE.md) for detailed troubleshooting steps.
 
 ### Build for Production
 

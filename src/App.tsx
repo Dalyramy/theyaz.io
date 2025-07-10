@@ -66,57 +66,48 @@ function App() {
                       <Route path="/albums/:albumId" element={<AlbumPage />} />
                       <Route path="/categories" element={<CategoryList />} />
                       <Route path="/photo/:id" element={<PhotoView />} />
-                      
                       {/* Protected Routes with RBAC */}
                       <Route path="/upload" element={
                         <PhotoUploadRoute>
                           <Upload />
                         </PhotoUploadRoute>
                       } />
-                      
                       <Route path="/edit-photo/:id" element={
                         <PhotoEditRoute>
                           <EditPhoto />
                         </PhotoEditRoute>
                       } />
-                      
                       <Route path="/private-gallery" element={
                         <ProtectedRoute>
                           <PrivateGallery />
                         </ProtectedRoute>
                       } />
-                      
                       <Route path="/profile/:userId" element={
                         <ProtectedRoute>
                           <ProfilePage />
                         </ProtectedRoute>
                       } />
-                      
                       <Route path="/messaging" element={
                         <ProtectedRoute>
                           <Inbox />
                         </ProtectedRoute>
                       } />
-                      
                       <Route path="/messaging/:userId" element={
                         <ProtectedRoute>
                           <Conversation />
                         </ProtectedRoute>
                       } />
-                      
                       {/* Admin Routes */}
                       <Route path="/admin" element={
                         <AdminRoute>
                           <AdminDashboard />
                         </AdminRoute>
                       } />
-                      
                       <Route path="/admin-dashboard" element={
                         <AdminRoute>
                           <AdminDashboardComponent />
                         </AdminRoute>
                       } />
-                      
                       {/* Content Management Routes */}
                       <Route path="/moderate" element={
                         <ModeratorRoute>
@@ -126,7 +117,6 @@ function App() {
                           </div>
                         </ModeratorRoute>
                       } />
-                      
                       <Route path="/analytics" element={
                         <ContentManagerRoute>
                           <div className="container mx-auto px-4 py-8">
@@ -135,18 +125,15 @@ function App() {
                           </div>
                         </ContentManagerRoute>
                       } />
-                      
                       {/* Debug and Test Routes */}
                       <Route path="/unauthorized" element={<Unauthorized />} />
                       <Route path="/rbac-test" element={<RBACTest />} />
                       <Route path="/permission-debug" element={<PermissionDebug />} />
-                      
                       {/* Public Routes */}
                       <Route path="/about" element={<About />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
                       <Route path="/auth/callback" element={<AuthCallback />} />
-                      
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>

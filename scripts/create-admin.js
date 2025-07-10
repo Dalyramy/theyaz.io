@@ -1,51 +1,76 @@
-// Script to create an admin user for RBAC testing
-// Run this after applying the RBAC migration
-
+// Promote an existing user to admin
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
-const supabaseUrl = 'https://bkbqkpfzrqykrzzvzyrg.supabase.co';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || 'your-anon-key';
+dotenv.config();
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://bkbqkpfzrqykrzzvzyrg.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-async function createAdminUser() {
+if (!supabaseServiceKey) {
+  console.error('❌ SUPABASE_SERVICE_ROLE_KEY environment variable is required');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+async function promoteToAdmin(email) {
   try {
-    // First, create a user (this should be done through your app's signup)
-    console.log('Creating admin user...');
-    
-    // Get the admin role ID
+    // Get user by email from auth.users
+    const { data: userData, error: userError } = await supabase.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000
+    });
+    if (userError || !userData) {
+      console.error('❌ Error fetching users:', userError?.message);
+      return;
+    }
+    const user = userData.users.find(u => u.email === email);
+    if (!user) {
+      console.error('❌ User not found with email:', email);
+      return;
+    }
+    const userId = user.id;
+    // Set is_admin flag in profiles
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({ is_admin: true })
+      .eq('id', userId);
+    if (profileError) {
+      console.error('❌ Error updating profile:', profileError.message);
+      return;
+    }
+    // Get admin role ID
     const { data: adminRole, error: roleError } = await supabase
       .from('roles')
       .select('id')
       .eq('name', 'admin')
       .single();
-    
-    if (roleError) {
-      console.error('Error fetching admin role:', roleError);
+    if (roleError || !adminRole) {
+      console.error('❌ Error fetching admin role:', roleError?.message);
       return;
     }
-    
-    console.log('Admin role ID:', adminRole.id);
-    
-    // Note: You'll need to manually assign the admin role to a user
-    // through the Supabase dashboard or your admin interface
-    console.log('\nTo create an admin user:');
-    console.log('1. Sign up a new user through your app');
-    console.log('2. Go to Supabase Dashboard > Authentication > Users');
-    console.log('3. Find the user and note their ID');
-    console.log('4. Run this SQL in the SQL Editor:');
-    console.log(`
-INSERT INTO public.user_roles (user_id, role_id, assigned_by)
-SELECT 'USER_ID_HERE', '${adminRole.id}', 'USER_ID_HERE'
-WHERE NOT EXISTS (
-  SELECT 1 FROM public.user_roles 
-  WHERE user_id = 'USER_ID_HERE' AND role_id = '${adminRole.id}'
-);
-    `);
-    
+    // Assign admin role
+    const { error: roleAssignError } = await supabase
+      .from('user_roles')
+      .insert({
+        user_id: userId,
+        role_id: adminRole.id,
+        assigned_by: userId
+      }, { upsert: true });
+    if (roleAssignError) {
+      console.error('❌ Error assigning admin role:', roleAssignError.message);
+      return;
+    }
+    console.log(`🎉 User ${email} promoted to admin!`);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('❌ Unexpected error:', error);
   }
 }
 
-createAdminUser(); 
+const email = process.argv[2];
+if (!email) {
+  console.log('Usage: node scripts/create-admin.js <email>');
+  process.exit(1);
+}
+promoteToAdmin(email); 

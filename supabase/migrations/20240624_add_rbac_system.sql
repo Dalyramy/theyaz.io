@@ -240,23 +240,5 @@ GRANT EXECUTE ON FUNCTION public.get_user_permissions(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.has_permission(uuid, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.can_perform_action(uuid, text, text) TO authenticated;
 
--- Add default role assignment trigger
-CREATE OR REPLACE FUNCTION public.assign_default_role()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Assign 'viewer' role to new users by default
-    INSERT INTO public.user_roles (user_id, role_id)
-    SELECT NEW.id, r.id
-    FROM public.roles r
-    WHERE r.name = 'viewer';
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Create trigger to assign default role
-DROP TRIGGER IF EXISTS assign_default_role_trigger ON auth.users;
-CREATE TRIGGER assign_default_role_trigger
-    AFTER INSERT ON auth.users
-    FOR EACH ROW
-    EXECUTE FUNCTION public.assign_default_role(); 
+-- Note: Default role assignment is now handled in the profile creation trigger
+-- to avoid conflicts between multiple triggers 

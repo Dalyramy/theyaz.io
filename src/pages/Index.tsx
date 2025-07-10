@@ -76,6 +76,15 @@ const Index = () => {
   
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <div className="text-center p-8">
+        <h1 className="text-4xl font-bold mb-4 text-green-400">Home Page Loaded!</h1>
+        <p className="text-lg mb-4">The Index component is working correctly.</p>
+        <div className="space-y-4">
+          <p>Photos loaded: {photos.length}</p>
+          <p>Loading state: {isLoading ? 'Loading...' : 'Loaded'}</p>
+          <p>Search query: "{searchQuery}"</p>
+        </div>
+      </div>
       <Navbar />
       {/* Hero Section */}
       <HeroSection handleExploreClick={handleExploreClick} />
