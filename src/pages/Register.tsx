@@ -64,9 +64,9 @@ const Register = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
       >
-        <Card className="w-full max-w-md rounded-2xl shadow-2xl border border-gray-700 bg-gradient-to-r from-blue-700 via-blue-500 via-[#85ff85] to-gray-700 text-white overflow-hidden backdrop-blur-md bg-opacity-80 p-4 sm:p-8">
+        <Card className="w-full max-w-md rounded-2xl shadow-2xl border border-border bg-card text-foreground overflow-hidden backdrop-blur-md p-4 sm:p-8">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-5xl sm:text-7xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary mb-6 py-4">Create an account</CardTitle>
+            <CardTitle className="text-5xl sm:text-7xl font-extrabold text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6 py-4">Create an account</CardTitle>
             <p className="text-center text-base sm:text-lg text-muted-foreground">
             Enter your information to create an account
             </p>
@@ -76,7 +76,7 @@ const Register = () => {
               <Button
                 variant="outline"
                 onClick={handleGoogleSignUp}
-                className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold shadow-none transition backdrop-blur-sm"
+                className="w-full bg-muted/50 hover:bg-muted border border-border text-foreground font-semibold shadow-none transition backdrop-blur-sm"
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -89,7 +89,7 @@ const Register = () => {
               <Button
                 variant="outline"
                 onClick={handleAppleSignUp}
-                className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold shadow-none transition backdrop-blur-sm"
+                className="w-full bg-muted/50 hover:bg-muted border border-border text-foreground font-semibold shadow-none transition backdrop-blur-sm"
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
@@ -99,7 +99,7 @@ const Register = () => {
               <Button
                 variant="outline"
                 onClick={handleFacebookSignUp}
-                className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold shadow-none transition backdrop-blur-sm"
+                className="w-full bg-muted/50 hover:bg-muted border border-border text-foreground font-semibold shadow-none transition backdrop-blur-sm"
               >
                 <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396v8.01Z" />
@@ -109,10 +109,10 @@ const Register = () => {
             </div>
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-white/30" />
+                <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="px-2 text-gray-300 tracking-wider font-medium bg-transparent">
+                <span className="px-2 text-muted-foreground tracking-wider font-medium bg-background">
                   or continue with
                 </span>
               </div>
@@ -126,7 +126,7 @@ const Register = () => {
                   placeholder="John Doe"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                    className="bg-muted/50 border border-gray-700 text-white rounded-xl"
+                    className="bg-muted/50 border border-border text-foreground rounded-xl"
                 />
               </div>
               <div className="space-y-2">
@@ -136,7 +136,7 @@ const Register = () => {
                   placeholder="johndoe"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                    className="bg-muted/50 border border-gray-700 text-white rounded-xl"
+                    className="bg-muted/50 border border-border text-foreground rounded-xl"
                 />
               </div>
             </div>
@@ -149,7 +149,7 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                  className="bg-muted/50 border border-gray-700 text-white rounded-xl"
+                  className="bg-muted/50 border border-border text-foreground rounded-xl"
               />
             </div>
             <div className="space-y-2">
@@ -161,7 +161,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                  className="bg-muted/50 border border-gray-700 text-white rounded-xl"
+                  className="bg-muted/50 border border-border text-foreground rounded-xl"
               />
             </div>
               <Button

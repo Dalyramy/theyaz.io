@@ -79,6 +79,16 @@ const Index = () => {
       <Navbar />
       {/* Hero Section */}
       <HeroSection handleExploreClick={handleExploreClick} />
+      {/* Photo Grid Section */}
+      <div id="photo-grid" className="container mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+            Latest Photos
+          </h2>
+          <p className="text-muted-foreground">Explore our latest captures</p>
+        </div>
+        <PhotoGrid photos={photos} isLoading={isLoading} />
+      </div>
     </div>
   );
 };

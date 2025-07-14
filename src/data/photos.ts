@@ -6,6 +6,7 @@ export interface Photo {
   imageUrl: string;
   date: string;
   tags: string[];
+  instagramPostId?: string | null;
 }
 
 export const photos: Photo[] = [
@@ -56,5 +57,14 @@ export const photos: Photo[] = [
     imageUrl: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?q=80&w=2070",
     date: "2025-04-05",
     tags: ["desert", "landscape", "tranquility"]
+  },
+  {
+    id: "7",
+    title: "Instagram Test Photo",
+    caption: "A beautiful Instagram post showcasing amazing photography.",
+    imageUrl: "https://www.instagram.com/p/C7QwQk1J8kA/media/?size=l",
+    date: "2025-04-01",
+    tags: ["instagram", "social", "photography"],
+    instagramPostId: "C7QwQk1J8kA"
   }
 ];

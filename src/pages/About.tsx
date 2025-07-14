@@ -4,8 +4,9 @@ import { Separator } from '@/components/ui/separator';
 import InstagramEmbed from '@/components/social/InstagramEmbed';
 import FacebookEmbed from '@/components/social/FacebookEmbed';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
   Camera, 
   Mail, 
@@ -14,7 +15,11 @@ import {
   ExternalLink,
   Heart,
   Image as ImageIcon,
-  MessageSquare
+  MessageSquare,
+  Award,
+  Globe,
+  Palette,
+  Sparkles
 } from 'lucide-react';
 
 const fadeIn = {
@@ -27,24 +32,59 @@ const About = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       
-      <main className="container py-12 px-4 sm:px-6 lg:px-8 container-type-inline container-query">
+      <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <motion.div 
-          className="max-w-4xl mx-auto text-center mb-16 prose dark:prose-invert"
+          className="max-w-4xl mx-auto text-center mb-16"
           initial="hidden"
           animate="visible"
           variants={fadeIn}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary mb-6">
-            About theyaz.io
-          </h1>
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            Capturing moments, creating memories, and sharing stories through the lens.
-          </p>
+          <div className="mb-8">
+            <Badge variant="secondary" className="mb-4">
+              <Sparkles className="w-3 h-3 mr-1" />
+              Photography Portfolio
+            </Badge>
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
+              About theyaz.io
+            </h1>
+            <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+              Capturing moments, creating memories, and sharing stories through the lens. 
+              A modern photography portfolio showcasing the beauty of everyday moments.
+            </p>
+          </div>
+          
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            <motion.div 
+              className="text-center"
+              variants={fadeIn}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="text-3xl font-bold text-primary mb-2">500+</div>
+              <div className="text-muted-foreground">Photos Captured</div>
+            </motion.div>
+            <motion.div 
+              className="text-center"
+              variants={fadeIn}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="text-3xl font-bold text-primary mb-2">50+</div>
+              <div className="text-muted-foreground">Locations Explored</div>
+            </motion.div>
+            <motion.div 
+              className="text-center"
+              variants={fadeIn}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <div className="text-3xl font-bold text-primary mb-2">3+</div>
+              <div className="text-muted-foreground">Years of Experience</div>
+            </motion.div>
+          </div>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           {/* Mission Section */}
           <motion.section 
             className="mb-16"
@@ -53,19 +93,20 @@ const About = () => {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Card className="overflow-hidden hover-lift rounded-2xl">
-              <CardContent className="p-8">
-                <div className="flex items-start gap-6">
-                  <div className="hidden sm:block">
-                    <Heart className="w-8 h-8 text-secondary" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Welcome to theyaz.io! This is a space where I share my passion for photography and the stories behind each image. Through my lens, I try to capture the beauty, emotion, and unique perspectives of the world around us.
-                    </p>
-                  </div>
+            <Card className="overflow-hidden hover-lift rounded-2xl border-border">
+              <CardHeader className="pb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <Heart className="w-6 h-6 text-primary" />
+                  <CardTitle className="text-2xl">Our Mission</CardTitle>
                 </div>
+                <p className="text-muted-foreground">
+                  Capturing the essence of life through photography
+                </p>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  Welcome to theyaz.io! This is a space where I share my passion for photography and the stories behind each image. Through my lens, I try to capture the beauty, emotion, and unique perspectives of the world around us. Every photograph tells a story, and every story deserves to be shared.
+                </p>
               </CardContent>
             </Card>
           </motion.section>
@@ -78,38 +119,70 @@ const About = () => {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <Card className="overflow-hidden hover-lift rounded-2xl">
-              <CardContent className="p-8">
-                <div className="flex items-start gap-6">
-                  <div className="hidden sm:block">
-                    <Camera className="w-8 h-8 text-secondary" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Style Card */}
+              <Card className="overflow-hidden hover-lift rounded-2xl border-border">
+                <CardHeader className="pb-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Palette className="w-6 h-6 text-primary" />
+                    <CardTitle className="text-2xl">Photography Style</CardTitle>
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-4">Photography Style</h2>
-                    <p className="text-muted-foreground leading-relaxed mb-6">
-                      Each photo represents a moment in time, a story waiting to be told, or an emotion I wanted to preserve. From breathtaking landscapes to candid street photography, my collection spans various genres and techniques, all captured with the power of modern mobile photography.
-                    </p>
-                    <div className="bg-muted/50 rounded-lg p-6">
-                      <h3 className="font-medium mb-3">Equipment & Process</h3>
-                      <ul className="space-y-2 text-muted-foreground">
-                        <li className="flex items-center gap-2">
-                          <ImageIcon className="w-4 h-4" />
-                          iPhone 16 Pro Max
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Camera className="w-4 h-4" />
-                          48MP Main Camera with ProRAW
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <MessageSquare className="w-4 h-4" />
-                          Minimal post-processing to preserve authenticity
-                        </li>
-                      </ul>
+                  <p className="text-muted-foreground">
+                    A blend of artistic vision and technical precision
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    Each photo represents a moment in time, a story waiting to be told, or an emotion I wanted to preserve. From breathtaking landscapes to candid street photography, my collection spans various genres and techniques, all captured with the power of modern mobile photography.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">Landscape</Badge>
+                      <Badge variant="outline">Street</Badge>
+                      <Badge variant="outline">Portrait</Badge>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              {/* Equipment Card */}
+              <Card className="overflow-hidden hover-lift rounded-2xl border-border">
+                <CardHeader className="pb-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Award className="w-6 h-6 text-primary" />
+                    <CardTitle className="text-2xl">Equipment & Process</CardTitle>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Professional tools for exceptional results
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                      <ImageIcon className="w-5 h-5 text-primary" />
+                      <div>
+                        <div className="font-medium">iPhone 16 Pro Max</div>
+                        <div className="text-sm text-muted-foreground">Primary Camera</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                      <Camera className="w-5 h-5 text-primary" />
+                      <div>
+                        <div className="font-medium">48MP Main Camera</div>
+                        <div className="text-sm text-muted-foreground">ProRAW Format</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                      <MessageSquare className="w-5 h-5 text-primary" />
+                      <div>
+                        <div className="font-medium">Minimal Processing</div>
+                        <div className="text-sm text-muted-foreground">Preserve Authenticity</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </motion.section>
 
           {/* Social Media Section */}
@@ -120,46 +193,50 @@ const About = () => {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-              <ExternalLink className="w-6 h-6 text-secondary" />
-              Connect & Follow
-            </h2>
-            
-            <Tabs defaultValue="instagram" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="instagram" className="flex items-center gap-2">
-                  <Instagram className="w-4 h-4" />
-                  Instagram
-                </TabsTrigger>
-                <TabsTrigger value="facebook" className="flex items-center gap-2">
-                  <Facebook className="w-4 h-4" />
-                  Facebook
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="instagram">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-muted-foreground mb-6">Check out my latest Instagram posts</p>
-                    <InstagramEmbed 
-                      postUrl="https://www.instagram.com/p/CyHksZcMYY2/"
-                      caption="Featured work from theyaz.io"
-                      className="mx-auto"
-                    />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value="facebook">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-muted-foreground mb-6">Follow me on Facebook for updates</p>
-                    <FacebookEmbed 
-                      postUrl="https://www.facebook.com/facebook/posts/10153231379946729"
-                      className="mx-auto"
-                    />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+            <Card className="overflow-hidden hover-lift rounded-2xl border-border">
+              <CardHeader className="pb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <Globe className="w-6 h-6 text-primary" />
+                  <CardTitle className="text-2xl">Connect & Follow</CardTitle>
+                </div>
+                <p className="text-muted-foreground">
+                  Stay updated with my latest work and behind-the-scenes content
+                </p>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="instagram" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 mb-6">
+                    <TabsTrigger value="instagram" className="flex items-center gap-2">
+                      <Instagram className="w-4 h-4" />
+                      Instagram
+                    </TabsTrigger>
+                    <TabsTrigger value="facebook" className="flex items-center gap-2">
+                      <Facebook className="w-4 h-4" />
+                      Facebook
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="instagram">
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground">Check out my latest Instagram posts and stories</p>
+                      <InstagramEmbed 
+                        postUrl="https://www.instagram.com/p/CyHksZcMYY2/"
+                        caption="Featured work from theyaz.io"
+                        className="mx-auto"
+                      />
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="facebook">
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground">Follow me on Facebook for updates and community</p>
+                      <FacebookEmbed 
+                        postUrl="https://www.facebook.com/facebook/posts/10153231379946729"
+                        className="mx-auto"
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
           </motion.section>
 
           {/* Contact Section */}
@@ -170,21 +247,38 @@ const About = () => {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <Card className="overflow-hidden hover-lift rounded-2xl">
-              <CardContent className="p-8">
-                <div className="flex items-start gap-6">
-                  <div className="hidden sm:block">
-                    <Mail className="w-8 h-8 text-secondary" />
-                  </div>
+            <Card className="overflow-hidden hover-lift rounded-2xl border-border">
+              <CardHeader className="pb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <Mail className="w-6 h-6 text-primary" />
+                  <CardTitle className="text-2xl">Get in Touch</CardTitle>
+                </div>
+                <p className="text-muted-foreground">
+                  Let's collaborate and create something amazing together
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
-                    <h2 className="text-2xl font-semibold mb-4">Get in Touch</h2>
                     <p className="text-muted-foreground leading-relaxed mb-6">
-                      I'm always interested in collaboration opportunities, print requests, or just chatting about photography. Let's connect and create something amazing together.
+                      I'm always interested in collaboration opportunities, print requests, or just chatting about photography. Whether you're looking for custom photography services, want to discuss a project, or simply want to share your thoughts on my work, I'd love to hear from you.
                     </p>
-                    <Button className="hover-lift">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">Collaborations</Badge>
+                        <Badge variant="outline">Print Requests</Badge>
+                        <Badge variant="outline">Consultations</Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <Button className="w-full hover-lift">
                       <Mail className="w-4 h-4 mr-2" />
-                      Contact Me
+                      Send Message
                     </Button>
+                    <div className="text-center text-sm text-muted-foreground">
+                      Available for freelance work and collaborations
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -193,16 +287,20 @@ const About = () => {
 
           {/* Quote Section */}
           <motion.div 
-            className="text-center prose dark:prose-invert"
+            className="text-center"
             initial="hidden"
             animate="visible"
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 1 }}
           >
-            <blockquote className="text-xl italic text-muted-foreground">
-              "Photography is the story I fail to put into words."
-              <footer className="text-sm mt-2">— Destin Sparks</footer>
-            </blockquote>
+            <Card className="overflow-hidden hover-lift rounded-2xl border-border bg-gradient-to-r from-primary/5 to-secondary/5">
+              <CardContent className="p-8">
+                <blockquote className="text-xl italic text-muted-foreground">
+                  "Photography is the story I fail to put into words."
+                  <footer className="text-sm mt-4 font-medium text-foreground">— Destin Sparks</footer>
+                </blockquote>
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
       </main>
