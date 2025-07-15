@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Upload, Camera, Image as ImageIcon } from "lucide-react";
+import { Upload, Camera, Image as ImageIcon, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/useAuth";
@@ -15,7 +15,7 @@ const navItemVariants = {
 };
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   
   return (
     <motion.header 
@@ -80,6 +80,21 @@ const Navbar = () => {
                   )}
                 >
                   Gallery
+                </Link>
+              </motion.div>
+            )}
+            
+            {isAdmin && (
+              <motion.div variants={navItemVariants} className="hidden sm:block">
+                <Link 
+                  to="/admin" 
+                  className={cn(
+                    "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
+                    "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
+                  )}
+                >
+                  <Shield className="h-5 w-5 inline mr-1" />
+                  Admin
                 </Link>
               </motion.div>
             )}

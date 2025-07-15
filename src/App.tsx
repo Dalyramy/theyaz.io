@@ -26,6 +26,7 @@ import AlbumPage from './components/gallery/AlbumPage';
 import CategoryList from './components/gallery/CategoryList';
 import InstagramTestPage from './pages/InstagramTestPage';
 import Gallery from './components/Gallery';
+import AdminPage from './pages/Admin';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -111,6 +112,11 @@ function App() {
                       <Route path="/messaging" element={<Inbox />} />
                       <Route path="/messaging/:userId" element={<Conversation />} />
                       <Route path="/instagram-test" element={<InstagramTestPage />} />
+                      <Route path="/admin" element={
+                        <ProtectedRoute>
+                          <AdminPage />
+                        </ProtectedRoute>
+                      } />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>

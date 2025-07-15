@@ -55,33 +55,7 @@ const About = () => {
             </p>
           </div>
           
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <motion.div 
-              className="text-center"
-              variants={fadeIn}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <div className="text-3xl font-bold text-primary mb-2">500+</div>
-              <div className="text-muted-foreground">Photos Captured</div>
-            </motion.div>
-            <motion.div 
-              className="text-center"
-              variants={fadeIn}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <div className="text-3xl font-bold text-primary mb-2">50+</div>
-              <div className="text-muted-foreground">Locations Explored</div>
-            </motion.div>
-            <motion.div 
-              className="text-center"
-              variants={fadeIn}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <div className="text-3xl font-bold text-primary mb-2">3+</div>
-              <div className="text-muted-foreground">Years of Experience</div>
-            </motion.div>
-          </div>
+
         </motion.div>
 
         <div className="max-w-6xl mx-auto">
