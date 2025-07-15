@@ -28,7 +28,7 @@ export default function AdminPage() {
     if (isAdmin) {
       fetchUsers();
     }
-  }, [isAdmin, fetchUsers]);
+  }, [isAdmin]);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -68,7 +68,7 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, []);
 
   const toggleAdminStatus = async (userId: string, currentStatus: boolean) => {
     try {
