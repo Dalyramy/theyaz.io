@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import NotificationBell from '@/components/notifications/NotificationBell';
 import Logo from '@/components/ui/Logo';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/ui/LanguageSelector';
 
 const navItemVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -16,6 +18,7 @@ const navItemVariants = {
 
 const Navbar = () => {
   const { user, isAdmin } = useAuth();
+  const { t } = useTranslation();
   
   return (
     <motion.header 
@@ -66,7 +69,7 @@ const Navbar = () => {
                   "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
                 )}
               >
-                Home
+                {t('nav.home')}
               </Link>
             </motion.div>
 
@@ -79,7 +82,7 @@ const Navbar = () => {
                     "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
                   )}
                 >
-                  Gallery
+                  {t('nav.gallery')}
                 </Link>
               </motion.div>
             )}
@@ -94,7 +97,7 @@ const Navbar = () => {
                   )}
                 >
                   <Shield className="h-5 w-5 inline mr-1" />
-                  Admin
+                  {t('nav.admin')}
                 </Link>
               </motion.div>
             )}
@@ -107,7 +110,7 @@ const Navbar = () => {
                   "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
                 )}
               >
-                About
+                {t('nav.about')}
               </Link>
             </motion.div>
           </motion.div>
@@ -126,11 +129,18 @@ const Navbar = () => {
                 >
                   <Link to="/upload" className="flex items-center gap-2">
                     <ImageIcon className="h-4 w-4" />
-                    <span>Share</span>
+                    <span>{t('nav.share')}</span>
                   </Link>
                 </Button>
               </motion.div>
             )}
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <LanguageSelector />
+            </motion.div>
             
             <motion.div
               whileHover={{ scale: 1.05 }}

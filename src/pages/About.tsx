@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from 'react-i18next';
 import { 
   Camera, 
   Mail, 
@@ -28,6 +29,8 @@ const fadeIn = {
 };
 
 const About = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -47,11 +50,10 @@ const About = () => {
               Photography Portfolio
             </Badge>
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
-              About theyaz.io
+              {t('about.title')} theyaz.io
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Capturing moments, creating memories, and sharing stories through the lens. 
-              A modern photography portfolio showcasing the beauty of everyday moments.
+              {t('about.description')}
             </p>
           </div>
           

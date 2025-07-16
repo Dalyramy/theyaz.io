@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
 import { Camera } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -22,6 +23,7 @@ const Login = () => {
   const { signIn, signInWithGoogle, signInWithApple, signInWithFacebook } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   
   // Get the location the user was trying to access before being redirected to login
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/';
@@ -127,7 +129,7 @@ const Login = () => {
               ⴰⵣⵓⵍ
             </CardTitle>
             <p className="text-center text-base sm:text-lg text-muted-foreground">
-              Sign in to your account to continue
+              {t('auth.signIn')} {t('common.to')} {t('common.your')} {t('common.account')} {t('common.to')} {t('common.continue')}
             </p>
           </CardHeader>
           <CardContent className="space-y-6">

@@ -3,6 +3,7 @@ import { StrictMode } from 'react'
 import App from './App.tsx'
 import './index.css'
 import { ThemeProvider } from './contexts/ThemeProvider'
+import './i18n'
 
 const root = document.getElementById("root");
 if (!root) {

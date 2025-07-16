@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Component, ErrorInfo, ReactNode } from "react";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
+import "@/i18n";
 
 import Index from "./pages/Index";
 import PhotoView from "./pages/PhotoView";

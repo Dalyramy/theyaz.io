@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "gallery": "Galerie",
+    "admin": "Admin",
+    "about": "À propos",
+    "share": "Partager"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "loginWithGoogle": "Se connecter avec Google",
+    "loginWithApple": "Se connecter avec Apple"
+  },
+  "gallery": {
+    "upload": "Télécharger",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "like": "J'aime",
+    "unlike": "Je n'aime plus",
+    "share": "Partager",
+    "comment": "Commenter",
+    "comments": "Commentaires",
+    "noPhotos": "Aucune photo pour le moment",
+    "uploadFirst": "Téléchargez votre première photo",
+    "loading": "Chargement...",
+    "error": "Erreur lors du chargement des photos"
+  },
+  "photo": {
+    "title": "Titre",
+    "description": "Description",
+    "tags": "Tags",
+    "uploadPhoto": "Télécharger une photo",
+    "editPhoto": "Modifier la photo",
+    "deletePhoto": "Supprimer la photo",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler",
+    "uploadSuccess": "Photo téléchargée avec succès",
+    "uploadError": "Erreur lors du téléchargement de la photo",
+    "editSuccess": "Photo mise à jour avec succès",
+    "editError": "Erreur lors de la mise à jour de la photo",
+    "deleteSuccess": "Photo supprimée avec succès",
+    "deleteError": "Erreur lors de la suppression de la photo"
+  },
+  "profile": {
+    "profile": "Profil",
+    "editProfile": "Modifier le profil",
+    "followers": "Abonnés",
+    "following": "Abonnements",
+    "photos": "Photos",
+    "bio": "Bio",
+    "website": "Site web",
+    "location": "Localisation",
+    "joined": "Inscrit le"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "view": "Voir",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "reset": "Réinitialiser"
+  },
+  "about": {
+    "title": "À propos",
+    "description": "Une galerie simple où les gens peuvent se connecter pour commenter, aimer ou partager le travail."
+  },
+  "notifications": {
+    "notifications": "Notifications",
+    "noNotifications": "Aucune notification",
+    "markAllRead": "Marquer tout comme lu",
+    "newLike": "a aimé votre photo",
+    "newComment": "a commenté votre photo",
+    "newFollower": "a commencé à vous suivre"
+  },
+  "messaging": {
+    "messages": "Messages",
+    "inbox": "Boîte de réception",
+    "conversation": "Conversation",
+    "sendMessage": "Envoyer un message",
+    "typeMessage": "Tapez un message...",
+    "noMessages": "Aucun message pour le moment",
+    "startConversation": "Commencer une conversation"
+  },
+  "admin": {
+    "admin": "Admin",
+    "dashboard": "Tableau de bord",
+    "users": "Utilisateurs",
+    "photos": "Photos",
+    "reports": "Rapports",
+    "settings": "Paramètres"
+  },
+  "language": {
+    "language": "Langue",
+    "english": "Anglais",
+    "french": "Français",
+    "spanish": "Espagnol",
+    "arabic": "Arabe",
+    "amazigh": "Amazigh"
+  }
+} 
