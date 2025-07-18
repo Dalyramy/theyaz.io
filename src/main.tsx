@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import { ThemeProvider } from './contexts/ThemeProvider'
 import './i18n'
+import { injectSpeedInsights } from '@vercel/speed-insights'
 
 const root = document.getElementById("root");
 if (!root) {
@@ -17,3 +18,6 @@ createRoot(root).render(
     </ThemeProvider>
   </StrictMode>
 );
+
+// Initialize Vercel Speed Insights
+injectSpeedInsights();

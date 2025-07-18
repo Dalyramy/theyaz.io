@@ -13,8 +13,6 @@ CREATE TABLE IF NOT EXISTS public.categories (
   name text NOT NULL UNIQUE,
   description text,
   cover_photo_id uuid,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
-  updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
   CONSTRAINT categories_pkey PRIMARY KEY (id),
   CONSTRAINT categories_cover_photo_id_fkey_20250714 FOREIGN KEY (cover_photo_id) REFERENCES public.photos(id) ON DELETE SET NULL
 );
@@ -87,22 +85,7 @@ BEGIN
     END IF;
 END $$;
 
--- Add trigger for categories table
-DO $$ 
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.triggers 
-        WHERE trigger_name = 'update_categories_updated_at_20250714' 
-        AND event_object_table = 'categories'
-    ) THEN
-        CREATE TRIGGER update_categories_updated_at_20250714 
-        BEFORE UPDATE ON public.categories 
-        FOR EACH ROW EXECUTE FUNCTION update_updated_at_20250714();
-        RAISE NOTICE 'Created timestamp trigger for categories table';
-    ELSE
-        RAISE NOTICE 'Timestamp trigger for categories table already exists';
-    END IF;
-END $$;
+-- Categories table doesn't have timestamp columns, so no trigger needed
 
 -- ============================================================================
 -- STEP 5: ADD PERFORMANCE INDEXES
@@ -211,8 +194,6 @@ COMMENT ON COLUMN public.categories.id IS 'Unique identifier for the category';
 COMMENT ON COLUMN public.categories.name IS 'Unique category name for organizing photos';
 COMMENT ON COLUMN public.categories.description IS 'Detailed description of the category';
 COMMENT ON COLUMN public.categories.cover_photo_id IS 'Featured photo for the category display';
-COMMENT ON COLUMN public.categories.created_at IS 'Timestamp when the category was created';
-COMMENT ON COLUMN public.categories.updated_at IS 'Timestamp when the category was last updated';
 
 -- Add comments for albums table columns
 COMMENT ON COLUMN public.albums.id IS 'Unique identifier for the album';
@@ -232,12 +213,35 @@ COMMENT ON COLUMN public.photos.album_id IS 'Album this photo belongs to for org
 -- STEP 8: ADD CONSTRAINT COMMENTS
 -- ============================================================================
 
--- Add comments for foreign key constraints
-COMMENT ON CONSTRAINT categories_cover_photo_id_fkey_20250714 ON public.categories IS 'Foreign key to photos table for category cover photo. Set to NULL if photo is deleted.';
-COMMENT ON CONSTRAINT albums_cover_photo_id_fkey_20250714 ON public.albums IS 'Foreign key to photos table for album cover photo. Set to NULL if photo is deleted.';
-COMMENT ON CONSTRAINT albums_user_id_fkey_20250714 ON public.albums IS 'Foreign key to profiles table for album owner. Cascade delete when user is deleted.';
-COMMENT ON CONSTRAINT albums_category_id_fkey_20250714 ON public.albums IS 'Foreign key to categories table for album category. Set to NULL if category is deleted.';
-COMMENT ON CONSTRAINT photos_album_id_fkey_20250714 ON public.photos IS 'Foreign key to albums table for photo organization. Set to NULL if album is deleted.';
+-- Add comments for foreign key constraints only if they exist
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.table_constraints 
+        WHERE constraint_name = 'categories_cover_photo_id_fkey_20250714' AND table_name = 'categories') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT categories_cover_photo_id_fkey_20250714 ON public.categories IS ''Foreign key to photos table for category cover photo. Set to NULL if photo is deleted.''';
+    END IF;
+    IF EXISTS (
+        SELECT 1 FROM information_schema.table_constraints 
+        WHERE constraint_name = 'albums_cover_photo_id_fkey_20250714' AND table_name = 'albums') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT albums_cover_photo_id_fkey_20250714 ON public.albums IS ''Foreign key to photos table for album cover photo. Set to NULL if photo is deleted.''';
+    END IF;
+    IF EXISTS (
+        SELECT 1 FROM information_schema.table_constraints 
+        WHERE constraint_name = 'albums_user_id_fkey_20250714' AND table_name = 'albums') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT albums_user_id_fkey_20250714 ON public.albums IS ''Foreign key to profiles table for album owner. Cascade delete when user is deleted.''';
+    END IF;
+    IF EXISTS (
+        SELECT 1 FROM information_schema.table_constraints 
+        WHERE constraint_name = 'albums_category_id_fkey_20250714' AND table_name = 'albums') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT albums_category_id_fkey_20250714 ON public.albums IS ''Foreign key to categories table for album category. Set to NULL if category is deleted.''';
+    END IF;
+    IF EXISTS (
+        SELECT 1 FROM information_schema.table_constraints 
+        WHERE constraint_name = 'photos_album_id_fkey_20250714' AND table_name = 'photos') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT photos_album_id_fkey_20250714 ON public.photos IS ''Foreign key to albums table for photo organization. Set to NULL if album is deleted.''';
+    END IF;
+END $$;
 
 -- ============================================================================
 -- STEP 9: VERIFY CREATION AND SUMMARY

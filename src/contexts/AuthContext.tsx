@@ -59,12 +59,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const fetchIsAdmin = async (userId: string) => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('is_admin')
-      .eq('id', userId)
-      .single();
-    setIsAdmin(!!(data && (data as any).is_admin));
+    try {
+      console.log('Fetching admin status for user:', userId);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', userId)
+        .single();
+      
+      console.log('Admin fetch result:', { data, error });
+      
+      if (error) {
+        console.error('Error fetching admin status:', error);
+        setIsAdmin(false);
+        return;
+      }
+      
+      const isAdminUser = !!(data && (data as any).is_admin);
+      console.log('Setting isAdmin to:', isAdminUser);
+      setIsAdmin(isAdminUser);
+    } catch (error) {
+      console.error('Exception in fetchIsAdmin:', error);
+      setIsAdmin(false);
+    }
   };
 
   const signUp = async (

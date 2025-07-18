@@ -141,36 +141,47 @@ END $$;
 -- POSTS TABLE VALIDATION (Additional validation)
 -- =============================================================================
 
--- Add CHECK constraints for posts table
-ALTER TABLE posts 
-ADD CONSTRAINT posts_title_not_empty 
-CHECK (title IS NOT NULL AND LENGTH(TRIM(title)) > 0);
-
-ALTER TABLE posts 
-ADD CONSTRAINT posts_content_not_empty 
-CHECK (content IS NOT NULL AND LENGTH(TRIM(content)) > 0);
-
-ALTER TABLE posts 
-ADD CONSTRAINT posts_comments_count_non_negative 
-CHECK (comments_count IS NULL OR comments_count >= 0);
-
+-- Add CHECK constraints for posts table (only if table exists)
 DO $$
 BEGIN
-    RAISE NOTICE 'Added validation constraints to posts table';
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'posts' AND table_schema = 'public') THEN
+        ALTER TABLE posts 
+        ADD CONSTRAINT posts_title_not_empty 
+        CHECK (title IS NOT NULL AND LENGTH(TRIM(title)) > 0);
+
+        ALTER TABLE posts 
+        ADD CONSTRAINT posts_content_not_empty 
+        CHECK (content IS NOT NULL AND LENGTH(TRIM(content)) > 0);
+
+        -- Check if comments_count column exists before adding constraint
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'posts' AND column_name = 'comments_count') THEN
+            ALTER TABLE posts 
+            ADD CONSTRAINT posts_comments_count_non_negative 
+            CHECK (comments_count IS NULL OR comments_count >= 0);
+        END IF;
+
+        RAISE NOTICE 'Added validation constraints to posts table';
+    ELSE
+        RAISE NOTICE 'Posts table does not exist, skipping posts validation';
+    END IF;
 END $$;
 
 -- =============================================================================
 -- POST_COMMENTS TABLE VALIDATION (Additional validation)
 -- =============================================================================
 
--- Add CHECK constraints for post_comments table
-ALTER TABLE post_comments 
-ADD CONSTRAINT post_comments_content_not_empty 
-CHECK (content IS NOT NULL AND LENGTH(TRIM(content)) > 0);
-
+-- Add CHECK constraints for post_comments table (only if table exists)
 DO $$
 BEGIN
-    RAISE NOTICE 'Added validation constraints to post_comments table';
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'post_comments' AND table_schema = 'public') THEN
+        ALTER TABLE post_comments 
+        ADD CONSTRAINT post_comments_content_not_empty 
+        CHECK (content IS NOT NULL AND LENGTH(TRIM(content)) > 0);
+
+        RAISE NOTICE 'Added validation constraints to post_comments table';
+    ELSE
+        RAISE NOTICE 'Post_comments table does not exist, skipping post_comments validation';
+    END IF;
 END $$;
 
 -- =============================================================================
@@ -203,26 +214,30 @@ END $$;
 -- USERS TABLE VALIDATION (Additional validation)
 -- =============================================================================
 
--- Add CHECK constraints for users table
-ALTER TABLE users 
-ADD CONSTRAINT users_email_format 
-CHECK (
-    email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
-);
-
-ALTER TABLE users 
-ADD CONSTRAINT users_username_format 
-CHECK (
-    username ~ '^[a-zA-Z0-9_]+$' AND LENGTH(username) >= 3
-);
-
-ALTER TABLE users 
-ADD CONSTRAINT users_password_hash_not_empty 
-CHECK (password_hash IS NOT NULL AND LENGTH(TRIM(password_hash)) > 0);
-
+-- Add CHECK constraints for users table (only if table exists)
 DO $$
 BEGIN
-    RAISE NOTICE 'Added validation constraints to users table';
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'users' AND table_schema = 'public') THEN
+        ALTER TABLE users 
+        ADD CONSTRAINT users_email_format 
+        CHECK (
+            email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+        );
+
+        ALTER TABLE users 
+        ADD CONSTRAINT users_username_format 
+        CHECK (
+            username ~ '^[a-zA-Z0-9_]+$' AND LENGTH(username) >= 3
+        );
+
+        ALTER TABLE users 
+        ADD CONSTRAINT users_password_hash_not_empty 
+        CHECK (password_hash IS NOT NULL AND LENGTH(TRIM(password_hash)) > 0);
+
+        RAISE NOTICE 'Added validation constraints to users table';
+    ELSE
+        RAISE NOTICE 'Users table does not exist, skipping users validation';
+    END IF;
 END $$;
 
 -- =============================================================================
@@ -312,11 +327,22 @@ COMMENT ON CONSTRAINT messages_content_not_empty ON messages IS 'Ensures message
 
 COMMENT ON CONSTRAINT notifications_type_not_empty ON notifications IS 'Ensures notification type is not null or empty';
 
-COMMENT ON CONSTRAINT posts_title_not_empty ON posts IS 'Ensures post title is not null or empty';
-COMMENT ON CONSTRAINT posts_content_not_empty ON posts IS 'Ensures post content is not null or empty';
-COMMENT ON CONSTRAINT posts_comments_count_non_negative ON posts IS 'Ensures post comments count is non-negative';
-
-COMMENT ON CONSTRAINT post_comments_content_not_empty ON post_comments IS 'Ensures post comment content is not null or empty';
+-- Add comments for posts constraints (only if they exist)
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'posts_title_not_empty' AND table_name = 'posts') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT posts_title_not_empty ON posts IS ''Ensures post title is not null or empty''';
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'posts_content_not_empty' AND table_name = 'posts') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT posts_content_not_empty ON posts IS ''Ensures post content is not null or empty''';
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'posts_comments_count_non_negative' AND table_name = 'posts') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT posts_comments_count_non_negative ON posts IS ''Ensures post comments count is non-negative''';
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'post_comments_content_not_empty' AND table_name = 'post_comments') THEN
+        EXECUTE 'COMMENT ON CONSTRAINT post_comments_content_not_empty ON post_comments IS ''Ensures post comment content is not null or empty''';
+    END IF;
+END $$;
 
 COMMENT ON CONSTRAINT profiles_username_format ON profiles IS 'Ensures username contains only alphanumeric characters and underscores';
 COMMENT ON CONSTRAINT profiles_avatar_url_format ON profiles IS 'Ensures avatar_url is a valid URL or base64 data if provided';

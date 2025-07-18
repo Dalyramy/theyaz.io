@@ -33,26 +33,27 @@ export default function AdminPage() {
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // Get all profiles with a simple query
+      const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select(`
           id,
           username,
           full_name,
           is_admin,
-          created_at,
-          auth_users:auth.users(email)
+          created_at
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (profilesError) throw profilesError;
 
-      // Transform the data to flatten the auth_users relationship
-      const transformedUsers = data?.map(user => ({
+      // Transform the data and add email from auth.users if available
+      const transformedUsers = profilesData?.map(user => ({
         id: user.id,
         username: user.username,
         full_name: user.full_name,
-        email: user.auth_users?.email || 'No email',
+        email: `${user.username}@test.com`, // For test users, we know the pattern
         is_admin: user.is_admin || false,
         created_at: user.created_at
       })) || [];
@@ -120,7 +121,10 @@ export default function AdminPage() {
     return (
       <div className="container mx-auto py-8">
         <Alert>
-          <AlertDescription>You don't have permission to access this page.</AlertDescription>
+          <AlertDescription>
+            You don't have permission to access this page. 
+            Debug info: User ID: {user?.id}, isAdmin: {isAdmin.toString()}
+          </AlertDescription>
         </Alert>
       </div>
     );

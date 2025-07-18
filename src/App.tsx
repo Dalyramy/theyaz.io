@@ -28,6 +28,8 @@ import CategoryList from './components/gallery/CategoryList';
 import InstagramTestPage from './pages/InstagramTestPage';
 import Gallery from './components/Gallery';
 import AdminPage from './pages/Admin';
+import PhotosData from './pages/PhotosData';
+import EnhancedGalleryPage from './pages/EnhancedGalleryPage';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -91,6 +93,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/gallery" element={<Gallery />} />
+                      <Route path="/enhanced-gallery" element={<EnhancedGalleryPage />} />
                       <Route path="/public-gallery" element={<GalleryPage />} />
                       <Route path="/albums/:albumId" element={<AlbumPage />} />
                       <Route path="/categories" element={<CategoryList />} />
@@ -113,6 +116,7 @@ function App() {
                       <Route path="/messaging" element={<Inbox />} />
                       <Route path="/messaging/:userId" element={<Conversation />} />
                       <Route path="/instagram-test" element={<InstagramTestPage />} />
+                      <Route path="/photos-data" element={<PhotosData />} />
                       <Route path="/admin" element={
                         <ProtectedRoute>
                           <AdminPage />
