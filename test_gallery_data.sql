@@ -25,32 +25,11 @@ INSERT INTO public.photos (id, title, image_url, likes_count, created_at) VALUES
   NOW() - INTERVAL '3 hours'
 );
 
--- Insert sample photos with Instagram post IDs
--- Note: These are example Instagram post IDs - replace with real ones for testing
-INSERT INTO public.photos (id, title, image_url, instagram_post_id, likes_count, created_at) VALUES
-(
-  gen_random_uuid(),
-  'Instagram Post 1',
-  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=800&fit=crop',
-  'C1234567890_ABC123',
-  67,
-  NOW() - INTERVAL '5 hours'
-),
-(
-  gen_random_uuid(),
-  'Instagram Post 2',
-  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=800&fit=crop',
-  'D9876543210_XYZ789',
-  89,
-  NOW() - INTERVAL '1 hour'
-);
-
 -- Verify the data was inserted
 SELECT 
   id,
   title,
   image_url,
-  instagram_post_id,
   likes_count,
   created_at
 FROM public.photos 

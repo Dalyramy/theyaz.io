@@ -13,7 +13,6 @@ interface Photo {
   tags: string[];
   likes?: number;
   comments?: number;
-  instagram_post_id?: string | null;
 }
 
 interface PhotoCardProps {
@@ -67,23 +66,13 @@ const PhotoCard = ({ photo }: PhotoCardProps) => {
           <Card className="overflow-hidden bg-card/50 backdrop-blur-sm">
             <CardContent className="p-0">
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-t-lg">
-                {photo.instagram_post_id ? (
-                  <div className="h-full w-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <div className="text-2xl mb-2">📸</div>
-                      <div className="text-sm font-medium">Instagram Post</div>
-                      <div className="text-xs opacity-80">Tap to view</div>
-                    </div>
-                  </div>
-                ) : (
-                  <motion.img
-                    layoutId={`photo-${photo.image_url}`}
-                    src={photo.image_url}
-                    alt={photo.title}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                )}
+                <motion.img
+                  layoutId={`photo-${photo.image_url}`}
+                  src={photo.image_url}
+                  alt={photo.title}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
                   <div className="flex items-center gap-1 rounded-full bg-black/20 px-2 py-1 text-xs text-white backdrop-blur-md">
@@ -141,7 +130,6 @@ const PhotoCard = ({ photo }: PhotoCardProps) => {
         imageUrl={photo.image_url}
         alt={photo.title}
         title={photo.title}
-        instagramPostId={photo.instagram_post_id}
       />
     </>
   );

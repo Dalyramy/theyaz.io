@@ -50,22 +50,6 @@ describe('ShareButton', () => {
     });
   });
 
-  it('shows dropdown menu when Web Share API is not available', async () => {
-    // Remove share API
-    delete (navigator as Navigator & { share?: unknown }).share;
-
-    render(<ShareButton {...mockProps} />);
-    
-    const shareButton = screen.getByRole('button');
-    fireEvent.click(shareButton);
-
-    await waitFor(() => {
-      expect(screen.getByText('Copy link')).toBeInTheDocument();
-      expect(screen.getByText('Share on Twitter')).toBeInTheDocument();
-      expect(screen.getByText('Share on Facebook')).toBeInTheDocument();
-    });
-  });
-
   it('copies link to clipboard', async () => {
     delete (navigator as Navigator & { share?: unknown }).share;
 
@@ -96,30 +80,6 @@ describe('ShareButton', () => {
     const expectedUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       mockProps.title
     )}&url=${encodeURIComponent(mockProps.url)}`;
-
-    await waitFor(() => {
-      expect(window.open).toHaveBeenCalledWith(
-        expectedUrl,
-        '_blank',
-        'width=600,height=400'
-      );
-    });
-  });
-
-  it('opens Facebook share dialog', async () => {
-    delete (navigator as Navigator & { share?: unknown }).share;
-
-    render(<ShareButton {...mockProps} />);
-    
-    const shareButton = screen.getByRole('button');
-    fireEvent.click(shareButton);
-
-    const facebookButton = await screen.findByText('Share on Facebook');
-    fireEvent.click(facebookButton);
-
-    const expectedUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-      mockProps.url
-    )}`;
 
     await waitFor(() => {
       expect(window.open).toHaveBeenCalledWith(

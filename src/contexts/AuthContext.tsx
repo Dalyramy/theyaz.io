@@ -18,7 +18,6 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signInWithGoogle: () => Promise<void>;
   signInWithApple: () => Promise<void>;
-  signInWithFacebook: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -127,15 +126,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const signInWithFacebook = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'facebook',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-  };
-
   const signOut = async () => {
     await supabase.auth.signOut();
     navigate('/login');
@@ -152,7 +142,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signIn, 
         signInWithGoogle, 
         signInWithApple,
-        signInWithFacebook,
         signOut 
       }}
     >

@@ -44,7 +44,6 @@ BEGIN
         description,
         image_url,
         thumbnail_url,
-        instagram_post_id,
         user_id,
         is_public,
         likes_count,
@@ -56,7 +55,6 @@ BEGIN
         'This is a test photo with a valid Instagram post ID',
         'https://example.com/test-image-1.jpg',
         'https://example.com/test-thumbnail-1.jpg',
-        'C1234567890_ABC123',
         test_user_id,
         true,
         0,
@@ -73,7 +71,6 @@ BEGIN
         description,
         image_url,
         thumbnail_url,
-        instagram_post_id,
         user_id,
         is_public,
         likes_count,
@@ -85,7 +82,6 @@ BEGIN
         'Another test photo with different Instagram post ID',
         'https://example.com/test-image-2.jpg',
         'https://example.com/test-thumbnail-2.jpg',
-        'C9876543210_XYZ789',
         test_user_id,
         true,
         0,
@@ -230,11 +226,11 @@ BEGIN
     BEGIN
         INSERT INTO photos (
             title, description, image_url, thumbnail_url, 
-            instagram_post_id, user_id, is_public
+            user_id, is_public
         ) VALUES (
             'Valid Instagram Test', 'Test with valid Instagram ID',
             'https://example.com/valid.jpg', 'https://example.com/valid-thumb.jpg',
-            'C1234567890_ABC123DEF456', test_user_id, true
+            test_user_id, true
         );
         RAISE NOTICE '✓ Valid Instagram post ID accepted';
     EXCEPTION
@@ -246,11 +242,11 @@ BEGIN
     BEGIN
         INSERT INTO photos (
             title, description, image_url, thumbnail_url, 
-            instagram_post_id, user_id, is_public
+            user_id, is_public
         ) VALUES (
             'Invalid Instagram Test', 'Test with invalid Instagram ID',
             'https://example.com/invalid.jpg', 'https://example.com/invalid-thumb.jpg',
-            'invalid_format_123', test_user_id, true
+            test_user_id, true
         );
         RAISE NOTICE '✗ Invalid Instagram post ID accepted (should have been rejected)';
     EXCEPTION
@@ -350,7 +346,6 @@ SELECT
     'Test Photos' as data_type,
     id,
     title,
-    instagram_post_id,
     likes_count,
     comments_count,
     created_at

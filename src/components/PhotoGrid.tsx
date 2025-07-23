@@ -34,7 +34,6 @@ interface Photo {
   };
   created_at: string;
   likes_count?: number;
-  instagram_post_id?: string | null;
 }
 
 interface PhotoGridProps {

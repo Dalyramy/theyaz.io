@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import { Separator } from '@/components/ui/separator';
-import InstagramEmbed from '@/components/social/InstagramEmbed';
-import FacebookEmbed from '@/components/social/FacebookEmbed';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,8 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { 
   Camera, 
   Mail, 
-  Instagram, 
-  Facebook, 
   ExternalLink,
   Heart,
   Image as ImageIcon,
@@ -180,37 +176,9 @@ const About = () => {
                 </p>
               </CardHeader>
               <CardContent>
-                <Tabs defaultValue="instagram" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 mb-6">
-                    <TabsTrigger value="instagram" className="flex items-center gap-2">
-                      <Instagram className="w-4 h-4" />
-                      Instagram
-                    </TabsTrigger>
-                    <TabsTrigger value="facebook" className="flex items-center gap-2">
-                      <Facebook className="w-4 h-4" />
-                      Facebook
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="instagram">
-                    <div className="space-y-4">
-                      <p className="text-muted-foreground">Check out my latest Instagram posts and stories</p>
-                      <InstagramEmbed 
-                        postUrl="https://www.instagram.com/p/CyHksZcMYY2/"
-                        caption="Featured work from theyaz.io"
-                        className="mx-auto"
-                      />
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="facebook">
-                    <div className="space-y-4">
-                      <p className="text-muted-foreground">Follow me on Facebook for updates and community</p>
-                      <FacebookEmbed 
-                        postUrl="https://www.facebook.com/facebook/posts/10153231379946729"
-                        className="mx-auto"
-                      />
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                <div className="text-muted-foreground text-center py-8">
+                  Social media integrations have been removed. Please check back for updates!
+                </div>
               </CardContent>
             </Card>
           </motion.section>

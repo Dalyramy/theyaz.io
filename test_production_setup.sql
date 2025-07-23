@@ -19,7 +19,7 @@ BEGIN
     
     -- Insert a test photo with Instagram post ID
     INSERT INTO public.photos (
-        id, title, image_url, image_path, user_id, instagram_post_id, 
+        id, title, image_url, image_path, user_id, 
         created_at, updated_at, likes_count, comments_count, caption, tags
     ) VALUES (
         gen_random_uuid(),
@@ -27,7 +27,6 @@ BEGIN
         'https://www.instagram.com/p/C7QwQk1J8kA/media/?size=l',
         '/photos/instagram_C7QwQk1J8kA.jpg',
         user_id,
-        'C7QwQk1J8kA',
         now(),
         now(),
         0,
@@ -40,4 +39,4 @@ BEGIN
 END $$;
 
 -- Verify the photo was created
-SELECT id, title, instagram_post_id, image_url FROM public.photos WHERE instagram_post_id IS NOT NULL; 
+SELECT id, title, image_url FROM public.photos WHERE instagram_post_id IS NOT NULL; 

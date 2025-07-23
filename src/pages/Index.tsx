@@ -10,6 +10,7 @@ import SearchSection from '@/components/home/SearchSection';
 import FooterSection from '@/components/home/FooterSection';
 import { Link } from 'react-router-dom';
 import CompactGallery from '@/components/gallery/CompactGallery';
+import Trans from './Trans';
 
 const ITEMS_PER_PAGE = 12;
 

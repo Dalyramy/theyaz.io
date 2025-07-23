@@ -1,4 +1,4 @@
-import { Mail, Instagram, Twitter, Facebook, Github, Linkedin } from 'lucide-react';
+import { Mail, Twitter, Github, Linkedin } from 'lucide-react';
 
 const FooterSection = () => {
   return (
@@ -43,28 +43,12 @@ const FooterSection = () => {
             <h3 className="text-xl font-semibold text-foreground">Follow Us</h3>
             <div className="flex space-x-4">
               <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors hover:scale-110 transform"
-              >
-                <Instagram className="h-6 w-6" />
-              </a>
-              <a
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors hover:scale-110 transform"
               >
                 <Twitter className="h-6 w-6" />
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors hover:scale-110 transform"
-              >
-                <Facebook className="h-6 w-6" />
               </a>
               <a
                 href="https://github.com"

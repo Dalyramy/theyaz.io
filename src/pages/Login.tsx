@@ -20,7 +20,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, signInWithGoogle, signInWithApple, signInWithFacebook } = useAuth();
+  const { signIn, signInWithGoogle, signInWithApple } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -96,25 +96,6 @@ const Login = () => {
     }
   };
 
-  const handleFacebookSignIn = async () => {
-    try {
-      await signInWithFacebook();
-      // Note: No need for success toast here since page will redirect
-    } catch (error: unknown) {
-      let message = 'Failed to sign in with Facebook';
-      if (
-        error &&
-        typeof error === 'object' &&
-        'message' in error &&
-        typeof (error as { message?: unknown }).message === 'string'
-      ) {
-        message = (error as { message: string }).message;
-      }
-      toast.error(message);
-      console.error(error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center">
       <motion.div
@@ -133,7 +114,7 @@ const Login = () => {
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <Button
                 variant="outline"
                 onClick={handleGoogleSignIn}
@@ -164,16 +145,6 @@ const Login = () => {
                   <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
                 </svg>
                 Apple
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleFacebookSignIn}
-                className="w-full bg-muted/50 hover:bg-muted border border-border text-foreground font-semibold shadow-none transition backdrop-blur-sm"
-              >
-                <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396v8.01Z" />
-                </svg>
-                Facebook
               </Button>
             </div>
             <div className="relative my-6">

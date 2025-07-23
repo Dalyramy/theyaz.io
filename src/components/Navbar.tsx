@@ -75,15 +75,7 @@ const Navbar = () => {
 
             {user && (
               <motion.div variants={navItemVariants} className="hidden sm:block">
-                <Link 
-                  to="/public-gallery" 
-                  className={cn(
-                    "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
-                    "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
-                  )}
-                >
-                  {t('nav.gallery')}
-                </Link>
+                {/* Removed /public-gallery link */}
               </motion.div>
             )}
 
@@ -95,7 +87,7 @@ const Navbar = () => {
                   "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
                 )}
               >
-                Enhanced Gallery
+                ⴳⴰⵍⵍⴻⵔⵢ
               </Link>
             </motion.div>
             
@@ -123,6 +115,17 @@ const Navbar = () => {
                 )}
               >
                 {t('nav.about')}
+              </Link>
+            </motion.div>
+            <motion.div variants={navItemVariants} className="hidden sm:block">
+              <Link 
+                to="/trans" 
+                className={cn(
+                  "text-lg sm:text-2xl font-semibold transition-colors hover:text-accent focus:text-accent text-primary dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-primary dark:to-secondary px-2 py-1 rounded-lg hover:bg-primary/10 focus:bg-primary/20",
+                  "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
+                )}
+              >
+                {t('nav.trans')}
               </Link>
             </motion.div>
           </motion.div>

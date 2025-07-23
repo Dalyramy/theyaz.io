@@ -150,9 +150,12 @@ const UploadForm = () => {
         image_path: filePath
       };
       
+      // Debug log for troubleshooting RLS issues
+      console.log('Uploading photo with user_id:', user.id, photoData);
+
       const { data: insertedPhoto, error: photoError } = await supabase
         .from('photos')
-        .insert(photoData)
+        .insert([photoData]) // <-- array!
         .select()
         .single();
       

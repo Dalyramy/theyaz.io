@@ -13,7 +13,7 @@ const HeroSection = () => {
     navigate('/upload');
   };
   const handleExploreClick = () => {
-    navigate('/public-gallery');
+    // Removed navigation to /public-gallery
   };
 
   return (

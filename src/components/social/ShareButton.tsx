@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Share2, Copy, Twitter, Facebook } from 'lucide-react';
+import { Share2, Copy, Twitter } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,14 +46,11 @@ const ShareButton = ({
     setIsOpen(false);
   };
 
-  const handleShare = async (platform: 'twitter' | 'facebook') => {
+  const handleShare = async (platform: 'twitter') => {
     const shareUrls = {
       twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
         title
       )}&url=${encodeURIComponent(url)}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        url
-      )}`,
     };
 
     try {
@@ -131,13 +128,6 @@ const ShareButton = ({
           >
             <Twitter className="h-4 w-4" />
             Share on Twitter
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleShare('facebook')}
-            className="gap-2"
-          >
-            <Facebook className="h-4 w-4" />
-            Share on Facebook
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

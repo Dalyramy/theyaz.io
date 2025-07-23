@@ -16,23 +16,7 @@ VALUES (
   8
 );
 
--- Test Photo 2: Instagram post
-INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count, instagram_post_id) 
-VALUES (
-  gen_random_uuid(),
-  'Street Photography in Tokyo',
-  'Candid moment captured in the bustling streets of Shibuya',
-  'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop',
-  '/photos/tokyo-street.jpg',
-  '22222222-2222-2222-2222-222222222222',
-  NOW() - INTERVAL '1 day',
-  ARRAY['street', 'tokyo', 'urban'],
-  67,
-  12,
-  'CyHksZcMYY2'
-);
-
--- Test Photo 3: Portrait
+-- Test Photo 2: Portrait
 INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count) 
 VALUES (
   gen_random_uuid(),
@@ -47,7 +31,7 @@ VALUES (
   15
 );
 
--- Test Photo 4: Architecture
+-- Test Photo 3: Architecture
 INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count) 
 VALUES (
   gen_random_uuid(),
@@ -62,7 +46,7 @@ VALUES (
   6
 );
 
--- Test Photo 5: Nature
+-- Test Photo 4: Nature
 INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count) 
 VALUES (
   gen_random_uuid(),
@@ -77,7 +61,7 @@ VALUES (
   23
 );
 
--- Test Photo 6: Urban
+-- Test Photo 5: Urban
 INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count) 
 VALUES (
   gen_random_uuid(),
@@ -92,7 +76,7 @@ VALUES (
   11
 );
 
--- Test Photo 7: Abstract
+-- Test Photo 6: Abstract
 INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count) 
 VALUES (
   gen_random_uuid(),
@@ -107,7 +91,7 @@ VALUES (
   7
 );
 
--- Test Photo 8: Food
+-- Test Photo 7: Food
 INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count) 
 VALUES (
   gen_random_uuid(),
@@ -122,7 +106,7 @@ VALUES (
   18
 );
 
--- Test Photo 9: Travel
+-- Test Photo 8: Travel
 INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count) 
 VALUES (
   gen_random_uuid(),
@@ -137,7 +121,7 @@ VALUES (
   31
 );
 
--- Test Photo 10: Minimalist
+-- Test Photo 9: Minimalist
 INSERT INTO public.photos (id, title, caption, image_url, image_path, user_id, created_at, tags, likes_count, comments_count) 
 VALUES (
   gen_random_uuid(),
@@ -158,7 +142,6 @@ SELECT
   title,
   likes_count,
   comments_count,
-  instagram_post_id,
   created_at
 FROM public.photos 
 ORDER BY created_at DESC

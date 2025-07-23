@@ -8,10 +8,9 @@ interface PhotoViewerProps {
   imageUrl: string;
   alt: string;
   title?: string;
-  instagramPostId?: string | null;
 }
 
-const PhotoViewer = ({ isOpen, onClose, imageUrl, alt, title, instagramPostId }: PhotoViewerProps) => {
+const PhotoViewer = ({ isOpen, onClose, imageUrl, alt, title }: PhotoViewerProps) => {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -160,28 +159,13 @@ const PhotoViewer = ({ isOpen, onClose, imageUrl, alt, title, instagramPostId }:
               whileHover={{ cursor: scale > 1 ? 'grab' : 'default' }}
               whileTap={{ cursor: scale > 1 ? 'grabbing' : 'default' }}
             >
-              {instagramPostId ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <iframe
-                    src={`https://www.instagram.com/p/${instagramPostId}/embed`}
-                    width="400"
-                    height="480"
-                    frameBorder="0"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                    title={`Instagram post ${instagramPostId}`}
-                    className="max-w-full max-h-full"
-                  />
-                </div>
-              ) : (
-                <motion.img
-                  src={imageUrl}
-                  alt={alt}
-                  className="max-h-full max-w-full object-contain"
-                  draggable="false"
-                  layoutId={`photo-${imageUrl}`}
-                />
-              )}
+              <motion.img
+                src={imageUrl}
+                alt={alt}
+                className="max-h-full max-w-full object-contain"
+                draggable="false"
+                layoutId={`photo-${imageUrl}`}
+              />
             </motion.div>
           </div>
 

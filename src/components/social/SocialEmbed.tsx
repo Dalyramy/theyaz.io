@@ -1,7 +1,5 @@
 
 import { useState } from 'react';
-import FacebookEmbed from './FacebookEmbed';
-import InstagramEmbed from './InstagramEmbed';
 import { EmbedType } from '@/lib/socialEmbedUtils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 

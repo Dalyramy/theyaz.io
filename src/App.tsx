@@ -25,11 +25,11 @@ import Conversation from './pages/messaging/Conversation';
 import GalleryPage from './components/gallery/GalleryPage';
 import AlbumPage from './components/gallery/AlbumPage';
 import CategoryList from './components/gallery/CategoryList';
-import InstagramTestPage from './pages/InstagramTestPage';
 import Gallery from './components/Gallery';
 import AdminPage from './pages/Admin';
 import PhotosData from './pages/PhotosData';
 import EnhancedGalleryPage from './pages/EnhancedGalleryPage';
+import Trans from "./pages/Trans";
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -94,7 +94,6 @@ function App() {
                       <Route path="/" element={<Index />} />
                       <Route path="/gallery" element={<Gallery />} />
                       <Route path="/enhanced-gallery" element={<EnhancedGalleryPage />} />
-                      <Route path="/public-gallery" element={<GalleryPage />} />
                       <Route path="/albums/:albumId" element={<AlbumPage />} />
                       <Route path="/categories" element={<CategoryList />} />
                       <Route path="/photo/:id" element={<PhotoView />} />
@@ -109,13 +108,13 @@ function App() {
                         </ProtectedRoute>
                       } />
                       <Route path="/about" element={<About />} />
+                      <Route path="/trans" element={<Trans />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
                       <Route path="/auth/callback" element={<AuthCallback />} />
                       <Route path="/profile/:userId" element={<ProfilePage />} />
                       <Route path="/messaging" element={<Inbox />} />
                       <Route path="/messaging/:userId" element={<Conversation />} />
-                      <Route path="/instagram-test" element={<InstagramTestPage />} />
                       <Route path="/photos-data" element={<PhotosData />} />
                       <Route path="/admin" element={
                         <ProtectedRoute>

@@ -279,7 +279,6 @@ export type Database = {
           id: string
           image_path: string
           image_url: string
-          instagram_post_id: string | null
           likes_count: number | null
           tags: string[] | null
           thumbnail_url: string | null
@@ -295,7 +294,6 @@ export type Database = {
           id?: string
           image_path: string
           image_url: string
-          instagram_post_id?: string | null
           likes_count?: number | null
           tags?: string[] | null
           thumbnail_url?: string | null
@@ -311,7 +309,6 @@ export type Database = {
           id?: string
           image_path?: string
           image_url?: string
-          instagram_post_id?: string | null
           likes_count?: number | null
           tags?: string[] | null
           thumbnail_url?: string | null

@@ -1,4 +1,4 @@
-import { Share2 } from 'lucide-react';
+import { Share2, Copy, Twitter } from 'lucide-react';
 import { Button } from './button';
 import {
   DropdownMenu,
@@ -17,30 +17,14 @@ export function ShareButton({ photoId, photoUrl }: ShareButtonProps) {
 
   const shareOptions = [
     {
-      name: 'Copy Link',
-      action: () => {
-        navigator.clipboard.writeText(shareUrl);
-      },
-    },
-    {
-      name: 'Share on Facebook',
-      action: () => {
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            shareUrl
-          )}`,
-          '_blank'
-        );
-      },
+      name: 'Copy link',
+      icon: Copy,
+      onClick: handleCopyLink,
     },
     {
       name: 'Share on Twitter',
-      action: () => {
-        window.open(
-          `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}`,
-          '_blank'
-        );
-      },
+      icon: Twitter,
+      onClick: () => handleShare('twitter'),
     },
   ];
 

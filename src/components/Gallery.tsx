@@ -3,21 +3,12 @@ import axios from 'axios';
 import { supabase } from '../integrations/supabase/client';
 import type { Tables } from '../integrations/supabase/types';
 
-// Type for Instagram embed response
-interface InstagramEmbed {
-  html: string;
-  thumbnail_url?: string;
-  title?: string;
-}
-
 // Type for our photo data - only the fields we need
 interface PhotoData {
   id: string;
   title: string;
   image_url: string;
-  instagram_post_id: string | null;
   likes_count: number | null;
-  instagramEmbed?: InstagramEmbed;
 }
 
 const Gallery: React.FC = () => {
@@ -34,7 +25,7 @@ const Gallery: React.FC = () => {
       console.log('Fetching photos from Supabase...');
       const { data, error: fetchError } = await supabase
         .from('photos')
-        .select('id, title, image_url, instagram_post_id, likes_count')
+        .select('id, title, image_url, likes_count')
         .order('created_at', { ascending: false });
 
       if (fetchError) {
@@ -52,31 +43,6 @@ const Gallery: React.FC = () => {
       // Fetch Instagram embeds for photos with instagram_post_id
       const photosWithEmbeds = await Promise.all(
         data.map(async (photo) => {
-          if (photo.instagram_post_id) {
-            console.log('Fetching Instagram embed for:', photo.instagram_post_id);
-            try {
-              // Note: Instagram oEmbed API may have CORS restrictions
-              // In production, you might need a backend proxy
-              const response = await axios.get(
-                `https://api.instagram.com/oembed/?url=https://www.instagram.com/p/${photo.instagram_post_id}/`,
-                {
-                  timeout: 5000,
-                  headers: {
-                    'Accept': 'application/json',
-                  }
-                }
-              );
-              console.log('Instagram embed fetched successfully');
-              return {
-                ...photo,
-                instagramEmbed: response.data
-              };
-            } catch (embedError) {
-              console.error('Error fetching Instagram embed:', embedError);
-              // Return photo without embed - will show as regular image
-              return photo;
-            }
-          }
           return photo;
         })
       );
@@ -191,26 +157,17 @@ const Gallery: React.FC = () => {
             >
               {/* Photo/Embed Container */}
               <div className="aspect-square overflow-hidden bg-muted">
-                {photo.instagramEmbed && photo.instagramEmbed.html ? (
-                  // Instagram Embed
-                  <div 
-                    className="w-full h-full flex items-center justify-center"
-                    dangerouslySetInnerHTML={{ __html: photo.instagramEmbed.html }}
-                  />
-                ) : (
-                  // Regular Image (fallback for Instagram posts too)
-                  <img
-                    src={photo.image_url}
-                    alt={photo.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    loading="lazy"
-                    onError={(e) => {
-                      // Fallback to placeholder if image fails to load
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/placeholder.svg';
-                    }}
-                  />
-                )}
+                <img
+                  src={photo.image_url}
+                  alt={photo.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                  onError={(e) => {
+                    // Fallback to placeholder if image fails to load
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/placeholder.svg';
+                  }}
+                />
               </div>
 
               {/* Photo Info */}
