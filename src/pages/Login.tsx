@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
 import { Camera } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import Navbar from '@/components/Navbar';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -97,13 +98,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center">
-      <motion.div
-        className="w-full min-h-screen px-2 sm:px-0 flex items-center justify-center"
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-      >
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <motion.div
+          className="w-full px-2 sm:px-0 flex items-center justify-center"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
         <Card className="w-full max-w-md rounded-2xl shadow-2xl border border-border bg-card text-foreground overflow-hidden backdrop-blur-md p-4 sm:p-8">
           <CardHeader className="space-y-1">
             <CardTitle className="text-5xl sm:text-7xl font-extrabold text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6 py-4">
@@ -203,7 +206,8 @@ const Login = () => {
             </div>
           </CardFooter>
         </Card>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 };

@@ -2,16 +2,9 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-// Use local Supabase for development, hosted for production
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '10.0.0.40';
-
-const SUPABASE_URL = isLocalhost 
-  ? "http://10.0.0.40:54321"  // Local network IP for mobile testing
-  : (import.meta.env.VITE_SUPABASE_URL || "https://bkbqkpfzrqykrzzvzyrg.supabase.co");
-
-const SUPABASE_ANON_KEY = isLocalhost
-  ? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"  // Local anon key
-  : (import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrYnFrcGZ6cnF5a3J6enZ6eXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMzk5OTksImV4cCI6MjA2MTcxNTk5OX0.7wLFlI5VFlBGyroUtZTBu2MyM1bPbpW01yAik-oNb5s");
+// Use hosted Supabase for both development and production
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://bkbqkpfzrqykrzzvzyrg.supabase.co";
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrYnFrcGZ6cnF5a3J6enZ6eXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMzk5OTksImV4cCI6MjA2MTcxNTk5OX0.7wLFlI5VFlBGyroUtZTBu2MyM1bPbpW01yAik-oNb5s";
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";

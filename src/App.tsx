@@ -28,8 +28,9 @@ import CategoryList from './components/gallery/CategoryList';
 import Gallery from './components/Gallery';
 import AdminPage from './pages/Admin';
 import PhotosData from './pages/PhotosData';
-import EnhancedGalleryPage from './pages/EnhancedGalleryPage';
+
 import Trans from "./pages/Trans";
+import TestGalleryPage from "./app/test-gallery/page";
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -93,7 +94,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/gallery" element={<Gallery />} />
-                      <Route path="/enhanced-gallery" element={<EnhancedGalleryPage />} />
+
                       <Route path="/albums/:albumId" element={<AlbumPage />} />
                       <Route path="/categories" element={<CategoryList />} />
                       <Route path="/photo/:id" element={<PhotoView />} />
@@ -109,6 +110,7 @@ function App() {
                       } />
                       <Route path="/about" element={<About />} />
                       <Route path="/trans" element={<Trans />} />
+                      <Route path="/test-gallery" element={<TestGalleryPage />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
                       <Route path="/auth/callback" element={<AuthCallback />} />

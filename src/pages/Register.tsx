@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { Camera } from 'lucide-react';
+import Navbar from '@/components/Navbar';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -56,13 +57,15 @@ const Register = () => {
   const handleAppleSignUp = async () => { toast.info('Apple sign up not implemented'); };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-      <motion.div
-        className="w-full min-h-screen px-2 sm:px-0 flex items-center justify-center"
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-      >
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <div className="flex items-center justify-center min-h-screen">
+        <motion.div
+          className="w-full px-2 sm:px-0 flex items-center justify-center"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
         <Card className="w-full max-w-md rounded-2xl shadow-2xl border border-border bg-card text-foreground overflow-hidden backdrop-blur-md p-4 sm:p-8">
           <CardHeader className="space-y-1">
             <CardTitle className="text-5xl sm:text-7xl font-extrabold text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6 py-4">Create an account</CardTitle>
@@ -174,8 +177,9 @@ const Register = () => {
               </Link>
             </div>
           </CardFooter>
-      </Card>
-      </motion.div>
+        </Card>
+        </motion.div>
+      </div>
     </div>
   );
 };

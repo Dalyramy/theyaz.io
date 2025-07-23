@@ -1,5 +1,5 @@
 import React from 'react';
-import EnhancedGallery from './EnhancedGallery';
+import Gallery from '../Gallery';
 
 interface CompactGalleryProps {
   className?: string;
@@ -12,11 +12,7 @@ const CompactGallery: React.FC<CompactGalleryProps> = ({
 }) => {
   return (
     <div className={`mobile-optimized ${className}`}>
-      <EnhancedGallery 
-        className={className}
-        showHeader={false}
-        limit={limit}
-      />
+      <Gallery />
     </div>
   );
 };
