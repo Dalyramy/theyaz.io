@@ -197,9 +197,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
     return <EmptyState />;
   }
 
-  // Modern Masonry CSS
-  const masonryClass = `gallery-masonry`;
-
+  // Responsive CSS grid
   return (
     <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
       <motion.div 
@@ -257,73 +255,38 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
         </motion.div>
       )}
 
+      {/* Responsive grid layout */}
       <motion.div
-        className={masonryClass + ' w-full'}
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 w-full"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        style={{ columnGap: '1.5rem' }}
         key={sortOption + (selectedTag || 'all')}
       >
-        {isOwner ? (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={dndPhotos.map((p) => p.id)} strategy={verticalListSortingStrategy}>
-              {dndPhotos.map((photo, index) => {
-                const isLastPhoto = index === dndPhotos.length - 1;
-                return (
-                  <SortablePhoto key={photo.id} photo={photo}>
-                    <div className="relative">
-                      <PhotoCard photo={photo} />
-                      <motion.div
-                        className="absolute inset-0 bg-black bg-opacity-0 pointer-events-none"
-                        whileHover={{ backgroundColor: 'rgba(0,0,0,0.10)' }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </div>
-                  </SortablePhoto>
-                );
-              })}
-            </SortableContext>
-          </DndContext>
-        ) : (
-          displayedItems.map((photo, index) => {
-            const isLastPhoto = index === displayedItems.length - 1;
-            return (
-              <motion.div
-                key={photo.id}
-                ref={el => {
-                  if (isLastPhoto) lastItemRef(el);
-                  photoRefs.current[index] = el;
-                }}
-                variants={itemVariants}
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 40 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                style={{ breakInside: 'avoid', marginBottom: '1.5rem' }}
-                whileHover={{ scale: 1.04, zIndex: 2, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}
-                className="relative rounded-xl overflow-hidden cursor-pointer group transition-all duration-300 outline-none focus:ring-2 focus:ring-primary w-full"
-                onClick={() => {
-                  setLightboxPhotoId(photo.id);
-                  setLightboxOpen(true);
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label={`Open photo ${photo.title}`}
-                onKeyDown={e => handleKeyDown(e, index)}
-              >
-                <div className="relative">
-                  <PhotoCard photo={photo} />
-                  <motion.div
-                    className="absolute inset-0 bg-black bg-opacity-0 pointer-events-none"
-                    whileHover={{ backgroundColor: 'rgba(0,0,0,0.10)' }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
-              </motion.div>
-            );
-          })
-        )}
+        {displayedItems.map((photo, index) => {
+          const isLastPhoto = index === displayedItems.length - 1;
+          return (
+            <motion.div
+              key={photo.id}
+              ref={el => {
+                if (isLastPhoto) lastItemRef(el);
+                photoRefs.current[index] = el;
+              }}
+              variants={itemVariants}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className="outline-none focus:ring-2 focus:ring-primary w-full"
+              tabIndex={0}
+              role="button"
+              aria-label={`Open photo ${photo.title}`}
+              onKeyDown={e => handleKeyDown(e, index)}
+            >
+              <PhotoCard photo={photo} />
+            </motion.div>
+          );
+        })}
         {/* Loading spinner for infinite scroll */}
         {hasMore && (
           <motion.div

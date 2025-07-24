@@ -20,7 +20,8 @@ type Photo = {
   caption?: string;
   image_url: string;
   created_at: string;
-  // Add other fields as needed
+  tags?: string[];
+  user_id?: string;
 };
 
 const Index = () => {
@@ -35,7 +36,7 @@ const Index = () => {
         setIsLoading(true);
         let query = supabase
           .from('photos')
-          .select('id, title, caption, image_url, created_at, tags, user_id, profiles(id, username, avatar_url, full_name)')
+          .select('id, title, caption, image_url, created_at, tags, user_id')
           .order('created_at', { ascending: false });
 
         if (debouncedSearch) {
@@ -77,12 +78,12 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col pt-24">
       <Navbar />
       {/* Hero Section */}
       <HeroSection handleExploreClick={handleExploreClick} />
       {/* Photo Grid Section */}
-      <div id="photo-grid" className="container mx-auto px-4 py-12">
+      <div id="photo-grid" className="container mx-auto px-4 py-12 mt-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
             Latest Photos

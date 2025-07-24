@@ -57,7 +57,7 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
-      className="sticky top-safe-top z-50 w-full border-b border-gray-200 dark:border-border/40 bg-white/60 dark:bg-background/60 backdrop-blur-xl shadow-lg rounded-b-2xl supports-[backdrop-filter]:bg-white/40 dark:supports-[backdrop-filter]:bg-background/40"
+      className="fixed top-0 left-0 w-full h-20 z-50 border-b border-gray-200 dark:border-border/40 bg-white/60 dark:bg-background/60 backdrop-blur-xl shadow-lg supports-[backdrop-filter]:bg-white/40 dark:supports-[backdrop-filter]:bg-background/40"
     >
       <div
         className="container flex items-center justify-between px-4 sm:px-8 py-2 sm:py-3 gap-4"
@@ -167,7 +167,7 @@ const Navbar = () => {
                   "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100"
                 )}
               >
-                {t('nav.trans')}
+                ⴰⵎⵣ ⵜⵔⴰⵏⵙ
               </Link>
             </motion.div>
           </motion.div>
@@ -241,7 +241,7 @@ const Navbar = () => {
               </Link>
             )}
             <Link to="/about" className="text-xl font-bold py-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>{t('nav.about')}</Link>
-            <Link to="/trans" className="text-xl font-bold py-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>{t('nav.trans')}</Link>
+            <Link to="/trans" className="text-xl font-bold py-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>ⴰⵎⵣ ⵜⵔⴰⵏⵙ</Link>
             {user && (
               <Link to="/upload" className="text-xl font-bold py-2 flex items-center gap-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>
                 <ImageIcon className="h-5 w-5" />
