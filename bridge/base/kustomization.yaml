@@ -1,0 +1,14 @@
+#! kustomization.yaml
+# Generated code, do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+    - 0-theyazio-namespace.yaml
+    - app-deployment.yaml
+    - app-expose.yaml
+    - app-service.yaml
+    - db-deployment.yaml
+    - db-expose.yaml
+    - db-pgdata-persistentVolumeClaim.yaml
+    - db-service.yaml
+    - default-network-policy.yaml

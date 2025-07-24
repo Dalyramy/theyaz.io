@@ -10,6 +10,8 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 import Logo from '@/components/ui/Logo';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/ui/LanguageSelector';
+import { useState, useRef, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
 
 const navItemVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -19,7 +21,37 @@ const navItemVariants = {
 const Navbar = () => {
   const { user, isAdmin } = useAuth();
   const { t } = useTranslation();
-  
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  // Focus trap for mobile drawer
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+    const focusable = drawer.querySelectorAll<HTMLElement>(
+      'a, button, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length) focusable[0].focus();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      } else if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    drawer.addEventListener('keydown', handleKeyDown);
+    return () => drawer.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
   return (
     <motion.header 
       initial={{ y: -100 }}
@@ -48,9 +80,19 @@ const Navbar = () => {
             theyaz.io
           </span>
         </Link>
+        {/* Hamburger menu for mobile */}
+        <button
+          className="sm:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          onClick={() => setMobileMenuOpen((v) => !v)}
+          aria-label={mobileMenuOpen ? t('nav.close_menu', 'Close menu') : t('nav.open_menu', 'Open menu')}
+          aria-expanded={mobileMenuOpen ? 'true' : 'false'}
+        >
+          {mobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+        </button>
+        {/* Desktop nav */}
         <nav className="flex items-center gap-2 sm:gap-6 h-full">
           <motion.div 
-            className="flex items-center gap-4 sm:gap-6"
+            className="hidden sm:flex items-center gap-4 sm:gap-6"
             initial="hidden"
             animate="visible"
             variants={{
@@ -173,6 +215,50 @@ const Navbar = () => {
           </div>
         </nav>
       </div>
+      {/* Mobile drawer menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex" aria-hidden={mobileMenuOpen ? 'false' : 'true'}>
+          <div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            className="bg-background w-4/5 max-w-xs h-full shadow-2xl p-6 flex flex-col gap-4 transition-transform duration-300 ease-in-out transform translate-x-0 rounded-r-2xl border-r border-border focus:outline-none animate-slide-in-left"
+            tabIndex={-1}
+          >
+            <button
+              className="self-end mb-2 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary bg-accent hover:bg-accent/70 active:bg-accent/90 transition"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label={t('nav.close_menu', 'Close menu')}
+            >
+              <X className="w-7 h-7" />
+            </button>
+            <Link to="/" className="text-xl font-bold py-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>{t('nav.home')}</Link>
+            <Link to="/gallery" className="text-xl font-bold py-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>ⴳⴰⵍⵍⴻⵔⵢ</Link>
+            {isAdmin && (
+              <Link to="/admin" className="text-xl font-bold py-2 flex items-center rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>
+                <Shield className="h-5 w-5 mr-1" />
+                {t('nav.admin')}
+              </Link>
+            )}
+            <Link to="/about" className="text-xl font-bold py-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>{t('nav.about')}</Link>
+            <Link to="/trans" className="text-xl font-bold py-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>{t('nav.trans')}</Link>
+            {user && (
+              <Link to="/upload" className="text-xl font-bold py-2 flex items-center gap-2 rounded-lg hover:bg-accent/30 active:bg-accent/60 transition" onClick={() => setMobileMenuOpen(false)}>
+                <ImageIcon className="h-5 w-5" />
+                {t('nav.share')}
+              </Link>
+            )}
+            <hr className="my-2 border-border" />
+            <div className="flex gap-2 mt-2">
+              <LanguageSelector />
+              <ThemeToggle />
+              <UserMenu />
+            </div>
+          </div>
+          {/* Click outside to close */}
+          <div className="flex-1 cursor-pointer" aria-hidden onClick={() => setMobileMenuOpen(false)} />
+        </div>
+      )}
     </motion.header>
   );
 };

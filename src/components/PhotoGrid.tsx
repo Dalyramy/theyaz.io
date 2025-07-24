@@ -223,7 +223,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
         {SORT_OPTIONS.map(option => (
           <button
             key={option.value}
-            className={`px-3 py-1 rounded-full border text-sm font-medium transition-all ${sortOption === option.value ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-primary/10'}`}
+            className={`px-4 py-2 min-h-[44px] rounded-full border text-sm font-medium transition-all ${sortOption === option.value ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-primary/10'} active:bg-primary/20`}
             onClick={() => setSortOption(option.value)}
           >
             {option.label}
@@ -234,13 +234,13 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
       {/* Filter Bar */}
       {allTags.length > 0 && (
         <motion.div
-          className="flex flex-wrap gap-2 justify-center mb-2"
+          className="flex flex-nowrap gap-2 justify-start mb-2 overflow-x-auto pb-2 px-1 sm:justify-center"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
           <button
-            className={`px-3 py-1 rounded-full border text-sm font-medium transition-all ${!selectedTag ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-primary/10'}`}
+            className={`px-4 py-2 min-h-[44px] rounded-full border text-sm font-medium transition-all ${!selectedTag ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-primary/10'} active:bg-primary/20`}
             onClick={() => setSelectedTag(null)}
           >
             All
@@ -248,7 +248,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
           {allTags.map(tag => (
             <button
               key={tag}
-              className={`px-3 py-1 rounded-full border text-sm font-medium transition-all ${selectedTag === tag ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-primary/10'}`}
+              className={`px-4 py-2 min-h-[44px] rounded-full border text-sm font-medium transition-all ${selectedTag === tag ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-primary/10'} active:bg-primary/20`}
               onClick={() => setSelectedTag(tag)}
             >
               #{tag}
@@ -258,7 +258,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
       )}
 
       <motion.div
-        className={masonryClass}
+        className={masonryClass + ' w-full'}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -302,7 +302,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
                 transition={{ duration: 0.5, ease: 'easeOut' }}
                 style={{ breakInside: 'avoid', marginBottom: '1.5rem' }}
                 whileHover={{ scale: 1.04, zIndex: 2, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}
-                className="relative rounded-xl overflow-hidden cursor-pointer group transition-all duration-300 outline-none focus:ring-2 focus:ring-primary"
+                className="relative rounded-xl overflow-hidden cursor-pointer group transition-all duration-300 outline-none focus:ring-2 focus:ring-primary w-full"
                 onClick={() => {
                   setLightboxPhotoId(photo.id);
                   setLightboxOpen(true);

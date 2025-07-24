@@ -1,0 +1,8 @@
+#! 0-theyazio-namespace.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: theyazio
+    labels:
+        com.docker.compose.project: theyazio

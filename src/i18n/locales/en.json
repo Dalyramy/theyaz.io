@@ -134,5 +134,21 @@
     "spanish": "Spanish",
     "arabic": "Arabic",
     "amazigh": "Amazigh"
+  },
+  "trans": {
+    "title": "Amazigh Keyboard & Converter",
+    "desc": "Type in Latin or Tifinagh. Auto-convert to Amazigh letters. Copy, reset, or use the on-screen keyboard!",
+    "auto": "Auto-convert ON",
+    "auto_off": "Manual mode",
+    "convert": "Convert",
+    "clear": "Reset",
+    "placeholder": "Type here...",
+    "input_label": "Latin or Tifinagh input",
+    "copy_tifinagh": "Copy Tifinagh",
+    "copy_latin": "Copy Latin",
+    "copied_tifinagh": "Tifinagh copied!",
+    "copied_latin": "Latin copied!",
+    "preview": "Tifinagh Preview:",
+    "preview_placeholder": "ⴰⴱⴳ..."
   }
 } 

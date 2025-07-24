@@ -117,5 +117,21 @@
     "spanish": "Español",
     "arabic": "Árabe",
     "amazigh": "Amazigh"
+  },
+  "trans": {
+    "title": "Teclado y Convertidor Amazigh",
+    "desc": "Escribe en latín o tifinagh. Conversión automática a letras amazigh. ¡Copia, reinicia o usa el teclado en pantalla!",
+    "auto": "Conversión automática activada",
+    "auto_off": "Modo manual",
+    "convert": "Convertir",
+    "clear": "Reiniciar",
+    "placeholder": "Escribe aquí...",
+    "input_label": "Entrada latín o tifinagh",
+    "copy_tifinagh": "Copiar Tifinagh",
+    "copy_latin": "Copiar Latín",
+    "copied_tifinagh": "¡Tifinagh copiado!",
+    "copied_latin": "¡Latín copiado!",
+    "preview": "Vista previa Tifinagh:",
+    "preview_placeholder": "ⴰⴱⴳ..."
   }
 } 
