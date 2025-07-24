@@ -7,7 +7,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Navbar from '@/components/Navbar';
 
-// Type for our photo data
 interface PhotoData {
   id: string;
   title: string;
@@ -15,166 +14,60 @@ interface PhotoData {
   image_url: string;
   likes_count: number | null;
   comments_count: number | null;
-  album_name?: string | null;
+}
+
+interface AlbumData {
+  id: string;
+  title: string;
+  photos: PhotoData[];
 }
 
 const Gallery: React.FC = () => {
-  const [photos, setPhotos] = useState<PhotoData[]>([]);
+  const [albums, setAlbums] = useState<AlbumData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch photos from Supabase
-  const fetchPhotos = async () => {
+  useEffect(() => {
+    fetchAlbumsAndPhotos();
+  }, []);
+
+  const fetchAlbumsAndPhotos = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
-
-      console.log('Fetching photos from Supabase...');
-      
-      // For testing, use sample data if database is empty
-      const testPhotos = [
-        {
-          id: '1',
-          title: 'Sunset at Golden Gate Bridge',
-          caption: 'Beautiful sunset captured during golden hour in San Francisco',
-          image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
-          likes_count: 42,
-          comments_count: 8,
-          album_name: null
-        },
-        {
-          id: '2',
-          title: 'Portrait in Natural Light',
-          caption: 'Natural lighting creates beautiful shadows and highlights',
-          image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop',
-          likes_count: 89,
-          comments_count: 15,
-          album_name: null
-        },
-        {
-          id: '3',
-          title: 'Modern Architecture',
-          caption: 'Clean lines and geometric shapes in contemporary design',
-          image_url: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&h=600&fit=crop',
-          likes_count: 34,
-          comments_count: 6,
-          album_name: null
-        },
-        {
-          id: '4',
-          title: 'Mountain Landscape',
-          caption: 'Breathtaking view of snow-capped peaks at dawn',
-          image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
-          likes_count: 156,
-          comments_count: 23,
-          album_name: null
-        },
-        {
-          id: '5',
-          title: 'City Lights at Night',
-          caption: 'Urban photography capturing the energy of the city',
-          image_url: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=600&fit=crop',
-          likes_count: 78,
-          comments_count: 11,
-          album_name: null
-        }
-      ];
-
-      // Try to fetch from database first
-      const { data: photosData, error: photosError } = await supabase
-        .from('photos')
-        .select(`
-          id,
-          title,
-          caption,
-          image_url,
-          likes_count,
-          comments_count,
-          album_id
-        `)
-        .order('created_at', { ascending: false });
-
-      if (photosError) {
-        console.error('Error fetching photos:', photosError);
-        console.log('Using test photos instead...');
-        setPhotos(testPhotos);
-        return;
-      }
-
-      // Fetch albums separately
+      // Fetch all albums
       const { data: albumsData, error: albumsError } = await supabase
         .from('albums')
-        .select('id, title');
-
-      if (albumsError) {
-        console.error('Error fetching albums:', albumsError);
-      }
-
-      // Create a map of album titles
-      const albumMap = new Map(albumsData?.map(album => [album.id, album.title]) || []);
-
-      console.log('Photos fetched:', photosData?.length || 0, 'photos');
-      
-      if (!photosData || photosData.length === 0) {
-        console.log('No photos in database, using test photos...');
-        setPhotos(testPhotos);
+        .select('id, title')
+        .order('title', { ascending: true });
+      if (albumsError) throw albumsError;
+      if (!albumsData || albumsData.length === 0) {
+        setAlbums([]);
+        setLoading(false);
         return;
       }
-
-      // Transform the data to match our Photo type
-      const transformedPhotos = photosData.map(photo => ({
-        id: photo.id,
-        title: photo.title,
-        caption: photo.caption,
-        image_url: photo.image_url,
-        likes_count: photo.likes_count,
-        comments_count: photo.comments_count,
-        album_name: photo.album_id ? albumMap.get(photo.album_id) || null : null
-      }));
-
-      console.log('Final photos:', transformedPhotos.length);
-      setPhotos(transformedPhotos);
+      // For each album, fetch its photos
+      const albumsWithPhotos: AlbumData[] = [];
+      for (const album of albumsData) {
+        const { data: photosData, error: photosError } = await supabase
+          .from('photos')
+          .select('id, title, caption, image_url, likes_count, comments_count')
+          .eq('album_id', album.id)
+          .order('created_at', { ascending: false });
+        if (photosError) {
+          albumsWithPhotos.push({ ...album, photos: [] });
+        } else {
+          albumsWithPhotos.push({ ...album, photos: photosData || [] });
+        }
+      }
+      setAlbums(albumsWithPhotos);
     } catch (err) {
-      console.error('Error in fetchPhotos:', err);
-      setError('Failed to load photos');
+      setError('Failed to load albums/photos');
     } finally {
       setLoading(false);
     }
   };
 
-  // Set up real-time subscription for likes_count updates
-  useEffect(() => {
-    fetchPhotos();
-
-    // Subscribe to changes in the photos table
-    const subscription = supabase
-      .channel('photos_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'photos'
-        },
-        (payload) => {
-          setPhotos(prevPhotos => 
-            prevPhotos.map(photo => 
-              photo.id === payload.new.id 
-                ? { ...photo, likes_count: payload.new.likes_count }
-                : photo
-            )
-          );
-        }
-      )
-      .subscribe();
-
-    // Cleanup subscription on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  // Loading state with consistent styling
   if (loading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -194,7 +87,6 @@ const Gallery: React.FC = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -203,7 +95,7 @@ const Gallery: React.FC = () => {
           <div className="text-center">
             <div className="text-muted-foreground text-lg mb-4">{error}</div>
             <button
-              onClick={fetchPhotos}
+              onClick={fetchAlbumsAndPhotos}
               className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
             >
               Try Again
@@ -214,14 +106,13 @@ const Gallery: React.FC = () => {
     );
   }
 
-  // Empty state
-  if (photos.length === 0) {
+  if (albums.length === 0) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />
         <div className="flex items-center justify-center p-4">
           <div className="text-center">
-            <div className="text-muted-foreground text-lg mb-4">No photos available</div>
+            <div className="text-muted-foreground text-lg mb-4">No albums available</div>
             <div className="text-muted-foreground">Check back later for new content</div>
           </div>
         </div>
@@ -233,7 +124,6 @@ const Gallery: React.FC = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        {/* Gallery Header */}
         <motion.div 
           className="mb-12 text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -248,95 +138,74 @@ const Gallery: React.FC = () => {
             Discover Beautiful Moments
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            Explore a curated collection of stunning photographs captured in time
+            Explore albums and curated collections
           </p>
         </motion.div>
-
-        {/* Photo Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full">
-          {photos.map((photo, index) => (
-            <motion.div
-              key={photo.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <Card className="group overflow-hidden hover-lift rounded-2xl border-border w-full">
-                {/* Photo Container */}
-                <div className="aspect-square overflow-hidden bg-muted">
-                  <img
-                    src={photo.image_url}
-                    alt={photo.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 rounded-xl"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/placeholder.svg';
-                    }}
-                  />
-                </div>
-
-                {/* Photo Info */}
-                <CardContent className="p-4 sm:p-6">
-                  <div className="mb-4">
-                    <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2 line-clamp-2">
-                      {photo.title}
-                    </h3>
-                    {photo.caption && (
-                      <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-3">
-                        {photo.caption}
-                      </p>
-                    )}
-                    {photo.album_name && (
-                      <Badge variant="outline" className="text-xs">
-                        {photo.album_name}
-                      </Badge>
-                    )}
-                  </div>
-                  
-                  {/* Social Stats */}
-                  <div className="flex items-center justify-between text-muted-foreground mt-2">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1">
-                        <Heart className="w-4 h-4" />
-                        <span className="text-sm font-medium">
-                          {photo.likes_count || 0}
-                        </span>
+        {albums.map((album, idx) => (
+          <div key={album.id} className="mb-16">
+            <h2 className="text-3xl font-bold mb-4 text-primary/90">{album.title}</h2>
+            {album.photos.length === 0 ? (
+              <div className="text-muted-foreground mb-8">No photos in this album yet.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full mb-4">
+                {album.photos.map((photo, index) => (
+                  <motion.div
+                    key={photo.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.05 }}
+                  >
+                    <Card className="group overflow-hidden hover-lift rounded-2xl border-border w-full">
+                      <div className="aspect-square overflow-hidden bg-muted">
+                        <img
+                          src={photo.image_url}
+                          alt={photo.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 rounded-xl"
+                          loading="lazy"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/placeholder.svg';
+                          }}
+                        />
                       </div>
-                      <div className="flex items-center gap-1">
-                        <MessageSquare className="w-4 h-4" />
-                        <span className="text-sm font-medium">
-                          {photo.comments_count || 0}
-                        </span>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity min-h-[44px] min-w-[44px]">
-                      <Share2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Refresh Button */}
-        {photos.length > 0 && (
-          <motion.div 
-            className="text-center mt-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
-            <Button
-              onClick={fetchPhotos}
-              size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              Refresh Gallery
-            </Button>
-          </motion.div>
-        )}
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="mb-4">
+                          <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2 line-clamp-2">
+                            {photo.title}
+                          </h3>
+                          {photo.caption && (
+                            <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-3">
+                              {photo.caption}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between text-muted-foreground mt-2">
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-1">
+                              <Heart className="w-4 h-4" />
+                              <span className="text-sm font-medium">
+                                {photo.likes_count || 0}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <MessageSquare className="w-4 h-4" />
+                              <span className="text-sm font-medium">
+                                {photo.comments_count || 0}
+                              </span>
+                            </div>
+                          </div>
+                          <Button variant="ghost" size="sm" className="opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity min-h-[44px] min-w-[44px]">
+                            <Share2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
