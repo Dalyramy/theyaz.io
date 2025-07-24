@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
-import { Camera } from 'lucide-react';
+import { Camera, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '@/components/Navbar';
 
@@ -21,7 +21,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, signInWithGoogle, signInWithApple } = useAuth();
+  const { signIn, signInWithGoogle, signInWithApple, isConnected } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -31,13 +31,19 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isConnected) {
+      toast.error('Database connection failed. Please try again later.');
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
       const { error } = await signIn(email, password);
       
       if (error) {
-        toast.error(error.message);
+        toast.error(error.message || 'Failed to sign in');
       } else {
         toast.success('Logged in successfully!');
         navigate(from);
@@ -60,6 +66,11 @@ const Login = () => {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!isConnected) {
+      toast.error('Database connection failed. Please try again later.');
+      return;
+    }
+    
     try {
       await signInWithGoogle();
       // Note: No need for success toast here since page will redirect
@@ -79,6 +90,11 @@ const Login = () => {
   };
 
   const handleAppleSignIn = async () => {
+    if (!isConnected) {
+      toast.error('Database connection failed. Please try again later.');
+      return;
+    }
+    
     try {
       await signInWithApple();
       // Note: No need for success toast here since page will redirect
@@ -115,13 +131,22 @@ const Login = () => {
             <p className="text-center text-base sm:text-lg text-muted-foreground">
               {t('auth.signIn')} {t('common.to')} {t('common.your')} {t('common.account')} {t('common.to')} {t('common.continue')}
             </p>
+            
+            {/* Database connection status */}
+            {!isConnected && (
+              <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm">
+                <AlertCircle className="w-4 h-4" />
+                <span>Database connection issue detected</span>
+              </div>
+            )}
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <Button
                 variant="outline"
                 onClick={handleGoogleSignIn}
-                className="w-full bg-muted/50 hover:bg-muted border border-border text-foreground font-semibold shadow-none transition backdrop-blur-sm"
+                disabled={!isConnected}
+                className="w-full bg-muted/50 hover:bg-muted border border-border text-foreground font-semibold shadow-none transition backdrop-blur-sm disabled:opacity-50"
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                   <path
@@ -142,7 +167,8 @@ const Login = () => {
               <Button
                 variant="outline"
                 onClick={handleAppleSignIn}
-                className="w-full bg-muted/50 hover:bg-muted border border-border text-foreground font-semibold shadow-none transition backdrop-blur-sm"
+                disabled={!isConnected}
+                className="w-full bg-muted/50 hover:bg-muted border border-border text-foreground font-semibold shadow-none transition backdrop-blur-sm disabled:opacity-50"
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
@@ -170,7 +196,8 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-muted/50 border border-border text-foreground rounded-xl"
+                  disabled={!isConnected}
+                  className="bg-muted/50 border border-border text-foreground rounded-xl disabled:opacity-50"
                 />
               </div>
               <div className="space-y-2">
@@ -181,13 +208,14 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-muted/50 border border-border text-foreground rounded-xl"
+                  disabled={!isConnected}
+                  className="bg-muted/50 border border-border text-foreground rounded-xl disabled:opacity-50"
                 />
               </div>
               <Button
                 type="submit"
-                className="w-full bg-primary text-primary-foreground rounded-2xl py-3 text-lg font-semibold flex items-center justify-center gap-2 shadow-lg hover:bg-primary/90 transition"
-                disabled={isLoading}
+                className="w-full bg-primary text-primary-foreground rounded-2xl py-3 text-lg font-semibold flex items-center justify-center gap-2 shadow-lg hover:bg-primary/90 transition disabled:opacity-50"
+                disabled={isLoading || !isConnected}
               >
                 <Camera className="w-5 h-5" />
                 {isLoading ? 'Signing in...' : 'Sign in'}

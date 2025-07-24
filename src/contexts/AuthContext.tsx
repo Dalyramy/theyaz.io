@@ -6,7 +6,7 @@ import {
   ReactNode 
 } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, testConnection } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
 type AuthContextType = {
@@ -14,6 +14,7 @@ type AuthContextType = {
   session: Session | null;
   isLoading: boolean;
   isAdmin: boolean;
+  isConnected: boolean;
   signUp: (email: string, password: string, metadata?: { full_name?: string, username?: string }) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signInWithGoogle: () => Promise<void>;
@@ -31,31 +32,87 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // Test database connection first
+    const testDbConnection = async () => {
+      const connected = await testConnection();
+      setIsConnected(connected);
+      if (!connected) {
+        console.error('Database connection failed. Check your Supabase configuration.');
+      }
+    };
+
+    testDbConnection();
+
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
+      async (event, newSession) => {
+        console.log('Auth state change:', event, newSession?.user?.id);
         setSession(newSession);
         setUser(newSession?.user ?? null);
         setIsLoading(false);
-        if (newSession?.user) fetchIsAdmin(newSession.user.id);
-        else setIsAdmin(false);
+        
+        if (newSession?.user) {
+          await fetchIsAdmin(newSession.user.id);
+          await createUserProfile(newSession.user);
+        } else {
+          setIsAdmin(false);
+        }
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+    // Check for existing session
+    supabase.auth.getSession().then(async ({ data: { session: currentSession } }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setIsLoading(false);
-      if (currentSession?.user) fetchIsAdmin(currentSession.user.id);
-      else setIsAdmin(false);
+      
+      if (currentSession?.user) {
+        await fetchIsAdmin(currentSession.user.id);
+        await createUserProfile(currentSession.user);
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const createUserProfile = async (user: User) => {
+    try {
+      // Check if profile already exists
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      if (!existingProfile) {
+        // Create new profile
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            username: user.user_metadata?.username || user.email?.split('@')[0],
+            full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+            avatar_url: user.user_metadata?.avatar_url || '',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+
+        if (profileError) {
+          console.error('Error creating user profile:', profileError);
+        } else {
+          console.log('User profile created successfully');
+        }
+      }
+    } catch (error) {
+      console.error('Error in createUserProfile:', error);
+    }
+  };
 
   const fetchIsAdmin = async (userId: string) => {
     try {
@@ -88,47 +145,96 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string, 
     metadata?: { full_name?: string, username?: string }
   ) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: metadata
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata
+        }
+      });
+      
+      if (data.user && !error) {
+        // Create profile immediately after successful signup
+        await createUserProfile(data.user);
       }
-    });
-    
-    return { error };
+      
+      return { error };
+    } catch (error) {
+      console.error('Signup error:', error);
+      return { 
+        error: { 
+          message: error instanceof Error ? error.message : 'An unexpected error occurred',
+          status: 500 
+        } as AuthError 
+      };
+    }
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    return { error };
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      return { error };
+    } catch (error) {
+      console.error('Signin error:', error);
+      return { 
+        error: { 
+          message: error instanceof Error ? error.message : 'An unexpected error occurred',
+          status: 500 
+        } as AuthError 
+      };
+    }
   };
 
   const signInWithGoogle = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      
+      if (error) {
+        console.error('Google signin error:', error);
+        throw error;
       }
-    });
+    } catch (error) {
+      console.error('Google signin error:', error);
+      throw error;
+    }
   };
 
   const signInWithApple = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'apple',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      
+      if (error) {
+        console.error('Apple signin error:', error);
+        throw error;
+      }
+    } catch (error) {
+      console.error('Apple signin error:', error);
+      throw error;
+    }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/login');
+    try {
+      await supabase.auth.signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Signout error:', error);
+    }
   };
 
   return (
@@ -138,6 +244,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session, 
         isLoading, 
         isAdmin,
+        isConnected,
         signUp, 
         signIn, 
         signInWithGoogle, 
