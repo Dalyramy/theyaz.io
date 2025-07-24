@@ -78,49 +78,61 @@ const HomePage: React.FC = () => {
   }, [fetchRandomPhotos, hasMore, loading]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <HeroSection />
-      <div className="container mx-auto px-4 pt-32 pb-8">
-        <h2 className="text-3xl font-bold mb-6 text-primary/90 text-center">Discover Random Photos</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full">
-          {photos.map((photo, idx) => (
-            <Card key={photo.id} className="group overflow-hidden hover-lift rounded-2xl border-border w-full">
-              <div className="aspect-square overflow-hidden bg-muted">
-                <img
-                  src={photo.image_url}
-                  alt={photo.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 rounded-xl"
-                  loading="lazy"
-                  onError={e => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/placeholder.svg';
-                  }}
-                />
-              </div>
-              <CardContent className="p-4 sm:p-6">
-                <div className="mb-2">
-                  <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-1 line-clamp-2">{photo.title}</h3>
-                  <Link to={`/albums/${photo.album_id}`} className="text-xs text-primary underline hover:text-secondary transition">
-                    {photo.album_title}
-                  </Link>
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Fullscreen background SVG */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <img
+          src="/icons/yazio.svg"
+          alt="Yazio Background"
+          className="w-full h-full object-cover opacity-5"
+        />
+      </div>
+      
+      {/* Content with higher z-index */}
+      <div className="relative z-10">
+        <HeroSection />
+        <div className="container mx-auto px-4 pt-32 pb-8">
+          <h2 className="text-3xl font-bold mb-6 text-primary/90 text-center">Discover Random Photos</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full">
+            {photos.map((photo, idx) => (
+              <Card key={photo.id} className="group overflow-hidden hover-lift rounded-2xl border-border w-full bg-card/80 backdrop-blur-sm">
+                <div className="aspect-square overflow-hidden bg-muted">
+                  <img
+                    src={photo.image_url}
+                    alt={photo.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 rounded-xl"
+                    loading="lazy"
+                    onError={e => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/placeholder.svg';
+                    }}
+                  />
                 </div>
-                <div className="flex items-center gap-4 text-muted-foreground mt-2">
-                  <div className="flex items-center gap-1">
-                    <Heart className="w-4 h-4" />
-                    <span className="text-sm font-medium">{photo.likes_count || 0}</span>
+                <CardContent className="p-4 sm:p-6">
+                  <div className="mb-2">
+                    <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-1 line-clamp-2">{photo.title}</h3>
+                    <Link to={`/albums/${photo.album_id}`} className="text-xs text-primary underline hover:text-secondary transition">
+                      {photo.album_title}
+                    </Link>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <MessageSquare className="w-4 h-4" />
-                    <span className="text-sm font-medium">{photo.comments_count || 0}</span>
+                  <div className="flex items-center gap-4 text-muted-foreground mt-2">
+                    <div className="flex items-center gap-1">
+                      <Heart className="w-4 h-4" />
+                      <span className="text-sm font-medium">{photo.likes_count || 0}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageSquare className="w-4 h-4" />
+                      <span className="text-sm font-medium">{photo.comments_count || 0}</span>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        <div ref={loader} className="w-full flex justify-center py-8">
-          {loading && <span className="text-muted-foreground">Loading...</span>}
-          {!hasMore && <span className="text-muted-foreground">No more photos</span>}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div ref={loader} className="w-full flex justify-center py-8">
+            {loading && <span className="text-muted-foreground">Loading...</span>}
+            {!hasMore && <span className="text-muted-foreground">No more photos</span>}
+          </div>
         </div>
       </div>
     </div>

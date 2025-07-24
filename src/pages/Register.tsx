@@ -57,7 +57,7 @@ const Register = () => {
   const handleAppleSignUp = async () => { toast.info('Apple sign up not implemented'); };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       <div className="flex items-center justify-center min-h-screen">
         <motion.div

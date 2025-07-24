@@ -81,7 +81,7 @@ const PhotoView = () => {
   
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground pt-24">
         <Navbar />
         <div className="container py-8">
           <div className="mb-6">
@@ -111,7 +111,7 @@ const PhotoView = () => {
   
   if (error || !photo) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground pt-24">
         <Navbar />
         <div className="container py-20 text-center prose dark:prose-invert">
           <h1 className="text-3xl font-bold mb-4">Photo Not Found</h1>
@@ -127,7 +127,7 @@ const PhotoView = () => {
   }
   
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       <main className="container py-8 container-type-inline container-query">
         <div className="mb-6">

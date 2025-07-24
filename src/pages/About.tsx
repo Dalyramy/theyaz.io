@@ -28,10 +28,10 @@ const About = () => {
   const { t } = useTranslation();
   
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       
-      <main className="container mx-auto pt-safe-top pb-8 px-2 sm:px-4 flex flex-col gap-6">
+      <main className="container mx-auto pb-8 px-2 sm:px-4 flex flex-col gap-6">
         {/* Hero Section */}
         <motion.div 
           className="max-w-2xl mx-auto text-center mb-10 sm:mb-16"

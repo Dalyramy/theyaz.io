@@ -70,7 +70,7 @@ const Gallery: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground pt-24">
         <Navbar />
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -89,7 +89,7 @@ const Gallery: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground pt-24">
         <Navbar />
         <div className="flex items-center justify-center p-4">
           <div className="text-center">
@@ -108,7 +108,7 @@ const Gallery: React.FC = () => {
 
   if (albums.length === 0) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground pt-24">
         <Navbar />
         <div className="flex items-center justify-center p-4">
           <div className="text-center">
@@ -121,7 +121,7 @@ const Gallery: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <motion.div 

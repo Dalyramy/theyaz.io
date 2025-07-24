@@ -14,6 +14,12 @@ export default {
 		"./src/**/*.{js,ts,jsx,tsx,html}",
 		"./public/index.html"
 	],
+	future: {
+		hoverOnlyWhenSupported: true,
+	},
+	experimental: {
+		optimizeUniversalDefaults: true,
+	},
 	prefix: "",
 	theme: {
 		container: {

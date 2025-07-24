@@ -119,7 +119,7 @@ const EditPhoto = () => {
   
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground pt-24">
         <Navbar />
         <main className="container py-8">
           <div className="w-full max-w-2xl mx-auto">
@@ -145,7 +145,7 @@ const EditPhoto = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       
       <main className="container py-8">

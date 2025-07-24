@@ -98,7 +98,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen">
         <motion.div

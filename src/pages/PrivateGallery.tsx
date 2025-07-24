@@ -139,7 +139,7 @@ const PrivateGallery = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       
       <main className="container mx-auto px-4 py-8">

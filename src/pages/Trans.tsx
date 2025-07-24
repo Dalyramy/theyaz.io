@@ -75,7 +75,7 @@ const Trans: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       {/* Local language selector for convenience */}
       <div className="flex justify-end w-full max-w-2xl mx-auto pt-4 px-2 sm:px-0">
