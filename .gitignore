@@ -38,3 +38,4 @@ deploy_key.pub
 supabase/.temp/
 .supabase/
 .vercel
+.env*.local

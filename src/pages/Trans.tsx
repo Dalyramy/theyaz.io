@@ -81,6 +81,19 @@ const Trans: React.FC = () => {
       <div className="flex justify-end w-full max-w-2xl mx-auto pt-4 px-2 sm:px-0">
         <LanguageSelector />
       </div>
+      {/* Peace Sign Background Watermark */}
+      <div 
+        className="fixed bottom-4 left-4 pointer-events-none opacity-6 z-0"
+        style={{
+          width: '300px',
+          height: '300px',
+          backgroundImage: 'url(/icons/peace-watermark.svg)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'bottom left',
+          backgroundRepeat: 'no-repeat',
+          transform: 'rotate(-10deg)',
+        }}
+      />
       <main className="container mx-auto py-6 px-1 sm:px-4 flex flex-col items-center">
         <Card className="w-full max-w-2xl mt-4 sm:mt-6">
           <CardHeader>

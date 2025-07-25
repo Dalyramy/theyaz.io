@@ -35,6 +35,11 @@ const Gallery: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      // Check if supabase client is available
+      if (!supabase) {
+        throw new Error('Supabase client not initialized');
+      }
+      
       // Fetch all albums
       const { data: albumsData, error: albumsError } = await supabase
         .from('albums')
@@ -55,6 +60,7 @@ const Gallery: React.FC = () => {
           .eq('album_id', album.id)
           .order('created_at', { ascending: false });
         if (photosError) {
+          console.warn(`Error fetching photos for album ${album.id}:`, photosError);
           albumsWithPhotos.push({ ...album, photos: [] });
         } else {
           albumsWithPhotos.push({ ...album, photos: photosData || [] });
@@ -62,6 +68,7 @@ const Gallery: React.FC = () => {
       }
       setAlbums(albumsWithPhotos);
     } catch (err) {
+      console.error('Error fetching albums and photos:', err);
       setError('Failed to load albums/photos');
     } finally {
       setLoading(false);
@@ -121,9 +128,25 @@ const Gallery: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-24">
-      <Navbar />
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Peace Sign Background Watermark */}
+      <div 
+        className="fixed bottom-4 left-4 pointer-events-none opacity-6 z-0"
+        style={{
+          width: '300px',
+          height: '300px',
+          backgroundImage: 'url(/icons/peace-watermark.svg)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'bottom left',
+          backgroundRepeat: 'no-repeat',
+          transform: 'rotate(-10deg)',
+        }}
+      />
+      
+      {/* Content Layer */}
+      <div className="relative z-10">
+        <Navbar />
+        <div className="container mx-auto px-4 py-8 pt-24">
         <motion.div 
           className="mb-12 text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -165,6 +188,7 @@ const Gallery: React.FC = () => {
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.src = '/placeholder.svg';
+                            target.onerror = null; // Prevent infinite loop
                           }}
                         />
                       </div>
@@ -206,6 +230,7 @@ const Gallery: React.FC = () => {
             )}
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

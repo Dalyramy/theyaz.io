@@ -226,6 +226,19 @@ const Profile = () => {
       <Navbar />
       
       <main className="container mx-auto px-4 py-8 flex-1">
+        {/* Peace Sign Background Watermark */}
+        <div 
+          className="fixed bottom-4 left-4 pointer-events-none opacity-6 z-0"
+          style={{
+            width: '300px',
+            height: '300px',
+            backgroundImage: 'url(/icons/peace-watermark.svg)',
+            backgroundSize: 'contain',
+            backgroundPosition: 'bottom left',
+            backgroundRepeat: 'no-repeat',
+            transform: 'rotate(-10deg)',
+          }}
+        />
         <div className="max-w-2xl mx-auto space-y-8">
           {/* Header Section */}
           <motion.div 
