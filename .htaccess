@@ -1,0 +1,14 @@
+Options -MultiViews
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [QSA,L]
+
+# HTTPS redirect (uncomment if you have SSL)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Cache static assets
+<FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js)$">
+    Header set Cache-Control "max-age=31536000, public"
+</FilesMatch> 

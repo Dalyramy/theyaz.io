@@ -1,0 +1,35 @@
+#! app-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: app
+    namespace: theyazio
+    labels:
+        com.docker.compose.project: theyazio
+        com.docker.compose.service: app
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: theyazio
+            com.docker.compose.service: app
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: theyazio
+                com.docker.compose.service: app
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: app
+                  image: theyazio-app
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: NODE_ENV
+                      value: "production"
+                  ports:
+                    - name: app-8080
+                      containerPort: 8080

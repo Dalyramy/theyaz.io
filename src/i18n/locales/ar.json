@@ -1,0 +1,137 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "gallery": "المعرض",
+    "admin": "المدير",
+    "about": "حول",
+    "share": "مشاركة"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "التسجيل",
+    "logout": "تسجيل الخروج",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "signIn": "تسجيل الدخول",
+    "signUp": "التسجيل",
+    "alreadyHaveAccount": "لديك حساب بالفعل؟",
+    "dontHaveAccount": "ليس لديك حساب؟",
+    "loginWithGoogle": "تسجيل الدخول بـ Google",
+    "loginWithApple": "تسجيل الدخول بـ Apple"
+  },
+  "gallery": {
+    "upload": "رفع",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "like": "إعجاب",
+    "unlike": "إلغاء الإعجاب",
+    "share": "مشاركة",
+    "comment": "تعليق",
+    "comments": "التعليقات",
+    "noPhotos": "لا توجد صور بعد",
+    "uploadFirst": "ارفع صورتك الأولى",
+    "loading": "جاري التحميل...",
+    "error": "خطأ في تحميل الصور"
+  },
+  "photo": {
+    "title": "العنوان",
+    "description": "الوصف",
+    "tags": "العلامات",
+    "uploadPhoto": "رفع صورة",
+    "editPhoto": "تعديل الصورة",
+    "deletePhoto": "حذف الصورة",
+    "saveChanges": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "uploadSuccess": "تم رفع الصورة بنجاح",
+    "uploadError": "خطأ في رفع الصورة",
+    "editSuccess": "تم تحديث الصورة بنجاح",
+    "editError": "خطأ في تحديث الصورة",
+    "deleteSuccess": "تم حذف الصورة بنجاح",
+    "deleteError": "خطأ في حذف الصورة"
+  },
+  "profile": {
+    "profile": "الملف الشخصي",
+    "editProfile": "تعديل الملف الشخصي",
+    "followers": "المتابعون",
+    "following": "المتابَعون",
+    "photos": "الصور",
+    "bio": "السيرة الذاتية",
+    "website": "الموقع الإلكتروني",
+    "location": "الموقع",
+    "joined": "انضم في"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "close": "إغلاق",
+    "search": "بحث",
+    "filter": "تصفية",
+    "sort": "ترتيب",
+    "view": "عرض",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "submit": "إرسال",
+    "reset": "إعادة تعيين"
+  },
+  "about": {
+    "title": "حول",
+    "description": "معرض بسيط حيث يمكن للناس تسجيل الدخول للتعليق أو الإعجاب أو مشاركة العمل."
+  },
+  "notifications": {
+    "notifications": "الإشعارات",
+    "noNotifications": "لا توجد إشعارات",
+    "markAllRead": "تحديد الكل كمقروء",
+    "newLike": "أعجب بصورتك",
+    "newComment": "علق على صورتك",
+    "newFollower": "بدأ في متابعتك"
+  },
+  "messaging": {
+    "messages": "الرسائل",
+    "inbox": "صندوق الوارد",
+    "conversation": "المحادثة",
+    "sendMessage": "إرسال رسالة",
+    "typeMessage": "اكتب رسالة...",
+    "noMessages": "لا توجد رسائل بعد",
+    "startConversation": "بدء محادثة"
+  },
+  "admin": {
+    "admin": "المدير",
+    "dashboard": "لوحة التحكم",
+    "users": "المستخدمون",
+    "photos": "الصور",
+    "reports": "التقارير",
+    "settings": "الإعدادات"
+  },
+  "language": {
+    "language": "اللغة",
+    "english": "الإنجليزية",
+    "french": "الفرنسية",
+    "spanish": "الإسبانية",
+    "arabic": "العربية",
+    "amazigh": "الأمازيغية"
+  },
+  "trans": {
+    "title": "لوحة مفاتيح ومحول الأمازيغية",
+    "desc": "اكتب بالحروف اللاتينية أو تيفيناغ. التحويل تلقائي إلى الأمازيغية. انسخ، أعد التعيين أو استخدم لوحة المفاتيح!",
+    "auto": "التحويل التلقائي مفعل",
+    "auto_off": "الوضع اليدوي",
+    "convert": "تحويل",
+    "clear": "إعادة تعيين",
+    "placeholder": "اكتب هنا...",
+    "input_label": "إدخال لاتيني أو تيفيناغ",
+    "copy_tifinagh": "نسخ تيفيناغ",
+    "copy_latin": "نسخ اللاتينية",
+    "copied_tifinagh": "تم نسخ تيفيناغ!",
+    "copied_latin": "تم نسخ اللاتينية!",
+    "preview": "معاينة تيفيناغ:",
+    "preview_placeholder": "ⴰⴱⴳ..."
+  }
+} 

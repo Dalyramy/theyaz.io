@@ -1,0 +1,137 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "gallery": "Galería",
+    "admin": "Admin",
+    "about": "Acerca de",
+    "share": "Compartir"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "dontHaveAccount": "¿No tienes una cuenta?",
+    "loginWithGoogle": "Iniciar sesión con Google",
+    "loginWithApple": "Iniciar sesión con Apple"
+  },
+  "gallery": {
+    "upload": "Subir",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "like": "Me gusta",
+    "unlike": "No me gusta",
+    "share": "Compartir",
+    "comment": "Comentar",
+    "comments": "Comentarios",
+    "noPhotos": "Aún no hay fotos",
+    "uploadFirst": "Sube tu primera foto",
+    "loading": "Cargando...",
+    "error": "Error al cargar las fotos"
+  },
+  "photo": {
+    "title": "Título",
+    "description": "Descripción",
+    "tags": "Etiquetas",
+    "uploadPhoto": "Subir foto",
+    "editPhoto": "Editar foto",
+    "deletePhoto": "Eliminar foto",
+    "saveChanges": "Guardar cambios",
+    "cancel": "Cancelar",
+    "uploadSuccess": "Foto subida exitosamente",
+    "uploadError": "Error al subir la foto",
+    "editSuccess": "Foto actualizada exitosamente",
+    "editError": "Error al actualizar la foto",
+    "deleteSuccess": "Foto eliminada exitosamente",
+    "deleteError": "Error al eliminar la foto"
+  },
+  "profile": {
+    "profile": "Perfil",
+    "editProfile": "Editar perfil",
+    "followers": "Seguidores",
+    "following": "Siguiendo",
+    "photos": "Fotos",
+    "bio": "Biografía",
+    "website": "Sitio web",
+    "location": "Ubicación",
+    "joined": "Se unió el"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "view": "Ver",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "reset": "Restablecer"
+  },
+  "about": {
+    "title": "Acerca de",
+    "description": "Una galería simple donde las personas pueden iniciar sesión para comentar, dar me gusta o compartir el trabajo."
+  },
+  "notifications": {
+    "notifications": "Notificaciones",
+    "noNotifications": "No hay notificaciones",
+    "markAllRead": "Marcar todo como leído",
+    "newLike": "le dio me gusta a tu foto",
+    "newComment": "comentó en tu foto",
+    "newFollower": "comenzó a seguirte"
+  },
+  "messaging": {
+    "messages": "Mensajes",
+    "inbox": "Bandeja de entrada",
+    "conversation": "Conversación",
+    "sendMessage": "Enviar mensaje",
+    "typeMessage": "Escribe un mensaje...",
+    "noMessages": "Aún no hay mensajes",
+    "startConversation": "Iniciar una conversación"
+  },
+  "admin": {
+    "admin": "Admin",
+    "dashboard": "Panel de control",
+    "users": "Usuarios",
+    "photos": "Fotos",
+    "reports": "Reportes",
+    "settings": "Configuración"
+  },
+  "language": {
+    "language": "Idioma",
+    "english": "Inglés",
+    "french": "Francés",
+    "spanish": "Español",
+    "arabic": "Árabe",
+    "amazigh": "Amazigh"
+  },
+  "trans": {
+    "title": "Teclado y Convertidor Amazigh",
+    "desc": "Escribe en latín o tifinagh. Conversión automática a letras amazigh. ¡Copia, reinicia o usa el teclado en pantalla!",
+    "auto": "Conversión automática activada",
+    "auto_off": "Modo manual",
+    "convert": "Convertir",
+    "clear": "Reiniciar",
+    "placeholder": "Escribe aquí...",
+    "input_label": "Entrada latín o tifinagh",
+    "copy_tifinagh": "Copiar Tifinagh",
+    "copy_latin": "Copiar Latín",
+    "copied_tifinagh": "¡Tifinagh copiado!",
+    "copied_latin": "¡Latín copiado!",
+    "preview": "Vista previa Tifinagh:",
+    "preview_placeholder": "ⴰⴱⴳ..."
+  }
+} 

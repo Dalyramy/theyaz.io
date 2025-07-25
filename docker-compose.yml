@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "7777:8080"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - db
+    # Uncomment and set these if you want to connect to local Postgres
+    # environment:
+    #   - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: 

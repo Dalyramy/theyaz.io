@@ -1,0 +1,38 @@
+# Project configuration
+project_id = "bkbqkpfzrqykrzzvzyrg"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://10.0.0.40:8080", "http://localhost:8080"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_manual_linking = true
+enable_signup = true
+enable_anonymous_sign_ins = false
+minimum_password_length = 6
+
+[auth.mfa]
+max_enrolled_factors = 10
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+[auth.mfa.phone]
+enroll_enabled = false
+verify_enabled = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = false
+enable_confirmations = false
+secure_password_change = true
+max_frequency = "1m0s"
+otp_length = 6

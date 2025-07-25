@@ -1,0 +1,9 @@
+#! db-pgdata-persistentVolumeClaim.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: db-pgdata
+    namespace: theyazio
+spec:
+    storageClassName: "hostpath" # see docker/desktop-storage-provisioner
