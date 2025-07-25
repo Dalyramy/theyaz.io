@@ -36,7 +36,6 @@ const UserMenu = () => {
       setIsLoggingOut(false);
     }
   };
-
   if (!user) {
     return (
       <Button 
@@ -121,12 +120,20 @@ const UserMenu = () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem
+<<<<<<< HEAD
           onClick={handleSignOut}
           disabled={isLoggingOut}
           className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-red-500 transition-colors hover:bg-red-100 dark:hover:bg-red-900/20 disabled:opacity-50"
         >
           <LogOut className="h-4 w-4" />
           <span>{isLoggingOut ? 'Signing out...' : 'Log out'}</span>
+=======
+          onClick={() => signOut()}
+          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-red-500 transition-colors hover:bg-red-100 dark:hover:bg-red-900/20"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Log out</span>
+>>>>>>> 5473a459c9e48e35b66655bb8d7948197a6e1192
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

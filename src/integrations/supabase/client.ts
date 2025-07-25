@@ -9,7 +9,6 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Debug logging
 console.log('🔍 DEBUG: SUPABASE_URL from env:', SUPABASE_URL);
 console.log('🔍 DEBUG: SUPABASE_ANON_KEY from env:', SUPABASE_ANON_KEY ? 'FOUND' : 'NOT FOUND');
-
 // Fallback to the working Supabase project URL
 const SUPABASE_URL_FALLBACK = "https://qjrysayswbdqskynywkr.supabase.co";
 const SUPABASE_ANON_KEY_FALLBACK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqcnlzYXlzd2JkcXNreW55d2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzkwNDgsImV4cCI6MjA2ODg1NTA0OH0.feYjlWxRpKk3q7Lp9fKMSv7Om5YKi0OLOIqelRF5pCA";
