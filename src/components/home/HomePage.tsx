@@ -42,7 +42,8 @@ const HomePage: React.FC = () => {
     setError(null);
 
     try {
-      const { data, error } = await supabase
+      // Fetch photos without embeds to avoid PGRST201 error
+      const { data: photosData, error } = await supabase
         .from('photos')
         .select(`
           id, 
@@ -50,8 +51,7 @@ const HomePage: React.FC = () => {
           image_url, 
           album_id, 
           likes_count, 
-          comments_count, 
-          albums(title)
+          comments_count
         `)
         .order('created_at', { ascending: false })
         .range(page.current * PHOTOS_PER_LOAD, (page.current + 1) * PHOTOS_PER_LOAD - 1);
@@ -60,20 +60,37 @@ const HomePage: React.FC = () => {
         throw error;
       }
 
-      if (!data || data.length === 0) {
+      if (!photosData || photosData.length === 0) {
         setHasMore(false);
         return;
       }
 
-      const mappedPhotos = data.map((photo: any) => ({
+      // Get album titles for photos that have album_id
+      const albumIds = [...new Set(photosData?.filter(p => p.album_id).map(p => p.album_id) || [])];
+      const albumTitles: Record<string, string> = {};
+      
+      if (albumIds.length > 0) {
+        const { data: albumsData } = await supabase
+          .from('albums')
+          .select('id, title')
+          .in('id', albumIds);
+        
+        if (albumsData) {
+          albumsData.forEach(album => {
+            albumTitles[album.id] = album.title;
+          });
+        }
+      }
+      
+      const mappedPhotos = photosData?.map((photo: any) => ({
         id: photo.id,
         title: photo.title,
         image_url: photo.image_url,
         album_id: photo.album_id,
-        album_title: photo.albums?.title || 'Unknown Album',
+        album_title: photo.album_id ? (albumTitles[photo.album_id] || 'Unknown Album') : 'No Album',
         likes_count: photo.likes_count,
         comments_count: photo.comments_count,
-      }));
+      })) || [];
 
       if (isInitial) {
         setPhotos(mappedPhotos);
@@ -83,7 +100,7 @@ const HomePage: React.FC = () => {
         page.current += 1;
       }
 
-      if (data.length < PHOTOS_PER_LOAD) {
+      if (photosData.length < PHOTOS_PER_LOAD) {
         setHasMore(false);
       }
     } catch (err) {

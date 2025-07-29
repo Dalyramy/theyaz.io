@@ -39,19 +39,46 @@ const PhotoView = () => {
       
       try {
         setIsLoading(true);
-        const { data, error } = await supabase
+        // Fetch photo data without embeds to avoid PGRST201 error
+        const { data: photoData, error: photoError } = await supabase
           .from('photos')
-          .select(`
-            *,
-            profiles!photos_user_id_fkey(
-              username,
-              avatar_url,
-              full_name
-            ),
-            albums(title)
-          `)
+          .select('*')
           .eq('id', id)
           .single();
+        
+        if (photoError) throw photoError;
+        if (!photoData) throw new Error('Photo not found');
+        
+        // Fetch user profile separately
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('username, avatar_url, full_name')
+          .eq('id', photoData.user_id)
+          .single();
+        
+        // Fetch album title separately
+        let albumTitle = 'Unknown Album';
+        if (photoData.album_id) {
+          const { data: albumData, error: albumError } = await supabase
+            .from('albums')
+            .select('title')
+            .eq('id', photoData.album_id)
+            .single();
+          
+          if (!albumError && albumData) {
+            albumTitle = albumData.title;
+          }
+        }
+        
+        const data = {
+          ...photoData,
+          profiles: profileData || {
+            username: 'user',
+            avatar_url: '',
+            full_name: 'User'
+          },
+          album_title: albumTitle
+        };
         
         if (error) throw error;
         if (!data) throw new Error('Photo not found');

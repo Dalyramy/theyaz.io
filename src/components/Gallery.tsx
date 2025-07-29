@@ -607,12 +607,17 @@ const Gallery: React.FC = () => {
                     >
                       <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-muted/50 to-muted/30 relative mb-4">
                         {album.cover_image ? (
-                          <OptimizedImage
+                          <img
                             src={album.cover_image}
                             alt={album.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            priority={index < 4}
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                            onError={(e) => {
+                              console.error('Album cover failed to load:', album.cover_image);
+                              e.currentTarget.style.display = 'none';
+                            }}
+                            onLoad={() => {
+                              console.log('Album cover loaded successfully:', album.cover_image);
+                            }}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
