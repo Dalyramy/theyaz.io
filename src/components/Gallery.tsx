@@ -160,6 +160,11 @@ const Gallery: React.FC = () => {
             .limit(1)
             .single();
           
+          // Debug: log the cover image URL
+          if (coverPhoto?.image_url) {
+            console.log(`Album "${album.title}" cover image:`, coverPhoto.image_url);
+          }
+          
           return {
             ...album,
             photo_count: count || 0,
