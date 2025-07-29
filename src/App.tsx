@@ -34,6 +34,7 @@ import Profile from './pages/Profile';
 import Trans from "./pages/Trans";
 import TestGalleryPage from "./app/test-gallery/page";
 import EnhancedGallery from "./pages/EnhancedGallery";
+import DebugAuth from "./components/DebugAuth";
 
 
 
@@ -57,6 +58,7 @@ function App() {
               <Sonner />
               <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                 <AuthProvider>
+                  <DebugAuth />
                   <main className="flex-1 w-full">
                     <Routes>
                       <Route path="/" element={<Index />} />
