@@ -112,101 +112,116 @@ const Gallery: React.FC = () => {
   const fetchAlbumsAndPhotos = async () => {
     setLoading(true);
     setError(null);
+    
     try {
-      if (!supabase) {
-        throw new Error('Supabase client not initialized');
-      }
-      
-      // Build query based on filter mode
-      let query = supabase
+      // Fetch albums with photo counts
+      const { data: albumsData, error: albumsError } = await supabase
         .from('albums')
-        .select('*')
+        .select(`
+          id,
+          title,
+          description,
+          user_id,
+          created_at,
+          updated_at
+        `)
         .order('created_at', { ascending: false });
 
-      if (filterMode === 'my-albums' && user) {
-        query = query.eq('user_id', user.id);
-      }
-
-      const { data: albumsData, error: albumsError } = await query;
-      
       if (albumsError) {
         console.error('Error fetching albums:', albumsError);
-        setError('Failed to load albums. Please try again later.');
-        setLoading(false);
+        setError('Failed to load albums');
         return;
       }
-      
-      if (!albumsData || albumsData.length === 0) {
-        // No albums exist, create default ones
-        console.log('No albums found, creating default albums...');
-        await createDefaultAlbums();
-        // Try to fetch albums again after creation
-        const { data: newAlbumsData, error: newAlbumsError } = await supabase
-          .from('albums')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (newAlbumsError) {
-          console.error('Error fetching albums after creation:', newAlbumsError);
-          setError('Failed to create default albums.');
-          setLoading(false);
-          return;
-        }
-        
-        if (!newAlbumsData || newAlbumsData.length === 0) {
-          setError('No albums available.');
-          setLoading(false);
-          return;
-        }
-        
-        const updatedAlbumsData = newAlbumsData;
-      }
 
-      // For each album, fetch its photos with user data
-      const albumsWithPhotos: AlbumData[] = [];
-      for (const album of albumsData) {
-        try {
-          const result = await supabase
+      // Get photo counts for each album
+      const albumsWithCounts = await Promise.all(
+        albumsData?.map(async (album) => {
+          const { count } = await supabase
             .from('photos')
-            .select(`
-              id, 
-              title, 
-              caption, 
-              image_url, 
-              likes_count, 
-              comments_count, 
-              tags, 
-              created_at,
-              user_id
-            `)
-            .eq('album_id', album.id)
-            .order('created_at', { ascending: false });
+            .select('*', { count: 'exact', head: true })
+            .eq('album_id', album.id);
           
-          const photosData = result.data || [];
-          
-          albumsWithPhotos.push({ 
-            ...album, 
-            photo_count: photosData.length,
-            photos: photosData as PhotoData[],
-            cover_image: null
-          });
-        } catch (error) {
-          console.warn(`Error fetching photos for album ${album.id}:`, error);
-          albumsWithPhotos.push({ 
-            ...album, 
-            photo_count: 0,
-            photos: [],
-            cover_image: null
-          });
-        }
-      }
+          return {
+            ...album,
+            photo_count: count || 0
+          };
+        }) || []
+      );
+
+      // Transform the data to match our interface
+      const transformedAlbums: AlbumData[] = albumsWithCounts.map(album => ({
+        id: album.id,
+        title: album.title,
+        description: album.description || '',
+        cover_image: null, // We'll add cover image functionality later
+        photo_count: album.photo_count,
+        photos: [], // We'll fetch photos separately if needed
+        created_at: album.created_at,
+        updated_at: album.updated_at,
+        user_id: album.user_id
+      }));
+
+      setAlbums(transformedAlbums);
       
-      setAlbums(albumsWithPhotos);
-    } catch (err) {
-      console.error('Error fetching albums and photos:', err);
-      setError('Failed to load albums/photos');
+      // If no albums exist, create default ones
+      if (transformedAlbums.length === 0) {
+        await createDefaultAlbums();
+        // Fetch again after creating defaults
+        fetchAlbumsAndPhotos();
+      }
+    } catch (error) {
+      console.error('Error in fetchAlbumsAndPhotos:', error);
+      setError('Failed to load albums');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAlbumPhotos = async (albumId: string) => {
+    try {
+      const { data: photosData, error: photosError } = await supabase
+        .from('photos')
+        .select(`
+          id,
+          title,
+          caption,
+          image_url,
+          likes_count,
+          comments_count,
+          tags,
+          created_at,
+          user_id
+        `)
+        .eq('album_id', albumId)
+        .order('created_at', { ascending: false });
+
+      if (photosError) {
+        console.error('Error fetching album photos:', photosError);
+        return [];
+      }
+
+      // Transform to match PhotoData interface
+      const transformedPhotos: PhotoData[] = (photosData || []).map(photo => ({
+        id: photo.id,
+        title: photo.title,
+        caption: photo.caption,
+        image_url: photo.image_url,
+        likes_count: photo.likes_count,
+        comments_count: photo.comments_count,
+        tags: photo.tags || [],
+        created_at: photo.created_at,
+        user_id: photo.user_id,
+        profiles: {
+          username: 'Unknown',
+          avatar_url: '',
+          full_name: 'Unknown User'
+        }
+      }));
+
+      return transformedPhotos;
+    } catch (error) {
+      console.error('Error fetching album photos:', error);
+      return [];
     }
   };
 
@@ -278,9 +293,26 @@ const Gallery: React.FC = () => {
     }
   };
 
+  const handleAlbumSelect = async (album: AlbumData) => {
+    setSelectedAlbum(album);
+    
+    // Fetch photos for this album
+    const photos = await fetchAlbumPhotos(album.id);
+    setSelectedAlbum(prev => prev ? { ...prev, photos } : null);
+  };
+
+  const handleBackToAlbums = () => {
+    setSelectedAlbum(null);
+  };
+
   const handleCreateAlbum = async (albumData: { title: string; description: string }) => {
     if (!user) {
       toast.error('Please log in to create albums');
+      return;
+    }
+
+    if (!albumData.title.trim()) {
+      toast.error('Please enter an album title');
       return;
     }
 
@@ -298,6 +330,7 @@ const Gallery: React.FC = () => {
       if (error) throw error;
 
       toast.success('Album created successfully!');
+      setShowCreateDialog(false);
       fetchAlbumsAndPhotos(); // Refresh the list
     } catch (error) {
       console.error('Error creating album:', error);
@@ -307,6 +340,11 @@ const Gallery: React.FC = () => {
 
   const handleEditAlbum = async (albumData: { title: string; description: string }) => {
     if (!editingAlbum) return;
+
+    if (!albumData.title.trim()) {
+      toast.error('Please enter an album title');
+      return;
+    }
 
     try {
       const { error } = await supabase
@@ -321,6 +359,8 @@ const Gallery: React.FC = () => {
       if (error) throw error;
 
       toast.success('Album updated successfully!');
+      setShowEditDialog(false);
+      setEditingAlbum(null);
       fetchAlbumsAndPhotos(); // Refresh the list
     } catch (error) {
       console.error('Error updating album:', error);
@@ -354,14 +394,6 @@ const Gallery: React.FC = () => {
       console.error('Error deleting album:', error);
       toast.error('Failed to delete album. Please try again.');
     }
-  };
-
-  const handleAlbumSelect = (album: AlbumData) => {
-    setSelectedAlbum(album);
-  };
-
-  const handleBackToAlbums = () => {
-    setSelectedAlbum(null);
   };
 
   const getAlbumIcon = (albumTitle: string) => {
@@ -479,32 +511,43 @@ const Gallery: React.FC = () => {
               </div>
               
               {user && (
-                <>
-                  <Button 
-                    className="flex items-center gap-2"
-                    onClick={() => setShowCreateDialog(true)}
-                  >
-                    <Plus className="w-4 h-4" />
-                    Create Album
-                  </Button>
-                  <AlbumForm
-                    isOpen={showCreateDialog}
-                    onClose={() => setShowCreateDialog(false)}
-                    onSubmit={handleCreateAlbum}
-                    mode="create"
-                  />
-                </>
+                <Button 
+                  className="flex items-center gap-2 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                  onClick={() => setShowCreateDialog(true)}
+                >
+                  <Plus className="w-4 h-4" />
+                  Create New Album
+                </Button>
               )}
             </div>
 
+            {/* Create Album Dialog */}
+            {user && (
+              <AlbumForm
+                isOpen={showCreateDialog}
+                onClose={() => setShowCreateDialog(false)}
+                onSubmit={handleCreateAlbum}
+                mode="create"
+              />
+            )}
+
             {filteredAlbums.length === 0 ? (
-              <div className="text-center py-12">
+              <div className="text-center py-16">
                 <div className="text-muted-foreground text-lg mb-4">
                   {searchTerm ? 'No albums found matching your search' : 'No albums available'}
                 </div>
-                <div className="text-muted-foreground">
+                <div className="text-muted-foreground mb-6">
                   {searchTerm ? 'Try adjusting your search terms' : 'Check back later for new collections'}
                 </div>
+                {user && !searchTerm && (
+                  <Button 
+                    onClick={() => setShowCreateDialog(true)}
+                    className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Your First Album
+                  </Button>
+                )}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -729,6 +772,17 @@ const Gallery: React.FC = () => {
               </div>
               
               <div className="flex items-center gap-2">
+                {user && selectedAlbum.user_id === user.id && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.location.href = '/upload'}
+                    className="flex items-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Photo
+                  </Button>
+                )}
                 <Button
                   variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="sm"
@@ -749,15 +803,33 @@ const Gallery: React.FC = () => {
 
           {/* Photos Grid/List */}
           {selectedAlbum.photos.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-muted-foreground text-lg mb-4">No photos in this album yet</div>
-              <div className="text-muted-foreground">Photos will appear here once uploaded</div>
-              {user && (
-                <Button className="mt-4" onClick={() => window.location.href = '/upload'}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Upload First Photo
-                </Button>
-              )}
+            <div className="text-center py-16">
+              <div className="max-w-md mx-auto">
+                <div className="w-24 h-24 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
+                  <Camera className="w-12 h-12 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">No photos yet</h3>
+                <p className="text-muted-foreground mb-6">
+                  This album is empty. Start building your collection by uploading your first photo.
+                </p>
+                {user && (
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button 
+                      onClick={() => window.location.href = '/upload'}
+                      className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Upload First Photo
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => window.location.href = '/gallery'}
+                    >
+                      Browse Other Albums
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <PhotoGrid

@@ -197,11 +197,9 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
     return <EmptyState />;
   }
 
-  // Responsive CSS grid
+  // Free-form masonry layout
   return (
     <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
-
-
       {/* Sort Bar */}
       <motion.div
         className="flex flex-wrap gap-2 justify-center mb-2"
@@ -246,9 +244,10 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
         </motion.div>
       )}
 
-      {/* Responsive grid layout */}
+      {/* Free-form masonry layout */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 w-full"
+        className="columns-1 sm:columns-2 md:columns-3 xl:columns-4 gap-6 w-full"
+        style={{ columnGap: '1.5rem' }}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -268,7 +267,12 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
-              className="outline-none focus:ring-2 focus:ring-primary w-full"
+              className="outline-none focus:ring-2 focus:ring-primary w-full mb-6 break-inside-avoid"
+              style={{ 
+                display: 'inline-block',
+                width: '100%',
+                marginBottom: '1.5rem'
+              }}
               tabIndex={0}
               role="button"
               aria-label={`Open photo ${photo.title}`}
@@ -285,6 +289,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
+            style={{ columnSpan: 'all' }}
           >
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary border-t-transparent"></div>
           </motion.div>
@@ -308,18 +313,8 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary border-t-transparent"></div>
         </motion.div>
       )}
-
     </div>
   );
 };
-
-// Add CSS for masonry layout (can be in a global CSS file)
-// .gallery-masonry {
-//   column-count: 1;
-//   column-gap: 1.5rem;
-// }
-// @media (min-width: 640px) { .gallery-masonry { column-count: 2; } }
-// @media (min-width: 1024px) { .gallery-masonry { column-count: 3; } }
-// @media (min-width: 1280px) { .gallery-masonry { column-count: 4; } }
 
 export default PhotoGrid;

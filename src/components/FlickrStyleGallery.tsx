@@ -215,7 +215,8 @@ const FlickrStyleGallery = ({ photos, loading = false, isOwner = false }: Flickr
 
       {/* Flickr-style Masonry Grid */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4"
+        style={{ columnGap: '1rem' }}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -231,7 +232,12 @@ const FlickrStyleGallery = ({ photos, loading = false, isOwner = false }: Flickr
                 }}
                 variants={itemVariants}
                 layout
-                className="relative group cursor-pointer"
+                className="relative group cursor-pointer mb-4 break-inside-avoid"
+                style={{ 
+                  display: 'inline-block',
+                  width: '100%',
+                  marginBottom: '1rem'
+                }}
                 onClick={() => handlePhotoClick(photo.id)}
                 onMouseEnter={() => setHoveredPhoto(photo.id)}
                 onMouseLeave={() => setHoveredPhoto(null)}

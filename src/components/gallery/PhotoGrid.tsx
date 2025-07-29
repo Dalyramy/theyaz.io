@@ -146,9 +146,11 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
 
   return (
     <div className={viewMode === 'grid' 
-      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" 
+      ? "columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6" 
       : "space-y-4"
-    }>
+    }
+    style={viewMode === 'grid' ? { columnGap: '1.5rem' } : {}}
+    >
       <AnimatePresence>
         {photos.map((photo, index) => (
           <motion.div
@@ -157,7 +159,12 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.6, delay: index * 0.05 }}
-            className={viewMode === 'list' ? "flex gap-4" : ""}
+            className={viewMode === 'list' ? "flex gap-4" : "mb-6 break-inside-avoid"}
+            style={viewMode === 'grid' ? { 
+              display: 'inline-block',
+              width: '100%',
+              marginBottom: '1.5rem'
+            } : {}}
           >
             <Card className={`group overflow-hidden hover-lift rounded-2xl border-border transition-all duration-300 hover:shadow-xl ${viewMode === 'list' ? 'flex-1' : ''}`}>
               <div className={`overflow-hidden bg-muted relative ${viewMode === 'list' ? 'w-32 h-32' : 'aspect-square'}`}>
@@ -289,10 +296,10 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
                   </div>
                   
                   {showActions && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity min-h-[44px] min-w-[44px]"
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex items-center gap-1 hover:text-primary"
                       onClick={() => handleShare(photo)}
                     >
                       <Share2 className="w-4 h-4" />
