@@ -85,7 +85,7 @@ const Navbar = () => {
           className="sm:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           onClick={() => setMobileMenuOpen((v) => !v)}
           aria-label={mobileMenuOpen ? t('nav.close_menu', 'Close menu') : t('nav.open_menu', 'Open menu')}
-          aria-expanded={mobileMenuOpen ? 'true' : 'false'}
+          aria-expanded={mobileMenuOpen ? "true" : "false"}
         >
           {mobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
         </button>
@@ -217,7 +217,7 @@ const Navbar = () => {
       </div>
       {/* Mobile drawer menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex" aria-hidden={mobileMenuOpen ? 'false' : 'true'}>
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex" aria-hidden={!mobileMenuOpen ? "true" : "false"}>
           <div
             ref={drawerRef}
             role="dialog"

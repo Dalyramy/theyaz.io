@@ -25,11 +25,12 @@ import Conversation from './pages/messaging/Conversation';
 import GalleryPage from './components/gallery/GalleryPage';
 import AlbumPage from './components/gallery/AlbumPage';
 import CategoryList from './components/gallery/CategoryList';
-import Gallery from './components/Gallery';
 import AdminPage from './pages/Admin';
 import PhotosData from './pages/PhotosData';
 import MyPhotos from './pages/MyPhotos';
 import Profile from './pages/Profile';
+import CloudinaryGallery from './pages/CloudinaryGallery';
+import CloudinaryImageDetail from './pages/CloudinaryImageDetail';
 
 import Trans from "./pages/Trans";
 import TestGalleryPage from "./app/test-gallery/page";
@@ -62,7 +63,8 @@ function App() {
                   <main className="flex-1 w-full">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/gallery" element={<Gallery />} />
+                      <Route path="/gallery" element={<CloudinaryGallery />} />
+                      <Route path="/gallery/:publicId" element={<CloudinaryImageDetail />} />
                       <Route path="/enhanced-gallery" element={<EnhancedGallery />} />
 
                       <Route path="/albums/:albumId" element={<AlbumPage />} />

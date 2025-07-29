@@ -20,7 +20,7 @@ interface CloudinaryImage {
   secure_url: string;
 }
 
-const HomePage: React.FC = () => {
+export default function CloudinaryGallery() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [images, setImages] = useState<CloudinaryImage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -328,6 +328,4 @@ const HomePage: React.FC = () => {
       </main>
     </div>
   );
-};
-
-export default HomePage; 
+} 
