@@ -123,6 +123,13 @@ const UploadForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check authentication first
+    if (!user) {
+      toast.error('You must be logged in to upload photos.');
+      return;
+    }
+    
     setIsSubmitting(true);
     
     // Enhanced validation
@@ -140,12 +147,6 @@ const UploadForm = () => {
     
     if (!imageFile) {
       toast.error('Please select an image to upload.');
-      setIsSubmitting(false);
-      return;
-    }
-    
-    if (!user) {
-      toast.error('You must be logged in to upload photos.');
       setIsSubmitting(false);
       return;
     }
@@ -174,7 +175,17 @@ const UploadForm = () => {
       
       if (uploadError) {
         console.error('Storage upload error:', uploadError);
-        throw new Error(`Failed to upload image: ${uploadError.message}`);
+        
+        // Provide more specific error messages
+        if (uploadError.message.includes('bucket')) {
+          throw new Error('Storage bucket not configured. Please contact support.');
+        } else if (uploadError.message.includes('policy')) {
+          throw new Error('Upload permission denied. Please try logging in again.');
+        } else if (uploadError.message.includes('size')) {
+          throw new Error('File size too large. Please choose a smaller image.');
+        } else {
+          throw new Error(`Failed to upload image: ${uploadError.message}`);
+        }
       }
       
       // Get public URL for the uploaded file
