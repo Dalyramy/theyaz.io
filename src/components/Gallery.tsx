@@ -504,51 +504,48 @@ const Gallery: React.FC = () => {
           <Navbar />
           <div className="container mx-auto px-4 py-8 pt-24">
             <motion.div 
-              className="mb-12 text-center"
+              className="mb-16 text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <Badge variant="secondary" className="mb-4">
-                <Eye className="w-3 h-3 mr-1" />
-                Photo Albums
-              </Badge>
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
-                Choose Your Collection
+              <h1 className="text-4xl md:text-5xl font-light text-foreground mb-4">
+                Albums
               </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                Explore specialized albums curated by theme and style
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Browse and organize your photo collections
               </p>
             </motion.div>
 
             {/* Search and Filter Controls */}
-            <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
-              <div className="flex items-center gap-4 w-full sm:w-auto">
-                <div className="relative flex-1 sm:flex-none">
+            <div className="mb-12 flex flex-col sm:flex-row gap-6 items-center justify-between">
+              <div className="flex items-center gap-6 w-full sm:w-auto">
+                <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input
                     placeholder="Search albums..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 w-full sm:w-64"
+                    className="pl-10 w-64 border-0 bg-muted/50 focus:bg-background"
                   />
                 </div>
                 <Tabs value={filterMode} onValueChange={(value) => setFilterMode(value as 'all' | 'my-albums' | 'featured')}>
-                  <TabsList>
-                    <TabsTrigger value="all">All Albums</TabsTrigger>
-                    <TabsTrigger value="featured">Featured</TabsTrigger>
-                    {user && <TabsTrigger value="my-albums">My Albums</TabsTrigger>}
+                  <TabsList className="bg-muted/50">
+                    <TabsTrigger value="all" className="data-[state=active]:bg-background">All</TabsTrigger>
+                    <TabsTrigger value="featured" className="data-[state=active]:bg-background">Featured</TabsTrigger>
+                    {user && <TabsTrigger value="my-albums" className="data-[state=active]:bg-background">My Albums</TabsTrigger>}
                   </TabsList>
                 </Tabs>
               </div>
               
               {user && (
                 <Button 
-                  className="flex items-center gap-2 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                  variant="outline"
+                  className="flex items-center gap-2"
                   onClick={() => setShowCreateDialog(true)}
                 >
                   <Plus className="w-4 h-4" />
-                  Create New Album
+                  New Album
                 </Button>
               )}
             </div>
@@ -564,25 +561,29 @@ const Gallery: React.FC = () => {
             )}
 
             {filteredAlbums.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="text-muted-foreground text-lg mb-4">
-                  {searchTerm ? 'No albums found matching your search' : 'No albums available'}
+              <div className="text-center py-20">
+                <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-6">
+                  <Camera className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <div className="text-muted-foreground mb-6">
-                  {searchTerm ? 'Try adjusting your search terms' : 'Check back later for new collections'}
-                </div>
+                <h3 className="text-lg font-medium text-foreground mb-2">
+                  {searchTerm ? 'No albums found' : 'No albums yet'}
+                </h3>
+                <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
+                  {searchTerm ? 'Try adjusting your search terms' : 'Start by creating your first album'}
+                </p>
                 {user && !searchTerm && (
                   <Button 
+                    variant="outline"
                     onClick={() => setShowCreateDialog(true)}
-                    className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                    className="flex items-center gap-2"
                   >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Your First Album
+                    <Plus className="w-4 h-4" />
+                    Create Album
                   </Button>
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {filteredAlbums.map((album, index) => (
                   <motion.div
                     key={album.id}
@@ -591,47 +592,45 @@ const Gallery: React.FC = () => {
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                   >
                     <Card 
-                      className="group cursor-pointer overflow-hidden hover-lift rounded-2xl border-border transition-all duration-300 hover:shadow-xl"
+                      className="group cursor-pointer border-0 bg-transparent hover:bg-muted/30 rounded-xl transition-all duration-300 hover:scale-[1.02]"
                       onClick={() => handleAlbumSelect(album)}
                     >
-                      <div className="aspect-[4/3] overflow-hidden bg-muted relative">
+                      <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-muted/50 to-muted/30 relative mb-4">
                         {album.cover_image ? (
                           <OptimizedImage
                             src={album.cover_image}
                             alt={album.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            priority={index < 3}
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            priority={index < 4}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                           />
-                        ) : album.photo_count > 0 ? (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-                            <div className="text-center">
-                              <Camera className="w-12 h-12 text-muted-foreground mb-2" />
-                              <p className="text-sm text-muted-foreground">Loading photos...</p>
-                            </div>
-                          </div>
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                          <div className="w-full h-full flex items-center justify-center">
                             <div className="text-center">
-                              <span className="text-4xl mb-2 block">{getAlbumIcon(album.title)}</span>
-                              <p className="text-sm text-muted-foreground">No photos yet</p>
+                              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                                <span className="text-2xl">{getAlbumIcon(album.title)}</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground font-medium">
+                                {album.photo_count > 0 ? `${album.photo_count} photos` : 'Empty album'}
+                              </p>
                             </div>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        <div className="absolute top-4 right-4">
+                        
+                        {/* Minimal overlay with actions */}
+                        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
-                                className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 hover:bg-black/40 text-white"
+                                className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <MoreVertical className="w-4 h-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent>
+                            <DropdownMenuContent align="end">
                               {user && album.user_id === user.id && (
                                 <>
                                   <DropdownMenuItem onClick={(e) => {
@@ -642,11 +641,6 @@ const Gallery: React.FC = () => {
                                     <Edit3 className="w-4 h-4 mr-2" />
                                     Edit Album
                                   </DropdownMenuItem>
-                                  <DropdownMenuSeparator />
-                                </>
-                              )}
-                              {user && album.user_id === user.id && (
-                                <>
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem 
                                     onClick={(e) => {
@@ -665,44 +659,44 @@ const Gallery: React.FC = () => {
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <Badge variant="secondary" className="mb-2">
-                            {album.photo_count} photos
-                          </Badge>
-                          {album.user_id && (
-                            <Badge variant="outline" className="ml-2">
-                              <User className="w-3 h-3 mr-1" />
-                              Personal
-                            </Badge>
-                          )}
-                        </div>
                       </div>
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="text-xl font-semibold text-foreground line-clamp-1">
+                      
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between">
+                          <h3 className="text-lg font-semibold text-foreground line-clamp-1 flex-1">
                             {album.title}
                           </h3>
-                          <span className="text-2xl ml-2">{getAlbumIcon(album.title)}</span>
                         </div>
+                        
                         {album.description && (
-                          <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
+                          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                             {album.description}
                           </p>
                         )}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                            {album.created_at && (
+                        
+                        <div className="flex items-center justify-between pt-2">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Camera className="w-3 h-3" />
+                              {album.photo_count}
+                            </span>
+                            {album.user_id && (
                               <span className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {formatDate(album.created_at)}
+                                <User className="w-3 h-3" />
+                                Personal
                               </span>
                             )}
                           </div>
-                          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
                         </div>
-                      </CardContent>
+                      </div>
                     </Card>
                   </motion.div>
                 ))}
