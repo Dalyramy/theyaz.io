@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,6 +41,19 @@ const Profile = () => {
     newPassword: '',
     confirmPassword: ''
   });
+
+  // Update form data when user data changes
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        displayName: user.user_metadata?.full_name || user.email?.split('@')[0] || '',
+        bio: user.user_metadata?.bio || '',
+        location: user.user_metadata?.location || '',
+        publicProfile: true,
+        emailNotifications: true
+      });
+    }
+  }, [user]);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({

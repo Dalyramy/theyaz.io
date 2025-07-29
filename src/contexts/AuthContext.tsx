@@ -20,6 +20,7 @@ type AuthContextType = {
   signInWithGoogle: () => Promise<void>;
   signInWithApple: () => Promise<void>;
   signOut: () => Promise<void>;
+  updateProfile: (data: { data: any }) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -255,6 +256,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateProfile = async (data: { data: any }) => {
+    try {
+      if (!user) {
+        throw new Error('No user logged in');
+      }
+
+      // Update user metadata in Supabase Auth
+      const { error: authError } = await supabase.auth.updateUser({
+        data: data.data
+      });
+
+      if (authError) {
+        console.error('Auth update error:', authError);
+        throw authError;
+      }
+
+      // Update profile in profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: data.data.full_name,
+          bio: data.data.bio,
+          location: data.data.location,
+          avatar_url: data.data.avatar_url,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id);
+
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        throw profileError;
+      }
+
+      // Update local user state
+      const { data: { user: updatedUser } } = await supabase.auth.getUser();
+      if (updatedUser) {
+        setUser(updatedUser);
+      }
+
+      console.log('Profile updated successfully');
+    } catch (error) {
+      console.error('Profile update error:', error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider 
       value={{ 
@@ -267,7 +314,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signIn, 
         signInWithGoogle, 
         signInWithApple,
-        signOut 
+        signOut,
+        updateProfile
       }}
     >
       {children}

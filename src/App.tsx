@@ -85,16 +85,32 @@ function App() {
                       <Route path="/register" element={<Register />} />
                       <Route path="/auth/callback" element={<AuthCallback />} />
                       <Route path="/profile/:userId" element={<ProfilePage />} />
-                      <Route path="/messaging" element={<Inbox />} />
-                      <Route path="/messaging/:userId" element={<Conversation />} />
+                      <Route path="/messaging" element={
+                        <ProtectedRoute>
+                          <Inbox />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/messaging/:userId" element={
+                        <ProtectedRoute>
+                          <Conversation />
+                        </ProtectedRoute>
+                      } />
                       <Route path="/photos-data" element={<PhotosData />} />
                       <Route path="/admin" element={
                         <ProtectedRoute>
                           <AdminPage />
                         </ProtectedRoute>
                       } />
-                      <Route path="/my-photos" element={<MyPhotos />} />
-                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/my-photos" element={
+                        <ProtectedRoute>
+                          <MyPhotos />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/profile" element={
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      } />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>

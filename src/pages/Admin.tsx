@@ -6,7 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/components/ui/use-toast';
-import { Shield, Users, UserCheck, UserX } from 'lucide-react';
+import { Shield, Users, UserCheck, UserX, Settings } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Navbar from '@/components/Navbar';
+
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+};
 
 interface User {
   id: string;
@@ -109,126 +116,178 @@ export default function AdminPage() {
 
   if (!user) {
     return (
-      <div className="container mx-auto py-8">
-        <Alert>
-          <AlertDescription>Please log in to access this page.</AlertDescription>
-        </Alert>
+      <div className="min-h-screen bg-background text-foreground flex flex-col pt-24">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 flex-1">
+          <div className="max-w-2xl mx-auto">
+            <Alert>
+              <AlertDescription>Please log in to access this page.</AlertDescription>
+            </Alert>
+          </div>
+        </main>
       </div>
     );
   }
 
   if (!isAdmin) {
     return (
-      <div className="container mx-auto py-8">
-        <Alert>
-          <AlertDescription>
-            You don't have permission to access this page. 
-            Debug info: User ID: {user?.id}, isAdmin: {isAdmin.toString()}
-          </AlertDescription>
-        </Alert>
+      <div className="min-h-screen bg-background text-foreground flex flex-col pt-24">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 flex-1">
+          <div className="max-w-2xl mx-auto">
+            <Alert>
+              <AlertDescription>
+                You don't have permission to access this page. 
+                Debug info: User ID: {user?.id}, isAdmin: {isAdmin.toString()}
+              </AlertDescription>
+            </Alert>
+          </div>
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <Shield className="h-8 w-8 text-indigo-600" />
-          <div>
-            <h1 className="text-3xl font-bold">Admin Panel</h1>
-            <p className="text-gray-600 dark:text-gray-400">
+    <div className="min-h-screen bg-background text-foreground flex flex-col pt-24">
+      <Navbar />
+      
+      <main className="container mx-auto px-4 py-8 flex-1">
+        {/* Peace Sign Background Watermark */}
+        <div 
+          className="fixed bottom-4 left-4 pointer-events-none opacity-6 z-0"
+          style={{
+            width: '300px',
+            height: '300px',
+            backgroundImage: 'url(/icons/peace-watermark.svg)',
+            backgroundSize: 'contain',
+            backgroundPosition: 'bottom left',
+            backgroundRepeat: 'no-repeat',
+            transform: 'rotate(-10deg)',
+          }}
+        />
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Header Section */}
+          <motion.div 
+            className="text-center mb-12"
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center justify-center mb-4">
+              <Shield className="w-8 h-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Admin Panel
+              </h1>
+            </div>
+            <p className="text-muted-foreground text-lg">
               Manage user permissions and site administration
             </p>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <Users className="h-8 w-8 text-blue-600" />
-                <div>
-                  <p className="text-2xl font-bold">{users.length}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Total Users</p>
+          {/* Stats */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Card className="border-border hover-lift">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3">
+                  <Users className="h-8 w-8 text-primary" />
+                  <div>
+                    <p className="text-2xl font-bold">{users.length}</p>
+                    <p className="text-sm text-muted-foreground">Total Users</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <UserCheck className="h-8 w-8 text-green-600" />
-                <div>
-                  <p className="text-2xl font-bold">
-                    {users.filter(u => u.is_admin).length}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Admins</p>
+              </CardContent>
+            </Card>
+            <Card className="border-border hover-lift">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3">
+                  <UserCheck className="h-8 w-8 text-green-600" />
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {users.filter(u => u.is_admin).length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Admins</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <UserX className="h-8 w-8 text-gray-600" />
-                <div>
-                  <p className="text-2xl font-bold">
-                    {users.filter(u => !u.is_admin).length}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Regular Users</p>
+              </CardContent>
+            </Card>
+            <Card className="border-border hover-lift">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3">
+                  <UserX className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {users.filter(u => !u.is_admin).length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Regular Users</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-        {/* Search */}
-        <div className="mb-6">
-          <Input
-            type="text"
-            placeholder="Search users by name, username, or email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-md"
-          />
-        </div>
+          {/* Search */}
+          <motion.div
+            className="mb-6"
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <Input
+              type="text"
+              placeholder="Search users by name, username, or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="max-w-md"
+            />
+          </motion.div>
 
-        {/* Users List */}
-        <Card>
-          <CardHeader>
-            <CardTitle>User Management</CardTitle>
-          </CardHeader>
-          <CardContent>
+          {/* Users List */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <Card className="border-border hover-lift">
+              <CardHeader>
+                <CardTitle>User Management</CardTitle>
+              </CardHeader>
+              <CardContent>
             {loading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="flex items-center gap-4 p-4 border rounded-lg">
-                    <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+                    <div className="w-10 h-10 bg-muted rounded-full animate-pulse" />
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2" />
+                      <div className="h-4 bg-muted rounded animate-pulse" />
+                      <div className="h-3 bg-muted rounded animate-pulse w-1/2" />
                     </div>
-                    <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                    <div className="w-20 h-8 bg-muted rounded animate-pulse" />
                   </div>
                 ))}
               </div>
             ) : (
               <div className="space-y-4">
                 {filteredUsers.length === 0 ? (
-                  <p className="text-center text-gray-500 py-8">
+                  <p className="text-center text-muted-foreground py-8">
                     {searchTerm ? 'No users found matching your search.' : 'No users found.'}
                   </p>
                 ) : (
                   filteredUsers.map((user) => (
                     <div
                       key={user.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-semibold">
                           {user.username?.charAt(0).toUpperCase() || user.full_name?.charAt(0).toUpperCase() || 'U'}
                         </div>
                         <div>
@@ -237,15 +296,15 @@ export default function AdminPage() {
                               {user.full_name || user.username || 'Unnamed User'}
                             </p>
                             {user.is_admin && (
-                              <span className="px-2 py-1 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-full">
+                              <span className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full">
                                 Admin
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-muted-foreground">
                             {user.email}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             Joined: {new Date(user.created_at).toLocaleDateString()}
                           </p>
                         </div>
@@ -267,7 +326,9 @@ export default function AdminPage() {
             )}
           </CardContent>
         </Card>
-      </div>
+          </motion.div>
+        </div>
+      </main>
     </div>
   );
 } 
