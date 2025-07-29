@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
-import { X, ZoomIn, ZoomOut, Share2 } from 'lucide-react';
+import { X, ZoomIn, ZoomOut, Share2, Play, Pause } from 'lucide-react';
+import { detectMediaType } from '@/lib/mediaUtils';
 
 interface PhotoViewerProps {
   isOpen: boolean;
@@ -98,6 +99,8 @@ const PhotoViewer = ({ isOpen, onClose, imageUrl, alt, title }: PhotoViewerProps
               <button
                 onClick={onClose}
                 className="rounded-full bg-black/20 p-2 text-white/80 hover:text-white backdrop-blur-md"
+                aria-label="Close viewer"
+                title="Close viewer"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -109,6 +112,8 @@ const PhotoViewer = ({ isOpen, onClose, imageUrl, alt, title }: PhotoViewerProps
               <button
                 onClick={toggleZoom}
                 className="rounded-full bg-black/20 p-2 text-white/80 hover:text-white backdrop-blur-md"
+                aria-label={scale > 1 ? "Zoom out" : "Zoom in"}
+                title={scale > 1 ? "Zoom out" : "Zoom in"}
               >
                 {scale > 1 ? (
                   <ZoomOut className="h-6 w-6" />
@@ -119,6 +124,8 @@ const PhotoViewer = ({ isOpen, onClose, imageUrl, alt, title }: PhotoViewerProps
               <button
                 onClick={handleShare}
                 className="rounded-full bg-black/20 p-2 text-white/80 hover:text-white backdrop-blur-md"
+                aria-label="Share image"
+                title="Share image"
               >
                 <Share2 className="h-6 w-6" />
               </button>

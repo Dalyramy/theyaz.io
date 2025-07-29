@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Heart, MessageSquare, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PhotoViewer from './PhotoViewer';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 
 interface Photo {
   id: string;
@@ -67,12 +68,13 @@ const PhotoCard = ({ photo }: PhotoCardProps) => {
           <Card className="overflow-hidden bg-card/50 backdrop-blur-sm h-full flex flex-col">
             <CardContent className="p-0 flex flex-col h-full">
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-t-lg flex-shrink-0">
-                <motion.img
-                  layoutId={`photo-${photo.image_url}`}
+                <OptimizedImage
                   src={photo.image_url}
                   alt={photo.title}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
+                  className="h-full w-full"
+                  priority={false}
+                  placeholder="blur"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                 />
                 <div className="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 text-xs text-white backdrop-blur-md">
                   <span>iPhone 16 Pro Max</span>

@@ -25,8 +25,8 @@ export default function RelatedAlbums({ categoryId, currentAlbumId }: { category
         {albums.map(album => (
           <Link key={album.id} to={`/albums/${album.id}`}>
             <picture>
-              <source srcSet={(album.cover_photo?.image_url || '/default-cover.jpg').replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
-              <img src={album.cover_photo?.image_url || '/default-cover.jpg'} alt={album.title} className="w-32 h-24 object-cover" loading="lazy" />
+                      <source srcSet={(album.cover_photo?.image_url || '/default-cover.svg').replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
+        <img src={album.cover_photo?.image_url || '/default-cover.svg'} alt={album.title} className="w-32 h-24 object-cover" loading="lazy" />
             </picture>
             <div>{album.title}</div>
           </Link>

@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
 import UserProfileLink from '@/components/ui/UserProfileLink';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 
 interface PhotoDetailProps {
   photo: {
@@ -222,23 +223,14 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
         onTouchEnd={handleTouchEnd}
       >
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-black">
-          <motion.img
+          <OptimizedImage
             key={photo.id}
             src={photo.image_url}
             alt={photo.title}
-            onLoad={() => setLoaded(true)}
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ 
-              scale: 1,
-              opacity: loaded ? 1 : 0 
-            }}
-            transition={{ 
-              duration: 0.6,
-              ease: "easeOut"
-            }}
-            className="h-full w-full object-cover"
-            loading="eager"
-            decoding="async"
+            className="h-full w-full"
+            priority={true}
+            placeholder="blur"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 75vw, 800px"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
           <div className="absolute top-4 left-4">

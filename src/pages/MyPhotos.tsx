@@ -392,7 +392,7 @@ const MyPhotos = () => {
                           </div>
                           <div className="flex items-center space-x-1">
                             <MessageCircle className="w-3 h-3" />
-                            <span>{photo.comments_count || 0}</span>
+                            <span>{typeof photo.comments_count === 'number' ? photo.comments_count : 0}</span>
                           </div>
                         </div>
                         <div className="flex items-center space-x-1">

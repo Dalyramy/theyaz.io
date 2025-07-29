@@ -264,7 +264,7 @@ const PrivateGallery = () => {
                       </span>
                       <span className="flex items-center gap-1">
                         <MessageCircle className="h-4 w-4" />
-                        {photo.comments_count || 0}
+                        {typeof photo.comments_count === 'number' ? photo.comments_count : 0}
                       </span>
                     </div>
                     {photo.tags && photo.tags.length > 0 && (

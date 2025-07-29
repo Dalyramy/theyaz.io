@@ -3,9 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import PhotoDetail from '@/components/PhotoDetail';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, FolderOpen } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 
 // Define the expected photo type
 interface Photo {
@@ -16,6 +17,8 @@ interface Photo {
   image_url: string;
   created_at: string;
   user_id: string;
+  album_id?: string;
+  album_title?: string;
   profiles: {
     username: string;
     avatar_url: string;
@@ -40,11 +43,12 @@ const PhotoView = () => {
           .from('photos')
           .select(`
             *,
-            profile:profiles(
+            profiles!photos_user_id_fkey(
               username,
               avatar_url,
               full_name
-            )
+            ),
+            albums(title)
           `)
           .eq('id', id)
           .single();
@@ -55,7 +59,12 @@ const PhotoView = () => {
         // Transform the data to match the expected format
         const transformedData = {
           ...data,
-          profiles: data.profile
+          profiles: data.profiles || {
+            username: 'user',
+            avatar_url: '',
+            full_name: 'User'
+          },
+          album_title: data.albums?.title || 'Unknown Album'
         };
         
         setPhoto(transformedData);
@@ -130,7 +139,7 @@ const PhotoView = () => {
     <div className="min-h-screen bg-background text-foreground pt-24">
       <Navbar />
       <main className="container py-8 container-type-inline container-query">
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <Button 
             variant="ghost" 
             size="sm" 
@@ -142,6 +151,19 @@ const PhotoView = () => {
               Back to Gallery
             </Link>
           </Button>
+          
+          {photo.album_id && (
+            <Link 
+              to="/gallery" 
+              state={{ selectedAlbumId: photo.album_id }}
+              className="inline-flex items-center gap-2"
+            >
+              <Badge variant="secondary" className="hover:bg-secondary transition-colors">
+                <FolderOpen className="w-3 h-3 mr-1" />
+                View in {photo.album_title}
+              </Badge>
+            </Link>
+          )}
         </div>
         <PhotoDetail photo={photo} />
       </main>

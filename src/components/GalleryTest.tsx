@@ -118,7 +118,7 @@ export default function GalleryTest() {
               )}
               <div className="flex justify-between text-sm text-gray-500">
                 <span>❤️ {photo.likes_count || 0}</span>
-                <span>💬 {photo.comments_count || 0}</span>
+                <span>💬 {typeof photo.comments_count === 'number' ? photo.comments_count : 0}</span>
               </div>
             </div>
           </div>

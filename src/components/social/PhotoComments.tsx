@@ -140,31 +140,37 @@ const PhotoComments = ({ photoId, className = '' }: PhotoCommentsProps) => {
 
   if (error) {
     return (
-      <Alert variant="destructive">
-        <AlertDescription>Error loading comments</AlertDescription>
-      </Alert>
+      <div className="text-center py-8">
+        <div className="text-gray-500 dark:text-gray-400 mb-4">
+          <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+          <p className="text-sm">Comments are temporarily unavailable</p>
+        </div>
+      </div>
     );
   }
 
   return (
     <div className={`flex flex-col gap-4 ${className}`}>
       {/* Comment input */}
-      <form onSubmit={handleSubmitComment} className="flex gap-2">
-        <Input
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Add a comment..."
-          className="flex-1"
-        />
-        <Button
-          type="submit"
-          disabled={!newComment.trim() || addCommentMutation.isPending}
-          className="gap-2"
-        >
-          <Send className="h-4 w-4" />
-          Post
-        </Button>
-      </form>
+      <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+        <form onSubmit={handleSubmitComment} className="flex gap-3">
+          <Input
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Add a comment..."
+            className="flex-1 rounded-full"
+            disabled={addCommentMutation.isPending}
+          />
+          <Button
+            type="submit"
+            disabled={!newComment.trim() || addCommentMutation.isPending}
+            className="rounded-full px-6"
+            size="sm"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+        </form>
+      </div>
 
       {/* Comments list */}
       <div className="space-y-4">
@@ -199,26 +205,28 @@ const PhotoComments = ({ photoId, className = '' }: PhotoCommentsProps) => {
                     </Link>
                   </Avatar>
                   <div className="flex-1">
-                    <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
-                      <Link to={comment.user.name ? `/profile/${comment.user.name}` : '#'} className="font-medium text-sm mb-1">
-                        {comment.user.name}
-                      </Link>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Link to={comment.user.name ? `/profile/${comment.user.name}` : '#'} className="font-semibold text-sm text-gray-900 dark:text-white hover:text-primary transition-colors">
+                          {comment.user.name}
+                        </Link>
+                        <span className="text-xs text-gray-500">
+                          {new Date(comment.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                         {comment.content}
                       </p>
                     </div>
-                    <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                       <button
                         onClick={() => toggleLikeMutation.mutate(comment.id)}
-                        className={`flex items-center gap-1 transition-colors ${likedComments.includes(comment.id) ? 'text-emerald-600' : 'hover:text-emerald-600'}`}
+                        className={`flex items-center gap-1 transition-colors hover:text-emerald-600 ${likedComments.includes(comment.id) ? 'text-emerald-600' : ''}`}
                         disabled={!user}
                       >
-                        <Heart className={`h-4 w-4 ${likedComments.includes(comment.id) ? 'fill-emerald-600' : ''}`} />
-                        {comment.likes}
+                        <Heart className={`h-4 w-4 ${likedComments.includes(comment.id) ? 'fill-current' : ''}`} />
+                        <span className="text-xs">{comment.likes}</span>
                       </button>
-                      <span className="text-xs">
-                        {new Date(comment.created_at).toLocaleDateString()}
-                      </span>
                     </div>
                   </div>
                 </motion.div>
@@ -226,9 +234,10 @@ const PhotoComments = ({ photoId, className = '' }: PhotoCommentsProps) => {
             </AnimatePresence>
 
             {!isLoading && comments.length === 0 && (
-              <p className="text-center text-gray-500 py-4">
-                No comments yet. Be the first to comment!
-              </p>
+              <div className="text-center py-8">
+                <MessageSquare className="h-12 w-12 mx-auto mb-3 text-gray-400" />
+                <p className="text-gray-500 dark:text-gray-400 text-sm">No comments yet. Be the first to comment!</p>
+              </div>
             )}
           </>
         )}

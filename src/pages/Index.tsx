@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import PhotoGrid from '@/components/PhotoGrid';
+import FlickrStyleGallery from '@/components/FlickrStyleGallery';
 import Navbar from '@/components/Navbar';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -9,20 +9,25 @@ import HeroSection from '@/components/home/HeroSection';
 import SearchSection from '@/components/home/SearchSection';
 import FooterSection from '@/components/home/FooterSection';
 import { Link } from 'react-router-dom';
-import CompactGallery from '@/components/gallery/CompactGallery';
 import Trans from './Trans';
 
 const ITEMS_PER_PAGE = 12;
 
-type Photo = {
+interface Photo {
   id: string;
   title: string;
-  caption?: string;
   image_url: string;
+  caption: string;
+  tags: string[];
+  profiles: {
+    username: string;
+    avatar_url: string;
+    full_name?: string;
+  };
   created_at: string;
-  tags?: string[];
-  user_id?: string;
-};
+  likes_count?: number;
+  comments_count?: number;
+}
 
 const Index = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -36,7 +41,17 @@ const Index = () => {
         setIsLoading(true);
         let query = supabase
           .from('photos')
-          .select('id, title, caption, image_url, created_at, tags, user_id')
+          .select(`
+            id,
+            title,
+            image_url,
+            caption,
+            tags,
+            created_at,
+            likes_count,
+            comments_count,
+            user_id
+          `)
           .order('created_at', { ascending: false });
 
         if (debouncedSearch) {
@@ -49,7 +64,21 @@ const Index = () => {
         
         if (error) throw error;
         
-        setPhotos(data || []);
+        // Transform data to match the Photo interface
+        const transformedData = (data || []).map(photo => {
+          const commentsCount = typeof photo.comments_count === 'number' ? photo.comments_count : 0;
+          return {
+            ...photo,
+            comments_count: commentsCount,
+            profiles: {
+              username: 'user',
+              avatar_url: '',
+              full_name: 'User'
+            }
+          };
+        });
+        
+        setPhotos(transformedData);
       } catch (err: unknown) {
         console.error('Error fetching photos:', err);
         let message = 'Unknown error';
@@ -81,33 +110,16 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground flex flex-col pt-24">
       <Navbar />
       {/* Hero Section */}
-      <HeroSection handleExploreClick={handleExploreClick} />
-      {/* Photo Grid Section */}
+      <HeroSection />
+      {/* Photo Gallery Section */}
       <div id="photo-grid" className="container mx-auto px-4 py-12 mt-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-            Latest Photos
+            Flickr-Style Photo Gallery
           </h2>
-          <p className="text-muted-foreground">Explore our latest captures</p>
+          <p className="text-muted-foreground">Experience our beautiful masonry layout with hover effects</p>
         </div>
-        <PhotoGrid photos={photos} isLoading={isLoading} />
-      </div>
-
-      {/* Enhanced Gallery Preview */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-            Enhanced Gallery
-          </h2>
-          <p className="text-muted-foreground mb-6">Experience our new beautiful gallery design</p>
-          <Link 
-            to="/enhanced-gallery" 
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium"
-          >
-            View Full Gallery
-          </Link>
-        </div>
-        <CompactGallery limit={6} />
+        <FlickrStyleGallery photos={photos} loading={isLoading} />
       </div>
       {/* Peace Sign Background Watermark */}
       <div 

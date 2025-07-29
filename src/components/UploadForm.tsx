@@ -1,12 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Upload, Image, X, Phone, Camera } from 'lucide-react';
+import { Upload, Image, X, Phone, Camera, FolderOpen } from 'lucide-react';
 import { useAuth } from '@/contexts/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,6 +21,8 @@ const UploadForm = () => {
   const [title, setTitle] = useState('');
   const [caption, setCaption] = useState('');
   const [tags, setTags] = useState('');
+  const [selectedAlbum, setSelectedAlbum] = useState<string>('');
+  const [albums, setAlbums] = useState<Array<{ id: string; title: string; description: string }>>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -94,6 +97,26 @@ const UploadForm = () => {
     }
   };
 
+  // Fetch available albums
+  useEffect(() => {
+    const fetchAlbums = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('albums')
+          .select('id, title, description')
+          .order('title', { ascending: true });
+        
+        if (error) throw error;
+        setAlbums(data || []);
+      } catch (error) {
+        console.error('Error fetching albums:', error);
+        toast.error('Failed to load albums');
+      }
+    };
+
+    fetchAlbums();
+  }, []);
+
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
@@ -102,9 +125,27 @@ const UploadForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Validate form
-    if (!title || !caption || !imageFile || !user) {
-      toast.error('Please fill all required fields.');
+    // Enhanced validation
+    if (!title.trim()) {
+      toast.error('Please enter a title for your photo.');
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!caption.trim()) {
+      toast.error('Please add a caption to describe your photo.');
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!imageFile) {
+      toast.error('Please select an image to upload.');
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!user) {
+      toast.error('You must be logged in to upload photos.');
       setIsSubmitting(false);
       return;
     }
@@ -132,7 +173,8 @@ const UploadForm = () => {
         });
       
       if (uploadError) {
-        throw uploadError;
+        console.error('Storage upload error:', uploadError);
+        throw new Error(`Failed to upload image: ${uploadError.message}`);
       }
       
       // Get public URL for the uploaded file
@@ -143,11 +185,12 @@ const UploadForm = () => {
       // Save photo metadata to the database
       const photoData = {
         user_id: user.id,
-        title,
-        caption,
+        title: title.trim(),
+        caption: caption.trim(),
         tags: tagArray,
         image_url: publicUrl,
-        image_path: filePath
+        image_path: filePath,
+        ...(selectedAlbum && { album_id: selectedAlbum }) // Only include album_id if selected
       };
       
       // Debug log for troubleshooting RLS issues
@@ -155,12 +198,17 @@ const UploadForm = () => {
 
       const { data: insertedPhoto, error: photoError } = await supabase
         .from('photos')
-        .insert([photoData]) // <-- array!
+        .insert([photoData])
         .select()
         .single();
       
       if (photoError) {
-        throw photoError;
+        console.error('Database insert error:', photoError);
+        throw new Error(`Failed to save photo: ${photoError.message}`);
+      }
+      
+      if (!insertedPhoto) {
+        throw new Error('Photo was not created successfully');
       }
       
       toast.success('Photo uploaded successfully!');
@@ -168,7 +216,7 @@ const UploadForm = () => {
       navigate(`/photo/${insertedPhoto.id}`);
     } catch (error: unknown) {
       console.error('Error uploading image:', error);
-      let message = 'Unknown error';
+      let message = 'Unknown error occurred';
       if (
         error &&
         typeof error === 'object' &&
@@ -199,9 +247,7 @@ const UploadForm = () => {
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               Share Your iPhone Moment
             </CardTitle>
-            <CardDescription className="flex items-center gap-2 mt-2">
-              Shot on iPhone 16 Pro Max
-            </CardDescription>
+
           </motion.div>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -235,10 +281,7 @@ const UploadForm = () => {
                         className="h-full w-full object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                        <Camera className="h-5 w-5 text-white" />
-                        <span className="text-sm font-medium text-white">iPhone 16 Pro Max</span>
-                      </div>
+
                       <button
                         type="button"
                         onClick={handleRemoveImage}
@@ -330,6 +373,39 @@ const UploadForm = () => {
                 rows={4}
                 required
               />
+            </motion.div>
+
+            {/* Album Selection */}
+            <motion.div 
+              className="space-y-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Label htmlFor="album" className="text-sm font-medium">Album (Optional)</Label>
+              <Select value={selectedAlbum} onValueChange={setSelectedAlbum}>
+                <SelectTrigger className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+                  <SelectValue placeholder="Choose an album for your photo (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  {albums.map((album) => (
+                    <SelectItem key={album.id} value={album.id}>
+                      <div className="flex items-center gap-2">
+                        <FolderOpen className="h-4 w-4" />
+                        <div>
+                          <div className="font-medium">{album.title}</div>
+                          {album.description && (
+                            <div className="text-xs text-muted-foreground">{album.description}</div>
+                          )}
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Select an album to organize your photo (optional)
+              </p>
             </motion.div>
 
             {/* Tags */}

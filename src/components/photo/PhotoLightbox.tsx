@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Download, Heart, MessageCircle, Share2, User } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Share2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
@@ -72,33 +72,41 @@ const PhotoInfo = ({ photo }: { photo: PhotoLightboxProps['photos'][0] }) => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <UserProfileLink user={photo.profiles} avatarClassName="h-8 w-8" nameClassName="font-medium" />
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`flex items-center gap-1 ${isLiked ? 'text-red-500' : ''}`}
-            onClick={handleLike}
-          >
-            <Heart className={`h-5 w-5 ${isLiked ? 'fill-current' : ''}`} />
-            <span>{likesCount}</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="flex items-center gap-1"
-          >
-            <MessageCircle className="h-5 w-5" />
-            <span>{commentsCount}</span>
-          </Button>
+    <div className="space-y-6">
+      {/* Photo Info Header */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <UserProfileLink user={photo.profiles} avatarClassName="h-10 w-10" nameClassName="font-semibold text-lg" />
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`flex items-center gap-2 px-4 py-2 rounded-full ${isLiked ? 'text-red-500 bg-red-50 dark:bg-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+              onClick={handleLike}
+            >
+              <Heart className={`h-5 w-5 ${isLiked ? 'fill-current' : ''}`} />
+              <span className="font-medium">{likesCount}</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <MessageCircle className="h-5 w-5" />
+              <span className="font-medium">{commentsCount}</span>
+            </Button>
+          </div>
         </div>
       </div>
-      <Separator />
-      <div>
-        <h3 className="font-medium text-lg mb-2">{photo.title}</h3>
-        <p className="text-gray-600 dark:text-gray-300">{photo.caption}</p>
+
+      {/* Photo Details */}
+      <div className="space-y-3">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{photo.title}</h2>
+          {photo.caption && (
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{photo.caption}</p>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -173,23 +181,7 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
     setTouchStart(null);
   };
 
-  const handleDownload = async () => {
-    const photo = photos[currentIndex];
-    try {
-      const response = await fetch(photo.image_url);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${photo.title}.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Error downloading photo:', error);
-    }
-  };
+
 
   const currentPhoto = photos[currentIndex];
 
@@ -198,29 +190,22 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg"
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="fixed inset-0 z-50 bg-black/10 backdrop-blur-2xl"
       onClick={() => !isZoomed && onClose()}
     >
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
+      <div className="absolute top-6 right-6 z-10 flex gap-3">
         <ShareButton
           url={`${window.location.origin}/photo/${currentPhoto.id}`}
           title={currentPhoto.title}
           description={currentPhoto.caption}
-          className="text-white hover:bg-white/20"
+          className="text-white hover:bg-white/30 bg-black/30 backdrop-blur-md rounded-full shadow-lg transition-all duration-200 hover:scale-110"
         />
+
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-white/20"
-          onClick={handleDownload}
-          aria-label="Download photo"
-        >
-          <Download className="h-6 w-6" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white hover:bg-white/20"
+          className="text-white hover:bg-white/30 bg-black/30 backdrop-blur-md rounded-full shadow-lg transition-all duration-200 hover:scale-110"
           onClick={onClose}
           aria-label="Close"
         >
@@ -229,20 +214,18 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
       </div>
 
       <div
-        className="h-full w-full flex"
+        className="h-full w-full flex items-center justify-center"
         data-testid="lightbox-container"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Left side - Photo */}
-        <div
-          className="flex-1 flex items-center justify-center relative"
-        >
+        {/* Full screen photo */}
+        <div className="relative w-full h-full flex items-center justify-center">
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-4 z-10 text-white hover:bg-white/20"
+            className="absolute left-6 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/30 bg-black/30 backdrop-blur-md rounded-full shadow-lg transition-all duration-200 hover:scale-110"
             onClick={(e) => {
               e.stopPropagation();
               navigatePhotos('prev');
@@ -253,41 +236,46 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
           </Button>
 
           <div
-            className="relative max-w-[calc(100vw-400px)] max-h-[90vh]"
+            className="relative w-full h-full flex items-center justify-center p-4 group"
             onClick={(e) => e.stopPropagation()}
           >
             <motion.img
-     layoutId={`photo-${currentPhoto.id}`}
+              layoutId={`photo-${currentPhoto.id}`}
               src={currentPhoto.image_url}
               alt={currentPhoto.title}
-              className="max-w-full max-h-[90vh] object-contain cursor-zoom-in"
+              className="max-w-full max-h-full object-contain cursor-zoom-in rounded-lg shadow-2xl"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ type: 'spring', duration: 0.3 }}
+              transition={{ type: 'spring', duration: 0.4, bounce: 0.1 }}
               onClick={() => setIsZoomed(!isZoomed)}
               style={{
                 transform: isZoomed ? 'scale(1.5)' : 'scale(1)',
                 cursor: isZoomed ? 'zoom-out' : 'zoom-in',
-                transition: 'transform 0.3s ease',
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               }}
               aria-label={isZoomed ? 'Zoom out' : 'Zoom in'}
             />
             
+            {/* Floating info panel */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent text-white"
+              className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-xl rounded-3xl p-6 text-white opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-2xl border border-white/10"
             >
-              <h2 className="text-xl font-semibold mb-2">{currentPhoto.title}</h2>
-              <p className="text-sm opacity-90">{currentPhoto.caption}</p>
+              <div className="text-center flex flex-col items-center justify-center">
+                <h3 className="text-xl font-bold mb-2 text-white text-center">{currentPhoto.title}</h3>
+                {currentPhoto.caption && (
+                  <p className="text-sm opacity-90 leading-relaxed max-w-md text-center">{currentPhoto.caption}</p>
+                )}
+              </div>
             </motion.div>
           </div>
 
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-4 z-10 text-white hover:bg-white/20"
+            className="absolute right-6 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/30 bg-black/30 backdrop-blur-md rounded-full shadow-lg transition-all duration-200 hover:scale-110"
             onClick={(e) => {
               e.stopPropagation();
               navigatePhotos('next');
@@ -296,17 +284,6 @@ const PhotoLightbox = ({ photos, initialPhotoId, onClose }: PhotoLightboxProps) 
           >
             <ChevronRight className="h-8 w-8" />
           </Button>
-        </div>
-
-        {/* Right side - Comments */}
-        <div
-          className="w-[400px] bg-white dark:bg-gray-900 h-full overflow-y-auto p-6"
-          onClick={(e) => e.stopPropagation()}
-          data-testid="comments-section"
-        >
-          <PhotoInfo photo={currentPhoto} />
-          <Separator className="my-6" />
-          <PhotoComments photoId={currentPhoto.id} />
         </div>
       </div>
     </motion.div>

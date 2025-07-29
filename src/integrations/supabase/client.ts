@@ -7,22 +7,22 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Debug logging
-console.log('🔍 DEBUG: SUPABASE_URL from env:', SUPABASE_URL);
+console.log('🔍 DEBUG: SUPABASE_URL from env:', SUPABASE_URL ? 'FOUND' : 'NOT FOUND');
 console.log('🔍 DEBUG: SUPABASE_ANON_KEY from env:', SUPABASE_ANON_KEY ? 'FOUND' : 'NOT FOUND');
-// Fallback to the working Supabase project URL
-const SUPABASE_URL_FALLBACK = "https://qjrysayswbdqskynywkr.supabase.co";
-const SUPABASE_ANON_KEY_FALLBACK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqcnlzYXlzd2JkcXNreW55d2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzkwNDgsImV4cCI6MjA2ODg1NTA0OH0.feYjlWxRpKk3q7Lp9fKMSv7Om5YKi0OLOIqelRF5pCA";
 
+// Validate environment variables
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.warn('Supabase environment variables not found, using fallback values');
+  console.error('❌ ERROR: Missing Supabase environment variables');
+  console.error('Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file');
+  throw new Error('Missing Supabase configuration. Check your environment variables.');
 }
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
 export const supabase = createClient<Database>(
-  SUPABASE_URL || SUPABASE_URL_FALLBACK, 
-  SUPABASE_ANON_KEY || SUPABASE_ANON_KEY_FALLBACK, 
+  SUPABASE_URL, 
+  SUPABASE_ANON_KEY, 
   {
     auth: {
       persistSession: true,
@@ -51,10 +51,10 @@ export const testConnection = async () => {
       return false;
     }
     
-    console.log('Database connection successful');
+    console.log('✅ Database connection successful');
     return true;
   } catch (error) {
-    console.error('Database connection test error:', error);
+    console.error('❌ Database connection test error:', error);
     return false;
   }
 };

@@ -2,7 +2,7 @@ import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import PhotoCard from '@/components/photo/PhotoCard';
 import PhotoLoading from '@/components/photo/PhotoLoading';
 import EmptyState from '@/components/photo/EmptyState';
-import { ArrowDown, Phone } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PhotoLightbox from '@/components/photo/PhotoLightbox';
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
@@ -200,16 +200,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
   // Responsive CSS grid
   return (
     <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
-      <motion.div 
-        className="text-center"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10">
-          <span className="text-sm font-medium text-secondary">Shot on iPhone 16 Pro Max</span>
-        </div>
-      </motion.div>
+
 
       {/* Sort Bar */}
       <motion.div
@@ -317,16 +308,7 @@ const PhotoGrid = ({ photos, loading = false, isOwner = false }: PhotoGridProps)
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary border-t-transparent"></div>
         </motion.div>
       )}
-      {!loading && hasMore && (
-        <motion.div 
-          className="col-span-full flex justify-center py-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <ArrowDown className="h-6 w-6 animate-bounce text-secondary" />
-        </motion.div>
-      )}
+
     </div>
   );
 };

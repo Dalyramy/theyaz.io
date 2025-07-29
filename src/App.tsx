@@ -4,8 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { Component, ErrorInfo, ReactNode } from "react";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import "@/i18n";
 
 import Index from "./pages/Index";
@@ -33,44 +33,9 @@ import Profile from './pages/Profile';
 
 import Trans from "./pages/Trans";
 import TestGalleryPage from "./app/test-gallery/page";
+import EnhancedGallery from "./pages/EnhancedGallery";
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
 
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="max-w-md p-8 rounded-lg shadow-soft bg-card animate-fade-in">
-            <h1 className="text-2xl font-bold text-destructive mb-4">Something went wrong</h1>
-            <p className="text-muted-foreground mb-4">
-              {this.state.error?.message || 'An unexpected error occurred'}
-            </p>
-            <button
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors hover-lift"
-              onClick={() => window.location.reload()}
-            >
-              Reload page
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
 
 function App() {
   const queryClient = new QueryClient({
@@ -96,6 +61,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/gallery" element={<Gallery />} />
+                      <Route path="/enhanced-gallery" element={<EnhancedGallery />} />
 
                       <Route path="/albums/:albumId" element={<AlbumPage />} />
                       <Route path="/categories" element={<CategoryList />} />

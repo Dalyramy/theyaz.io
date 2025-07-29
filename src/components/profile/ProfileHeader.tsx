@@ -33,7 +33,7 @@ const ProfileHeader = ({ userId }: { userId: string }) => {
   return (
     <div className="flex flex-col md:flex-row items-center gap-4 mb-8">
       <img
-        src={profile.avatar_url || '/icons/default-avatar.png'}
+                    src={profile.avatar_url || '/icons/default-avatar.svg'}
         alt="Avatar"
         className="w-20 h-20 rounded-full object-cover border"
       />

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Camera, ArrowDown } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import Logo from '@/components/ui/Logo';
@@ -33,22 +33,7 @@ const HeroSection = () => {
         </div>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-        onClick={handleExploreClick}
-        style={{ touchAction: 'manipulation' }}
-      >
-        <button
-          className="rounded-full bg-card/80 shadow-lg p-3 sm:p-4 focus:outline-none focus:ring-2 focus:ring-primary active:bg-primary/10"
-          style={{ minWidth: 48, minHeight: 48 }}
-          aria-label="Scroll to gallery"
-        >
-          <ArrowDown className="h-7 w-7 animate-bounce" />
-        </button>
-      </motion.div>
+
     </section>
   );
 };

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import HeroSection from './HeroSection';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent } from '@/components/ui/card';
-import { Heart, MessageSquare, Loader2 } from 'lucide-react';
+import { Loader2, FolderOpen } from 'lucide-react';
+import HomePagePhotoCard from '@/components/photo/HomePagePhotoCard';
 import { Link } from 'react-router-dom';
 
 interface PhotoWithAlbum {
@@ -96,7 +96,7 @@ const HomePage: React.FC = () => {
       setLoading(false);
       setInitialLoading(false);
     }
-  }, [loading, hasMore]);
+  }, []); // Remove loading and hasMore from dependencies
 
   // Initial load
   useEffect(() => {
@@ -106,7 +106,7 @@ const HomePage: React.FC = () => {
         abortController.current.abort();
       }
     };
-  }, []);
+  }, [fetchPhotos]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -130,53 +130,9 @@ const HomePage: React.FC = () => {
         observer.unobserve(loader.current);
       }
     };
-  }, [fetchPhotos, hasMore, loading, initialLoading]);
+  }, [hasMore, loading, initialLoading]); // Remove fetchPhotos from dependencies
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = e.target as HTMLImageElement;
-    target.src = '/placeholder.svg';
-    target.onerror = null; // Prevent infinite loop
-  };
 
-  const PhotoCard: React.FC<{ photo: PhotoWithAlbum; index: number }> = React.memo(({ photo, index }) => (
-    <Card className="group overflow-hidden hover-lift rounded-2xl border-border w-full bg-card/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
-      <div className="aspect-square overflow-hidden bg-muted relative">
-        <img
-          src={photo.image_url}
-          alt={photo.title}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 rounded-xl"
-          loading="lazy"
-          onError={handleImageError}
-        />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-      </div>
-      <CardContent className="p-4 sm:p-6">
-        <div className="mb-3">
-          <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2 line-clamp-2">
-            {photo.title}
-          </h3>
-          <Link 
-            to={`/albums/${photo.album_id}`} 
-            className="text-xs text-primary hover:text-secondary transition-colors duration-200 underline decoration-dotted"
-          >
-            {photo.album_title}
-          </Link>
-        </div>
-        <div className="flex items-center justify-between text-muted-foreground">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Heart className="w-4 h-4" />
-              <span className="text-sm font-medium">{photo.likes_count || 0}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageSquare className="w-4 h-4" />
-              <span className="text-sm font-medium">{photo.comments_count || 0}</span>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  ));
 
   if (initialLoading) {
     return (
@@ -290,7 +246,14 @@ const HomePage: React.FC = () => {
         <div className="container mx-auto px-4 pt-32 pb-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-2 text-primary/90">Discover Random Photos</h2>
-            <p className="text-muted-foreground">Explore our curated collection of moments</p>
+            <p className="text-muted-foreground mb-4">Explore our curated collection of moments</p>
+            <Link 
+              to="/gallery"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors hover-lift"
+            >
+              <FolderOpen className="w-4 h-4" />
+              View All Albums
+            </Link>
           </div>
           
           {photos.length === 0 && !loading ? (
@@ -300,7 +263,7 @@ const HomePage: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full">
               {photos.map((photo, index) => (
-                <PhotoCard key={photo.id} photo={photo} index={index} />
+                <HomePagePhotoCard key={photo.id} photo={photo} index={index} />
               ))}
             </div>
           )}

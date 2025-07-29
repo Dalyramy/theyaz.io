@@ -83,8 +83,8 @@ export default function CategoryList() {
                   <Link key={album.id} to={`/albums/${album.id}`} className="block w-32">
                     <div className="rounded-lg overflow-hidden shadow hover:shadow-lg transition border border-white/10 bg-white/10">
                       <picture>
-                        <source srcSet={(album.cover_photo?.image_url || '/default-cover.jpg').replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
-                        <img src={album.cover_photo?.image_url || '/default-cover.jpg'} alt={album.title} className="w-32 h-24 object-cover" loading="lazy" />
+                                <source srcSet={(album.cover_photo?.image_url || '/default-cover.svg').replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
+        <img src={album.cover_photo?.image_url || '/default-cover.svg'} alt={album.title} className="w-32 h-24 object-cover" loading="lazy" />
                       </picture>
                       <div className="p-2 text-center text-sm font-medium text-white/90 truncate" title={album.title}>{album.title}</div>
                     </div>

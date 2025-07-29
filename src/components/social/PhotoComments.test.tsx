@@ -4,10 +4,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PhotoComments from './PhotoComments';
 import { supabase } from '@/integrations/supabase/client';
 import { MemoryRouter } from 'react-router-dom';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 // Mock Supabase client
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
+    auth: {
+      onAuthStateChange: vi.fn(() => ({
+        data: { subscription: { unsubscribe: vi.fn() } }
+      })),
+      getSession: vi.fn(() => Promise.resolve({ data: { session: null } }))
+    },
     from: vi.fn(() => ({
       select: vi.fn(() => ({
         eq: vi.fn(() => ({
@@ -70,6 +77,7 @@ vi.mock('@/integrations/supabase/client', () => ({
       })),
     })),
   },
+  testConnection: vi.fn(() => Promise.resolve(true))
 }));
 
 const queryClient = new QueryClient({
@@ -84,7 +92,9 @@ const renderWithQueryClient = (ui: React.ReactElement) => {
   return render(
     <MemoryRouter>
       <QueryClientProvider client={queryClient}>
-        {ui}
+        <AuthProvider>
+          {ui}
+        </AuthProvider>
       </QueryClientProvider>
     </MemoryRouter>
   );

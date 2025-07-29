@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" fill="none">
+  <!-- Background -->
+  <rect width="300" height="200" fill="#f8fafc"/>
+  <!-- Camera icon -->
+  <g transform="translate(125, 75)">
+    <!-- Camera body -->
+    <rect x="0" y="10" width="50" height="35" rx="3" fill="#64748b" stroke="#475569" stroke-width="1"/>
+    <!-- Camera lens -->
+    <circle cx="25" cy="27.5" r="8" fill="#475569"/>
+    <circle cx="25" cy="27.5" r="4" fill="#1e293b"/>
+    <!-- Camera top -->
+    <rect x="15" y="5" width="20" height="10" rx="2" fill="#64748b"/>
+    <!-- Flash -->
+    <rect x="35" y="15" width="8" height="4" rx="1" fill="#64748b"/>
+  </g>
+  <!-- Text -->
+  <text x="150" y="160" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#64748b">Album Cover</text>
+</svg> 

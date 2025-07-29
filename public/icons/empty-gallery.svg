@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Camera body -->
+  <rect x="8" y="20" width="48" height="32" rx="4" fill="none"/>
+  <!-- Camera lens -->
+  <circle cx="32" cy="36" r="8" fill="none"/>
+  <circle cx="32" cy="36" r="4" fill="none"/>
+  <!-- Camera top -->
+  <rect x="20" y="16" width="24" height="8" rx="2" fill="none"/>
+  <!-- Flash -->
+  <rect x="44" y="24" width="8" height="4" rx="1" fill="none"/>
+  <!-- Photo frames -->
+  <rect x="12" y="44" width="16" height="12" rx="1" fill="none" opacity="0.3"/>
+  <rect x="36" y="44" width="16" height="12" rx="1" fill="none" opacity="0.3"/>
+  <!-- Plus signs in frames -->
+  <line x1="20" y1="50" x2="20" y2="54" opacity="0.5"/>
+  <line x1="18" y1="52" x2="22" y2="52" opacity="0.5"/>
+  <line x1="44" y1="50" x2="44" y2="54" opacity="0.5"/>
+  <line x1="42" y1="52" x2="46" y2="52" opacity="0.5"/>
+</svg> 
