@@ -339,7 +339,13 @@ const Gallery: React.FC = () => {
   };
 
   const handleEditAlbum = async (albumData: { title: string; description: string }) => {
-    if (!editingAlbum) return;
+    if (!editingAlbum || !user) return;
+
+    // Security check: ensure user can only edit their own albums
+    if (editingAlbum.user_id !== user.id) {
+      toast.error('You can only edit your own albums');
+      return;
+    }
 
     if (!albumData.title.trim()) {
       toast.error('Please enter an album title');
@@ -354,7 +360,8 @@ const Gallery: React.FC = () => {
           description: albumData.description.trim(),
           updated_at: new Date().toISOString()
         })
-        .eq('id', editingAlbum.id);
+        .eq('id', editingAlbum.id)
+        .eq('user_id', user.id); // Additional security: only update user's own albums
 
       if (error) throw error;
 
@@ -590,14 +597,19 @@ const Gallery: React.FC = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                              <DropdownMenuItem onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingAlbum(album);
-                                setShowEditDialog(true);
-                              }}>
-                                <Edit3 className="w-4 h-4 mr-2" />
-                                Edit Album
-                              </DropdownMenuItem>
+                              {user && album.user_id === user.id && (
+                                <>
+                                  <DropdownMenuItem onClick={(e) => {
+                                    e.stopPropagation();
+                                    setEditingAlbum(album);
+                                    setShowEditDialog(true);
+                                  }}>
+                                    <Edit3 className="w-4 h-4 mr-2" />
+                                    Edit Album
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                </>
+                              )}
                               {user && album.user_id === user.id && (
                                 <>
                                   <DropdownMenuSeparator />
@@ -665,7 +677,7 @@ const Gallery: React.FC = () => {
         </div>
 
         {/* Edit Album Dialog */}
-        {editingAlbum && (
+        {editingAlbum && user && editingAlbum.user_id === user.id && (
           <AlbumForm
             isOpen={showEditDialog}
             onClose={() => {
