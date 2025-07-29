@@ -151,14 +151,18 @@ const Gallery: React.FC = () => {
             .select('*', { count: 'exact', head: true })
             .eq('album_id', album.id);
           
-          // Get the first photo as cover image
-          const { data: coverPhoto } = await supabase
+          // Get the first photo as cover image - avoid embedding issues
+          const { data: coverPhoto, error: coverError } = await supabase
             .from('photos')
             .select('image_url')
             .eq('album_id', album.id)
             .order('created_at', { ascending: false })
             .limit(1)
-            .single();
+            .maybeSingle();
+          
+          if (coverError) {
+            console.error(`Error fetching cover for album "${album.title}":`, coverError);
+          }
           
           // Debug: log the cover image URL
           if (coverPhoto?.image_url) {
@@ -204,6 +208,7 @@ const Gallery: React.FC = () => {
 
   const fetchAlbumPhotos = async (albumId: string) => {
     try {
+      // Avoid embedding issues by not using joins
       const { data: photosData, error: photosError } = await supabase
         .from('photos')
         .select(`
