@@ -97,6 +97,15 @@ const Gallery: React.FC = () => {
     fetchAlbumsAndPhotos();
   }, []);
 
+  // Refresh album covers periodically to catch new uploads
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAlbumsAndPhotos();
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Handle navigation state from HomePage
   useEffect(() => {
     if (location.state?.selectedAlbumId && albums.length > 0) {
@@ -114,7 +123,7 @@ const Gallery: React.FC = () => {
     setError(null);
     
     try {
-      // Fetch albums with photo counts
+      // Fetch albums with photo counts and cover images
       const { data: albumsData, error: albumsError } = await supabase
         .from('albums')
         .select(`
@@ -133,27 +142,38 @@ const Gallery: React.FC = () => {
         return;
       }
 
-      // Get photo counts for each album
-      const albumsWithCounts = await Promise.all(
+      // Get photo counts and cover images for each album
+      const albumsWithPhotos = await Promise.all(
         albumsData?.map(async (album) => {
+          // Get photo count
           const { count } = await supabase
             .from('photos')
             .select('*', { count: 'exact', head: true })
             .eq('album_id', album.id);
           
+          // Get the first photo as cover image
+          const { data: coverPhoto } = await supabase
+            .from('photos')
+            .select('image_url')
+            .eq('album_id', album.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+          
           return {
             ...album,
-            photo_count: count || 0
+            photo_count: count || 0,
+            cover_image: coverPhoto?.image_url || null
           };
         }) || []
       );
 
       // Transform the data to match our interface
-      const transformedAlbums: AlbumData[] = albumsWithCounts.map(album => ({
+      const transformedAlbums: AlbumData[] = albumsWithPhotos.map(album => ({
         id: album.id,
         title: album.title,
         description: album.description || '',
-        cover_image: null, // We'll add cover image functionality later
+        cover_image: album.cover_image,
         photo_count: album.photo_count,
         photos: [], // We'll fetch photos separately if needed
         created_at: album.created_at,
@@ -299,6 +319,11 @@ const Gallery: React.FC = () => {
     // Fetch photos for this album
     const photos = await fetchAlbumPhotos(album.id);
     setSelectedAlbum(prev => prev ? { ...prev, photos } : null);
+  };
+
+  // Function to refresh album covers when photos are uploaded
+  const refreshAlbumCovers = async () => {
+    await fetchAlbumsAndPhotos();
   };
 
   const handleBackToAlbums = () => {
@@ -578,9 +603,19 @@ const Gallery: React.FC = () => {
                             priority={index < 3}
                             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
+                        ) : album.photo_count > 0 ? (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                            <div className="text-center">
+                              <Camera className="w-12 h-12 text-muted-foreground mb-2" />
+                              <p className="text-sm text-muted-foreground">Loading photos...</p>
+                            </div>
+                          </div>
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-                            <span className="text-4xl">{getAlbumIcon(album.title)}</span>
+                            <div className="text-center">
+                              <span className="text-4xl mb-2 block">{getAlbumIcon(album.title)}</span>
+                              <p className="text-sm text-muted-foreground">No photos yet</p>
+                            </div>
                           </div>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
