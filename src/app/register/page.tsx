@@ -86,9 +86,9 @@ export default function RegisterPage() {
   };
 
   const getPasswordStrengthText = () => {
-    if (passwordStrength <= 2) return t('auth.weak', 'Weak');
-    if (passwordStrength <= 3) return t('auth.fair', 'Fair');
-    return t('auth.strong', 'Strong');
+    if (passwordStrength <= 2) return t('auth.weak');
+    if (passwordStrength <= 3) return t('auth.fair');
+    return t('auth.strong');
   };
 
   return (
@@ -106,15 +106,15 @@ export default function RegisterPage() {
         >
           <Card className="overflow-hidden hover-lift rounded-2xl border-border">
             <CardHeader className="text-center pb-6">
-              <Badge variant="secondary" className="mb-4">
-                <Sparkles className="w-3 h-3 mr-1" />
-                {t('auth.join_us', 'Join Us')}
-              </Badge>
-              <CardTitle className="text-2xl sm:text-3xl font-bold mb-2">
-                {t('auth.register', 'Create Account')}
-              </CardTitle>
-              <CardDescription>
-                {t('auth.register_desc', 'Sign up to start sharing your photography')}
+                              <Badge variant="secondary" className="mb-4">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  {t('auth.join_us')}
+                </Badge>
+                <CardTitle className="text-2xl sm:text-3xl font-bold mb-2">
+                  {t('auth.register')}
+                </CardTitle>
+                <CardDescription>
+                  {t('auth.register_desc')}
               </CardDescription>
             </CardHeader>
             
@@ -123,7 +123,7 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName" className="text-sm font-medium">
-                      {t('auth.first_name', 'First Name')}
+                      {t('auth.first_name')}
                     </Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -131,7 +131,7 @@ export default function RegisterPage() {
                         id="firstName"
                         name="firstName"
                         type="text"
-                        placeholder={t('auth.first_name_placeholder', 'John')}
+                        placeholder={t('auth.first_name_placeholder')}
                         value={formData.firstName}
                         onChange={handleInputChange}
                         className="pl-10"
@@ -142,7 +142,7 @@ export default function RegisterPage() {
                   
                   <div className="space-y-2">
                     <Label htmlFor="lastName" className="text-sm font-medium">
-                      {t('auth.last_name', 'Last Name')}
+                      {t('auth.last_name')}
                     </Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -150,7 +150,7 @@ export default function RegisterPage() {
                         id="lastName"
                         name="lastName"
                         type="text"
-                        placeholder={t('auth.last_name_placeholder', 'Doe')}
+                        placeholder={t('auth.last_name_placeholder')}
                         value={formData.lastName}
                         onChange={handleInputChange}
                         className="pl-10"
@@ -162,7 +162,7 @@ export default function RegisterPage() {
                 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">
-                    {t('auth.email', 'Email')}
+                    {t('auth.email')}
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -170,7 +170,7 @@ export default function RegisterPage() {
                       id="email"
                       name="email"
                       type="email"
-                      placeholder={t('auth.email_placeholder', 'Enter your email')}
+                      placeholder={t('auth.email_placeholder')}
                       value={formData.email}
                       onChange={handleInputChange}
                       className="pl-10"
@@ -181,7 +181,7 @@ export default function RegisterPage() {
                 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium">
-                    {t('auth.password', 'Password')}
+                    {t('auth.password')}
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -189,7 +189,7 @@ export default function RegisterPage() {
                       id="password"
                       name="password"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder={t('auth.password_placeholder', 'Create a password')}
+                      placeholder={t('auth.password_placeholder')}
                       value={formData.password}
                       onChange={handleInputChange}
                       className="pl-10 pr-10"
@@ -232,7 +232,7 @@ export default function RegisterPage() {
                 
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword" className="text-sm font-medium">
-                    {t('auth.confirm_password', 'Confirm Password')}
+                    {t('auth.confirm_password')}
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -240,7 +240,7 @@ export default function RegisterPage() {
                       id="confirmPassword"
                       name="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder={t('auth.confirm_password_placeholder', 'Confirm your password')}
+                      placeholder={t('auth.confirm_password_placeholder')}
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
                       className="pl-10 pr-10"
@@ -265,10 +265,10 @@ export default function RegisterPage() {
                       {formData.password === formData.confirmPassword ? (
                         <>
                           <Check className="h-4 w-4 text-green-500" />
-                          <span className="text-green-500">{t('auth.passwords_match', 'Passwords match')}</span>
+                          <span className="text-green-500">{t('auth.passwords_match')}</span>
                         </>
                       ) : (
-                        <span className="text-red-500">{t('auth.passwords_dont_match', 'Passwords do not match')}</span>
+                        <span className="text-red-500">{t('auth.passwords_dont_match')}</span>
                       )}
                     </div>
                   )}
@@ -277,13 +277,13 @@ export default function RegisterPage() {
                 <div className="flex items-center space-x-2">
                   <input type="checkbox" id="terms" className="rounded" required />
                   <label htmlFor="terms" className="text-sm text-muted-foreground">
-                    {t('auth.agree_terms', 'I agree to the')}{' '}
+                    {t('auth.agree_terms')}{' '}
                     <Link href="/terms" className="text-primary hover:underline">
-                      {t('auth.terms', 'Terms of Service')}
+                      {t('auth.terms')}
                     </Link>
-                    {' '}{t('auth.and', 'and')}{' '}
+                    {' '}{t('auth.and')}{' '}
                     <Link href="/privacy" className="text-primary hover:underline">
-                      {t('auth.privacy', 'Privacy Policy')}
+                      {t('auth.privacy')}
                     </Link>
                   </label>
                 </div>
@@ -301,11 +301,11 @@ export default function RegisterPage() {
                   {isLoading ? (
                     <div className="flex items-center">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      {t('auth.creating_account', 'Creating account...')}
+                      {t('auth.creating_account')}
                     </div>
                   ) : (
                     <div className="flex items-center">
-                      {t('auth.create_account', 'Create Account')}
+                      {t('auth.create_account')}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </div>
                   )}
@@ -316,11 +316,11 @@ export default function RegisterPage() {
               
               <div className="text-center space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  {t('auth.already_have_account', 'Already have an account?')}
+                  {t('auth.already_have_account')}
                 </p>
                 <Link href="/login">
                   <Button variant="outline" className="w-full">
-                    {t('auth.sign_in', 'Sign In')}
+                    {t('auth.sign_in')}
                   </Button>
                 </Link>
               </div>

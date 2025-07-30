@@ -5,14 +5,14 @@ import AmazighKeyboard from '@/components/ui/AmazighKeyboard';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { cn, latinToTifinagh } from '@/lib/utils';
 import { Copy, RefreshCcw, Zap } from 'lucide-react';
-import LanguageSelector from '@/components/ui/LanguageSelector';
+import { SimpleLanguageSelector } from '@/components/ui/SimpleLanguageSelector';
 import PeaceWatermark from '@/components/ui/PeaceWatermark';
 
 const Trans: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [latinText, setLatinText] = useState('');
   const [tifinaghText, setTifinaghText] = useState('');
   const [copied, setCopied] = useState<'latin' | 'tifinagh' | false>(false);
@@ -83,7 +83,7 @@ const Trans: React.FC = () => {
       
       {/* Local language selector for convenience */}
       <div className="flex justify-end w-full max-w-2xl mx-auto pt-4 px-2 sm:px-0">
-        <LanguageSelector />
+        <SimpleLanguageSelector />
       </div>
       
       <main className="container mx-auto py-6 px-1 sm:px-4 flex flex-col items-center">
@@ -91,10 +91,10 @@ const Trans: React.FC = () => {
           <CardHeader>
             <Badge variant="secondary" className="mb-2">Amazigh ⴰⵎⴰⵣⵉⵖ</Badge>
             <CardTitle className="text-2xl sm:text-3xl font-bold mb-1">
-              {t('trans.title', 'Amazigh Keyboard & Converter')}
+              {t('trans.title')}
             </CardTitle>
             <CardDescription>
-              {t('trans.desc', 'Type in Latin or Tifinagh. Auto-convert to Amazigh letters. Copy, reset, or use the on-screen keyboard!')}
+              {t('trans.desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -107,16 +107,16 @@ const Trans: React.FC = () => {
                 className="flex-1 sm:flex-initial min-h-[44px]"
               >
                 <Zap className="w-4 h-4" />
-                {autoConvert ? t('trans.auto', 'Auto-convert ON') : t('trans.auto_off', 'Manual mode')}
+                {autoConvert ? t('trans.auto') : t('trans.auto_off')}
               </Button>
               {!autoConvert && (
                 <Button variant="secondary" size="sm" onClick={handleManualConvert} className="flex-1 sm:flex-initial min-h-[44px]">
-                  {t('trans.convert', 'Convert')}
+                  {t('trans.convert')}
                 </Button>
               )}
-              <Button variant="ghost" size="sm" onClick={handleClear} aria-label={t('trans.clear', 'Reset')} className="flex-1 sm:flex-initial min-h-[44px]">
-                <RefreshCcw className="w-4 h-4" />
-                {t('trans.clear', 'Reset')}
+                              <Button variant="ghost" size="sm" onClick={handleClear} aria-label={t('trans.clear')} className="flex-1 sm:flex-initial min-h-[44px]">
+                  <RefreshCcw className="w-4 h-4" />
+                  {t('trans.clear')}
               </Button>
             </div>
             <textarea
@@ -124,8 +124,8 @@ const Trans: React.FC = () => {
               className="w-full h-32 p-3 border-2 border-primary rounded-lg mb-3 bg-card text-foreground text-xl focus:outline-none focus:ring-2 focus:ring-primary transition resize-none sm:h-32 min-h-[96px]"
               value={latinText}
               onChange={handleChange}
-              placeholder={t('trans.placeholder', 'Type here...')}
-              aria-label={t('trans.input_label', 'Latin or Tifinagh input')}
+                              placeholder={t('trans.placeholder')}
+                aria-label={t('trans.input_label')}
               inputMode="text"
               autoCorrect="off"
               spellCheck={false}
@@ -136,38 +136,38 @@ const Trans: React.FC = () => {
                 variant="default"
                 size="sm"
                 disabled={!tifinaghText}
-                aria-label={t('trans.copy_tifinagh', 'Copy Tifinagh')}
+                aria-label={t('trans.copy_tifinagh')}
                 className="flex-1 min-h-[44px]"
               >
                 <Copy className="w-4 h-4" />
-                {t('trans.copy_tifinagh', 'Copy Tifinagh')}
+                {t('trans.copy_tifinagh')}
               </Button>
               <Button
                 onClick={() => handleCopy('latin')}
                 variant="outline"
                 size="sm"
                 disabled={!latinText}
-                aria-label={t('trans.copy_latin', 'Copy Latin')}
+                aria-label={t('trans.copy_latin')}
                 className="flex-1 min-h-[44px]"
               >
                 <Copy className="w-4 h-4" />
-                {t('trans.copy_latin', 'Copy Latin')}
+                {t('trans.copy_latin')}
               </Button>
               {copied && (
                 <span className="ml-2 text-green-600 font-semibold animate-pulse text-center sm:text-left">
-                  {copied === 'latin' ? t('trans.copied_latin', 'Latin copied!') : t('trans.copied_tifinagh', 'Tifinagh copied!')}
+                  {copied === 'latin' ? t('trans.copied_latin') : t('trans.copied_tifinagh')}
                 </span>
               )}
             </div>
             <div className="mb-2">
               <div className="font-semibold mb-1 text-muted-foreground text-sm">
-                {t('trans.preview', 'Tifinagh Preview:')}
+                {t('trans.preview')}
               </div>
               <div className={cn(
                 'min-h-[2.5rem] rounded bg-muted px-3 py-2 text-2xl font-amazigh border border-border break-words',
                 tifinaghText ? 'text-foreground' : 'text-muted-foreground opacity-60'
               )}>
-                {tifinaghText || t('trans.preview_placeholder', 'ⴰⴱⴳ...')}
+                {tifinaghText || t('trans.preview_placeholder')}
               </div>
             </div>
           </CardContent>

@@ -62,13 +62,13 @@ export default function LoginPage() {
             <CardHeader className="text-center pb-6">
               <Badge variant="secondary" className="mb-4">
                 <Sparkles className="w-3 h-3 mr-1" />
-                {t('auth.welcome', 'Welcome Back')}
+                {t('auth.welcome')}
               </Badge>
               <CardTitle className="text-2xl sm:text-3xl font-bold mb-2">
-                {t('auth.login', 'Sign In')}
+                {t('auth.login')}
               </CardTitle>
               <CardDescription>
-                {t('auth.login_desc', 'Enter your credentials to access your account')}
+                {t('auth.login_desc')}
               </CardDescription>
             </CardHeader>
             
@@ -76,14 +76,14 @@ export default function LoginPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">
-                    {t('auth.email', 'Email')}
+                    {t('auth.email')}
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <Input
                       id="email"
                       type="email"
-                      placeholder={t('auth.email_placeholder', 'Enter your email')}
+                      placeholder={t('auth.email_placeholder')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-10"
@@ -94,14 +94,14 @@ export default function LoginPage() {
                 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium">
-                    {t('auth.password', 'Password')}
+                    {t('auth.password')}
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <Input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder={t('auth.password_placeholder', 'Enter your password')}
+                      placeholder={t('auth.password_placeholder')}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-10 pr-10"
@@ -127,14 +127,14 @@ export default function LoginPage() {
                   <label className="flex items-center space-x-2">
                     <input type="checkbox" className="rounded" />
                     <span className="text-muted-foreground">
-                      {t('auth.remember', 'Remember me')}
+                      {t('auth.remember')}
                     </span>
                   </label>
                   <Link 
                     href="/forgot-password" 
                     className="text-primary hover:underline"
                   >
-                    {t('auth.forgot_password', 'Forgot password?')}
+                    {t('auth.forgot_password')}
                   </Link>
                 </div>
                 
@@ -151,11 +151,11 @@ export default function LoginPage() {
                   {isLoading ? (
                     <div className="flex items-center">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      {t('auth.signing_in', 'Signing in...')}
+                      {t('auth.signing_in')}
                     </div>
                   ) : (
                     <div className="flex items-center">
-                      {t('auth.sign_in', 'Sign In')}
+                      {t('auth.sign_in')}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </div>
                   )}
@@ -166,11 +166,11 @@ export default function LoginPage() {
               
               <div className="text-center space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  {t('auth.no_account', "Don't have an account?")}
+                  {t('auth.no_account')}
                 </p>
                 <Link href="/register">
                   <Button variant="outline" className="w-full">
-                    {t('auth.create_account', 'Create Account')}
+                    {t('auth.create_account')}
                   </Button>
                 </Link>
               </div>
