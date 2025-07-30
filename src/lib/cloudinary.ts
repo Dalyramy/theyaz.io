@@ -1,11 +1,23 @@
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary
+// Configure Cloudinary using Next.js environment variables
+const {
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  NEXT_PUBLIC_CLOUDINARY_API_KEY,
+  NEXT_PUBLIC_CLOUDINARY_API_SECRET,
+} = process.env;
+
+if (!NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || !NEXT_PUBLIC_CLOUDINARY_API_KEY || !NEXT_PUBLIC_CLOUDINARY_API_SECRET) {
+  throw new Error(
+    'Missing Cloudinary environment variables. Please set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, NEXT_PUBLIC_CLOUDINARY_API_KEY and NEXT_PUBLIC_CLOUDINARY_API_SECRET in your environment.'
+  );
+}
+
 cloudinary.config({
-  cloud_name: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
-  api_key: import.meta.env.VITE_CLOUDINARY_API_KEY,
-  api_secret: import.meta.env.VITE_CLOUDINARY_API_SECRET,
-  secure: true
+  cloud_name: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: NEXT_PUBLIC_CLOUDINARY_API_KEY,
+  api_secret: NEXT_PUBLIC_CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
 export default cloudinary;
