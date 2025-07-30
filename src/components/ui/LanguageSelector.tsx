@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe, ChevronDown } from 'lucide-react';
@@ -11,6 +13,7 @@ import {
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/hooks/useLanguage';
 import AmazighFlag from './AmazighFlag';
+import '@/i18n';
 
 const topLanguages = [
   { code: 'ber', name: 'ⵜⴰⵎⴰⵣⵉⵖⵜ', flag: 'custom' },
