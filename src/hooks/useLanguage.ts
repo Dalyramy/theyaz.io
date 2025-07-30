@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import '@/i18n';
 
 export const useLanguage = () => {
   const { i18n } = useTranslation();
