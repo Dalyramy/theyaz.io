@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import PhotoGrid from '@/components/PhotoGrid';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';

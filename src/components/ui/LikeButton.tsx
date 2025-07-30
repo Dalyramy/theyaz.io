@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { Button } from './button';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LikeButtonProps {

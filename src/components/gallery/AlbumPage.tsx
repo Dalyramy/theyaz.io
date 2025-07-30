@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import 'photoswipe/style.css';
 import ReactMarkdown from 'react-markdown';
-import { useAuth } from '@/contexts/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   DndContext,
   closestCenter,

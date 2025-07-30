@@ -1,4 +1,4 @@
-import { useAuth } from '@/contexts/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function DebugAuth() {
   const { user, isAdmin, isLoading } = useAuth();

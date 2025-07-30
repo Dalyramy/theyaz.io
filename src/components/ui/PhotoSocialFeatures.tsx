@@ -3,7 +3,7 @@ import { LikeButton } from './LikeButton';
 import { CommentSection } from './CommentSection';
 import { ShareButton } from './ShareButton';
 import { Comment, Like } from '@/lib/types';
-import { useAuth } from '@/contexts/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   toggleLike,
   getLikes,

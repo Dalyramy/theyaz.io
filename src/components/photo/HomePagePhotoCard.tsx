@@ -1,24 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
-import { Heart, MessageSquare, Share2, FolderOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, MessageSquare, Eye, FolderOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
-import { optimizeImage, imgixOptimizations } from '@/lib/imgix';
 
-interface Photo {
+interface PhotoWithAlbum {
   id: string;
   title: string;
   image_url: string;
-  caption: string;
-  tags: string[];
-  likes?: number;
-  comments?: number;
-  album_id?: string;
-  album_title?: string;
+  album_id: string;
+  album_title: string;
+  likes_count: number | null;
+  comments_count: number | null;
 }
 
 interface HomePagePhotoCardProps {
-  photo: Photo;
+  photo: PhotoWithAlbum;
   index: number;
 }
 
@@ -28,10 +27,6 @@ const HomePagePhotoCard: React.FC<HomePagePhotoCardProps> = React.memo(({ photo,
     target.src = '/placeholder.svg';
     target.onerror = null; // Prevent infinite loop
   };
-
-  // Optimize image for gallery display
-  const optimizedImageUrl = imgixOptimizations.gallery(photo.image_url);
-  const thumbnailUrl = imgixOptimizations.thumbnail(photo.image_url);
 
   return (
     <motion.div
@@ -44,14 +39,11 @@ const HomePagePhotoCard: React.FC<HomePagePhotoCardProps> = React.memo(({ photo,
           {/* Main photo link */}
           <Link to={`/photo/${photo.id}`} className="block w-full h-full">
             <img
-              src={optimizedImageUrl}
+              src={photo.image_url}
               alt={photo.title}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 rounded-xl"
               loading="lazy"
               onError={handleImageError}
-              // Add responsive image support
-              srcSet={`${thumbnailUrl} 300w, ${optimizedImageUrl} 800w`}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           </Link>
           
@@ -59,53 +51,83 @@ const HomePagePhotoCard: React.FC<HomePagePhotoCardProps> = React.memo(({ photo,
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
           {/* Album badge */}
-          {photo.album_id && photo.album_title && (
-            <div className="absolute top-3 left-3">
-              <Link 
-                to={`/gallery`}
-                state={{ selectedAlbumId: photo.album_id }}
-                className="inline-flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 text-xs text-white backdrop-blur-md hover:bg-black/60 transition-colors"
-              >
-                <FolderOpen className="w-3 h-3" />
-                {photo.album_title}
-              </Link>
-            </div>
-          )}
+          <div className="absolute top-3 left-3">
+            <Link 
+              to={`/gallery`}
+              state={{ selectedAlbumId: photo.album_id }}
+              className="inline-flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 text-xs text-white backdrop-blur-md hover:bg-black/60 transition-colors"
+            >
+              <FolderOpen className="w-3 h-3" />
+              {photo.album_title}
+            </Link>
+          </div>
           
           {/* View photo button */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="bg-black/50 backdrop-blur-sm rounded-full p-3">
-              <Share2 className="w-5 h-5 text-white" />
-            </div>
+          <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <Link to={`/photo/${photo.id}`}>
+              <Button size="sm" variant="secondary" className="rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md">
+                <Eye className="w-4 h-4" />
+              </Button>
+            </Link>
           </div>
         </div>
         
-        {/* Card content always at the bottom */}
-        <div className="flex flex-col justify-end flex-1 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white rounded-b-lg">
-          <div className="flex items-center gap-4 mb-2">
-            <span className="flex items-center gap-1">
-              <Heart className="h-4 w-4" />
-              {photo.likes || 0}
-            </span>
-            <span className="flex items-center gap-1">
-              <MessageSquare className="h-4 w-4" />
-              {photo.comments || 0}
-            </span>
-            {photo.tags && photo.tags.length > 0 && (
-              <span className="flex flex-wrap gap-1 ml-2">
-                {photo.tags.slice(0, 2).map((tag, i) => (
-                  <span key={i} className="bg-white/20 rounded-full px-2 py-0.5 text-xs font-medium">#{tag}</span>
-                ))}
-                {photo.tags.length > 2 && <span className="text-xs ml-1">+{photo.tags.length - 2}</span>}
-              </span>
-            )}
+        <CardContent className="p-4 sm:p-6">
+          <div className="mb-3">
+            <Link to={`/photo/${photo.id}`} className="block">
+              <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2 line-clamp-2 hover:text-primary transition-colors">
+                {photo.title}
+              </h3>
+            </Link>
+            
+            {/* Album link */}
+            <Link 
+              to={`/gallery`}
+              state={{ selectedAlbumId: photo.album_id }}
+              className="inline-flex items-center gap-1 text-xs text-primary hover:text-secondary transition-colors duration-200 underline decoration-dotted"
+            >
+              <FolderOpen className="w-3 h-3" />
+              {photo.album_title}
+            </Link>
           </div>
-          <div className="font-semibold text-lg line-clamp-1">{photo.title}</div>
-          <div className="text-xs opacity-80 line-clamp-2">{photo.caption}</div>
-        </div>
+          
+          {/* Social stats */}
+          <div className="flex items-center justify-between text-muted-foreground mt-3">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1">
+                <Heart className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {photo.likes_count || 0}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <MessageSquare className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {photo.comments_count || 0}
+                </span>
+              </div>
+            </div>
+            
+            {/* Quick actions */}
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Link to={`/gallery`} state={{ selectedAlbumId: photo.album_id }}>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <FolderOpen className="w-4 h-4" />
+                </Button>
+              </Link>
+              <Link to={`/photo/${photo.id}`}>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Eye className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </CardContent>
       </Card>
     </motion.div>
   );
 });
+
+HomePagePhotoCard.displayName = 'HomePagePhotoCard';
 
 export default HomePagePhotoCard; 

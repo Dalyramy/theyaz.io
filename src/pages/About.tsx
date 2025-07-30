@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from 'react-i18next';
+import PeaceWatermark from '@/components/ui/PeaceWatermark';
+import GradientText from '@/components/ui/GradientText';
 import { 
   Camera, 
   Mail, 
@@ -32,18 +34,7 @@ const About = () => {
       <Navbar />
       
       {/* Peace Sign Background Watermark */}
-      <div 
-        className="fixed bottom-4 left-4 pointer-events-none opacity-6 z-0"
-        style={{
-          width: '300px',
-          height: '300px',
-          backgroundImage: 'url(/icons/peace-watermark.svg)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'bottom left',
-          backgroundRepeat: 'no-repeat',
-          transform: 'rotate(-10deg)',
-        }}
-      />
+      <PeaceWatermark />
 
       <main className="container mx-auto pb-8 px-2 sm:px-4 flex flex-col gap-6">
         {/* Hero Section */}
@@ -59,8 +50,10 @@ const About = () => {
               <Sparkles className="w-3 h-3 mr-1" />
               Photography Portfolio
             </Badge>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4 sm:mb-6 break-words">
-              {t('about.title')} theyaz.io
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 break-words">
+              <GradientText variant="brand" className="text-3xl sm:text-5xl md:text-6xl">
+                {t('about.title')} theyaz.io
+              </GradientText>
             </h1>
             <p className="text-base sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
               {t('about.description')}

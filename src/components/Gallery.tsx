@@ -17,10 +17,15 @@ import {
   MoreVertical,
   Camera,
   Calendar,
-  User
+  User,
+  Sparkles,
+  Star,
+  TrendingUp,
+  Users,
+  Image as ImageIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { 
@@ -43,8 +48,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Navbar from '@/components/Navbar';
 import OptimizedImage from '@/components/ui/OptimizedImage';
-import { useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/useAuth';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import AlbumForm from '@/components/gallery/AlbumForm';
 import PhotoGrid from '@/components/gallery/PhotoGrid';
@@ -81,6 +86,7 @@ interface AlbumData {
 
 const Gallery: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [albums, setAlbums] = useState<AlbumData[]>([]);
   const [selectedAlbum, setSelectedAlbum] = useState<AlbumData | null>(null);
@@ -95,15 +101,6 @@ const Gallery: React.FC = () => {
 
   useEffect(() => {
     fetchAlbumsAndPhotos();
-  }, []);
-
-  // Refresh album covers periodically to catch new uploads
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchAlbumsAndPhotos();
-    }, 30000); // Refresh every 30 seconds
-
-    return () => clearInterval(interval);
   }, []);
 
   // Handle navigation state from HomePage
@@ -121,137 +118,101 @@ const Gallery: React.FC = () => {
   const fetchAlbumsAndPhotos = async () => {
     setLoading(true);
     setError(null);
-    
     try {
-      // Fetch albums with photo counts and cover images
-      const { data: albumsData, error: albumsError } = await supabase
+      if (!supabase) {
+        throw new Error('Supabase client not initialized');
+      }
+      
+      // Build query based on filter mode
+      let query = supabase
         .from('albums')
-        .select(`
-          id,
-          title,
-          description,
-          user_id,
-          created_at,
-          updated_at
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
+      if (filterMode === 'my-albums' && user) {
+        query = query.eq('user_id', user.id);
+      }
+
+      const { data: albumsData, error: albumsError } = await query;
+      
       if (albumsError) {
         console.error('Error fetching albums:', albumsError);
-        setError('Failed to load albums');
+        setError('Failed to load albums. Please try again later.');
+        setLoading(false);
         return;
       }
-
-      // Get photo counts and cover images for each album
-      const albumsWithPhotos = await Promise.all(
-        albumsData?.map(async (album) => {
-          // Get photo count
-          const { count } = await supabase
-            .from('photos')
-            .select('*', { count: 'exact', head: true })
-            .eq('album_id', album.id);
-          
-          // Get the first photo as cover image - avoid embedding issues
-          const { data: coverPhoto, error: coverError } = await supabase
-            .from('photos')
-            .select('image_url')
-            .eq('album_id', album.id)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .maybeSingle();
-          
-          if (coverError) {
-            console.error(`Error fetching cover for album "${album.title}":`, coverError);
-          }
-          
-          // Debug: log the cover image URL
-          if (coverPhoto?.image_url) {
-            console.log(`Album "${album.title}" cover image:`, coverPhoto.image_url);
-          }
-          
-          return {
-            ...album,
-            photo_count: count || 0,
-            cover_image: coverPhoto?.image_url || null
-          };
-        }) || []
-      );
-
-      // Transform the data to match our interface
-      const transformedAlbums: AlbumData[] = albumsWithPhotos.map(album => ({
-        id: album.id,
-        title: album.title,
-        description: album.description || '',
-        cover_image: album.cover_image,
-        photo_count: album.photo_count,
-        photos: [], // We'll fetch photos separately if needed
-        created_at: album.created_at,
-        updated_at: album.updated_at,
-        user_id: album.user_id
-      }));
-
-      setAlbums(transformedAlbums);
       
-      // If no albums exist, create default ones
-      if (transformedAlbums.length === 0) {
+      if (!albumsData || albumsData.length === 0) {
+        // No albums exist, create default ones
+        console.log('No albums found, creating default albums...');
         await createDefaultAlbums();
-        // Fetch again after creating defaults
-        fetchAlbumsAndPhotos();
+        // Try to fetch albums again after creation
+        const { data: newAlbumsData, error: newAlbumsError } = await supabase
+          .from('albums')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (newAlbumsError) {
+          console.error('Error fetching albums after creation:', newAlbumsError);
+          setError('Failed to create default albums.');
+          setLoading(false);
+          return;
+        }
+        
+        if (!newAlbumsData || newAlbumsData.length === 0) {
+          setError('No albums available.');
+          setLoading(false);
+          return;
+        }
+        
+        const updatedAlbumsData = newAlbumsData;
       }
-    } catch (error) {
-      console.error('Error in fetchAlbumsAndPhotos:', error);
-      setError('Failed to load albums');
+
+      // For each album, fetch its photos with user data
+      const albumsWithPhotos: AlbumData[] = [];
+      for (const album of albumsData) {
+        try {
+          const result = await supabase
+            .from('photos')
+            .select(`
+              id, 
+              title, 
+              caption, 
+              image_url, 
+              likes_count, 
+              comments_count, 
+              tags, 
+              created_at,
+              user_id
+            `)
+            .eq('album_id', album.id)
+            .order('created_at', { ascending: false });
+          
+          const photosData = result.data || [];
+          
+          albumsWithPhotos.push({ 
+            ...album, 
+            photo_count: photosData.length,
+            photos: photosData as PhotoData[],
+            cover_image: null
+          });
+        } catch (error) {
+          console.warn(`Error fetching photos for album ${album.id}:`, error);
+          albumsWithPhotos.push({ 
+            ...album, 
+            photo_count: 0,
+            photos: [],
+            cover_image: null
+          });
+        }
+      }
+      
+      setAlbums(albumsWithPhotos);
+    } catch (err) {
+      console.error('Error fetching albums and photos:', err);
+      setError('Failed to load albums/photos');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchAlbumPhotos = async (albumId: string) => {
-    try {
-      // Avoid embedding issues by not using joins
-      const { data: photosData, error: photosError } = await supabase
-        .from('photos')
-        .select(`
-          id,
-          title,
-          caption,
-          image_url,
-          likes_count,
-          comments_count,
-          tags,
-          created_at,
-          user_id
-        `)
-        .eq('album_id', albumId)
-        .order('created_at', { ascending: false });
-
-      if (photosError) {
-        console.error('Error fetching album photos:', photosError);
-        return [];
-      }
-
-      // Transform to match PhotoData interface
-      const transformedPhotos: PhotoData[] = (photosData || []).map(photo => ({
-        id: photo.id,
-        title: photo.title,
-        caption: photo.caption,
-        image_url: photo.image_url,
-        likes_count: photo.likes_count,
-        comments_count: photo.comments_count,
-        tags: photo.tags || [],
-        created_at: photo.created_at,
-        user_id: photo.user_id,
-        profiles: {
-          username: 'Unknown',
-          avatar_url: '',
-          full_name: 'Unknown User'
-        }
-      }));
-
-      return transformedPhotos;
-    } catch (error) {
-      console.error('Error fetching album photos:', error);
-      return [];
     }
   };
 
@@ -323,31 +284,9 @@ const Gallery: React.FC = () => {
     }
   };
 
-  const handleAlbumSelect = async (album: AlbumData) => {
-    setSelectedAlbum(album);
-    
-    // Fetch photos for this album
-    const photos = await fetchAlbumPhotos(album.id);
-    setSelectedAlbum(prev => prev ? { ...prev, photos } : null);
-  };
-
-  // Function to refresh album covers when photos are uploaded
-  const refreshAlbumCovers = async () => {
-    await fetchAlbumsAndPhotos();
-  };
-
-  const handleBackToAlbums = () => {
-    setSelectedAlbum(null);
-  };
-
   const handleCreateAlbum = async (albumData: { title: string; description: string }) => {
     if (!user) {
       toast.error('Please log in to create albums');
-      return;
-    }
-
-    if (!albumData.title.trim()) {
-      toast.error('Please enter an album title');
       return;
     }
 
@@ -365,7 +304,6 @@ const Gallery: React.FC = () => {
       if (error) throw error;
 
       toast.success('Album created successfully!');
-      setShowCreateDialog(false);
       fetchAlbumsAndPhotos(); // Refresh the list
     } catch (error) {
       console.error('Error creating album:', error);
@@ -374,18 +312,7 @@ const Gallery: React.FC = () => {
   };
 
   const handleEditAlbum = async (albumData: { title: string; description: string }) => {
-    if (!editingAlbum || !user) return;
-
-    // Security check: ensure user can only edit their own albums
-    if (editingAlbum.user_id !== user.id) {
-      toast.error('You can only edit your own albums');
-      return;
-    }
-
-    if (!albumData.title.trim()) {
-      toast.error('Please enter an album title');
-      return;
-    }
+    if (!editingAlbum) return;
 
     try {
       const { error } = await supabase
@@ -395,14 +322,11 @@ const Gallery: React.FC = () => {
           description: albumData.description.trim(),
           updated_at: new Date().toISOString()
         })
-        .eq('id', editingAlbum.id)
-        .eq('user_id', user.id); // Additional security: only update user's own albums
+        .eq('id', editingAlbum.id);
 
       if (error) throw error;
 
       toast.success('Album updated successfully!');
-      setShowEditDialog(false);
-      setEditingAlbum(null);
       fetchAlbumsAndPhotos(); // Refresh the list
     } catch (error) {
       console.error('Error updating album:', error);
@@ -438,6 +362,14 @@ const Gallery: React.FC = () => {
     }
   };
 
+  const handleAlbumSelect = (album: AlbumData) => {
+    setSelectedAlbum(album);
+  };
+
+  const handleBackToAlbums = () => {
+    setSelectedAlbum(null);
+  };
+
   const getAlbumIcon = (albumTitle: string) => {
     const title = albumTitle.toLowerCase();
     if (title.includes('nature')) return '🌿';
@@ -463,6 +395,21 @@ const Gallery: React.FC = () => {
       month: 'short',
       day: 'numeric'
     });
+  };
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
   };
 
   if (loading) {
@@ -512,150 +459,180 @@ const Gallery: React.FC = () => {
         
         <div className="relative z-10">
           <Navbar />
-          <div className="container mx-auto px-4 py-8 pt-24">
+          
+          {/* Hero Section */}
+          <section className="pt-24 pb-16 bg-gradient-to-br from-primary/5 via-secondary/5 to-background">
+            <div className="container mx-auto px-4">
+              <motion.div 
+                className="text-center max-w-4xl mx-auto"
+                initial="hidden"
+                animate="visible"
+                variants={staggerContainer}
+              >
+                <motion.div variants={fadeInUp} className="mb-6">
+                  <Badge variant="secondary" className="mb-4 text-sm">
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    Curated Collections
+                  </Badge>
+                </motion.div>
+
+                <motion.h1 
+                  variants={fadeInUp}
+                  className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-6 leading-tight"
+                >
+                  Explore Photo Albums
+                </motion.h1>
+
+                <motion.p 
+                  variants={fadeInUp}
+                  className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto"
+                >
+                  Discover specialized collections curated by theme and style. Each album tells a unique visual story.
+                </motion.p>
+              </motion.div>
+            </div>
+          </section>
+
+          <div className="container mx-auto px-4 pb-16">
+            {/* Search and Filter Controls */}
             <motion.div 
-              className="mb-16 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              className="mb-12"
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
             >
-              <h1 className="text-4xl md:text-5xl font-light text-foreground mb-4">
-                Albums
-              </h1>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                Browse and organize your photo collections
-              </p>
+              <Card className="overflow-hidden hover-lift rounded-2xl border-border">
+                <CardHeader className="pb-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Filter className="w-6 h-6 text-primary" />
+                    <CardTitle className="text-lg sm:text-2xl">Find Your Perfect Collection</CardTitle>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Search, filter, and discover albums that match your interests
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                      <Input
+                        placeholder="Search albums..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+
+                    <Tabs value={filterMode} onValueChange={(value) => setFilterMode(value as 'all' | 'my-albums' | 'featured')}>
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="all">All Albums</TabsTrigger>
+                        <TabsTrigger value="featured">Featured</TabsTrigger>
+                        {user && <TabsTrigger value="my-albums">My Albums</TabsTrigger>}
+                      </TabsList>
+                    </Tabs>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                        size="sm"
+                        onClick={() => setViewMode('grid')}
+                      >
+                        <Grid className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant={viewMode === 'list' ? 'default' : 'ghost'}
+                        size="sm"
+                        onClick={() => setViewMode('list')}
+                      >
+                        <List className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    
+                    {user && (
+                      <Button 
+                        className="flex items-center gap-2"
+                        onClick={() => setShowCreateDialog(true)}
+                      >
+                        <Plus className="w-4 h-4" />
+                        Create Album
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
 
-            {/* Search and Filter Controls */}
-            <div className="mb-12 flex flex-col sm:flex-row gap-6 items-center justify-between">
-              <div className="flex items-center gap-6 w-full sm:w-auto">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    placeholder="Search albums..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 w-64 border-0 bg-muted/50 focus:bg-background"
-                  />
-                </div>
-                <Tabs value={filterMode} onValueChange={(value) => setFilterMode(value as 'all' | 'my-albums' | 'featured')}>
-                  <TabsList className="bg-muted/50">
-                    <TabsTrigger value="all" className="data-[state=active]:bg-background">All</TabsTrigger>
-                    <TabsTrigger value="featured" className="data-[state=active]:bg-background">Featured</TabsTrigger>
-                    {user && <TabsTrigger value="my-albums" className="data-[state=active]:bg-background">My Albums</TabsTrigger>}
-                  </TabsList>
-                </Tabs>
-              </div>
-              
-              {user && (
-                <Button 
-                  variant="outline"
-                  className="flex items-center gap-2"
-                  onClick={() => setShowCreateDialog(true)}
-                >
-                  <Plus className="w-4 h-4" />
-                  New Album
-                </Button>
-              )}
-            </div>
-
-            {/* Create Album Dialog */}
-            {user && (
-              <AlbumForm
-                isOpen={showCreateDialog}
-                onClose={() => setShowCreateDialog(false)}
-                onSubmit={handleCreateAlbum}
-                mode="create"
-              />
-            )}
-
             {filteredAlbums.length === 0 ? (
-              <div className="text-center py-20">
-                <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-6">
-                  <Camera className="w-8 h-8 text-muted-foreground" />
+              <motion.div 
+                className="text-center py-12"
+                initial="hidden"
+                animate="visible"
+                variants={fadeInUp}
+              >
+                <div className="text-muted-foreground text-lg mb-4">
+                  {searchTerm ? 'No albums found matching your search' : 'No albums available'}
                 </div>
-                <h3 className="text-lg font-medium text-foreground mb-2">
-                  {searchTerm ? 'No albums found' : 'No albums yet'}
-                </h3>
-                <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-                  {searchTerm ? 'Try adjusting your search terms' : 'Start by creating your first album'}
-                </p>
-                {user && !searchTerm && (
-                  <Button 
-                    variant="outline"
-                    onClick={() => setShowCreateDialog(true)}
-                    className="flex items-center gap-2"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Create Album
-                  </Button>
-                )}
-              </div>
+                <div className="text-muted-foreground">
+                  {searchTerm ? 'Try adjusting your search terms' : 'Check back later for new collections'}
+                </div>
+              </motion.div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                initial="hidden"
+                animate="visible"
+                variants={staggerContainer}
+              >
                 {filteredAlbums.map((album, index) => (
                   <motion.div
                     key={album.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    variants={fadeInUp}
+                    whileHover={{ y: -5 }}
+                    transition={{ duration: 0.2 }}
                   >
                     <Card 
-                      className="group cursor-pointer border-0 bg-transparent hover:bg-muted/30 rounded-xl transition-all duration-300 hover:scale-[1.02]"
+                      className="group cursor-pointer overflow-hidden hover-lift rounded-2xl border-border transition-all duration-300 hover:shadow-xl"
                       onClick={() => handleAlbumSelect(album)}
                     >
-                      <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-muted/50 to-muted/30 relative mb-4">
+                      <div className="aspect-[4/3] overflow-hidden bg-muted relative">
                         {album.cover_image ? (
-                          <img
+                          <OptimizedImage
                             src={album.cover_image}
                             alt={album.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            onError={(e) => {
-                              console.error('Album cover failed to load:', album.cover_image);
-                              e.currentTarget.style.display = 'none';
-                            }}
-                            onLoad={() => {
-                              console.log('Album cover loaded successfully:', album.cover_image);
-                            }}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            priority={index < 3}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <div className="text-center">
-                              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-                                <span className="text-2xl">{getAlbumIcon(album.title)}</span>
-                              </div>
-                              <p className="text-xs text-muted-foreground font-medium">
-                                {album.photo_count > 0 ? `${album.photo_count} photos` : 'Empty album'}
-                              </p>
-                            </div>
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                            <span className="text-6xl">{getAlbumIcon(album.title)}</span>
                           </div>
                         )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                         
-                        {/* Minimal overlay with actions */}
-                        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="absolute top-4 right-4">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
-                                className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+                                className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 hover:bg-black/40 text-white"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <MoreVertical className="w-4 h-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                            <DropdownMenuContent>
+                              <DropdownMenuItem onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingAlbum(album);
+                                setShowEditDialog(true);
+                              }}>
+                                <Edit3 className="w-4 h-4 mr-2" />
+                                Edit Album
+                              </DropdownMenuItem>
                               {user && album.user_id === user.id && (
                                 <>
-                                  <DropdownMenuItem onClick={(e) => {
-                                    e.stopPropagation();
-                                    setEditingAlbum(album);
-                                    setShowEditDialog(true);
-                                  }}>
-                                    <Edit3 className="w-4 h-4 mr-2" />
-                                    Edit Album
-                                  </DropdownMenuItem>
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem 
                                     onClick={(e) => {
@@ -674,54 +651,61 @@ const Gallery: React.FC = () => {
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
+                        
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="secondary">
+                              <Camera className="w-3 h-3 mr-1" />
+                              {album.photo_count} photos
+                            </Badge>
+                            {album.user_id && (
+                              <Badge variant="outline">
+                                <User className="w-3 h-3 mr-1" />
+                                Personal
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
                       </div>
                       
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between">
-                          <h3 className="text-lg font-semibold text-foreground line-clamp-1 flex-1">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="text-xl font-semibold text-foreground line-clamp-1 flex-1">
                             {album.title}
                           </h3>
+                          <span className="text-3xl ml-3">{getAlbumIcon(album.title)}</span>
                         </div>
                         
                         {album.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                          <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
                             {album.description}
                           </p>
                         )}
                         
-                        <div className="flex items-center justify-between pt-2">
-                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Camera className="w-3 h-3" />
-                              {album.photo_count}
-                            </span>
-                            {album.user_id && (
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            {album.created_at && (
                               <span className="flex items-center gap-1">
-                                <User className="w-3 h-3" />
-                                Personal
+                                <Calendar className="w-3 h-3" />
+                                {formatDate(album.created_at)}
                               </span>
                             )}
                           </div>
-                          
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
+                          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
                             <Eye className="w-4 h-4" />
                           </Button>
                         </div>
-                      </div>
+                      </CardContent>
                     </Card>
                   </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
           </div>
         </div>
 
         {/* Edit Album Dialog */}
-        {editingAlbum && user && editingAlbum.user_id === user.id && (
+        {editingAlbum && (
           <AlbumForm
             isOpen={showEditDialog}
             onClose={() => {
@@ -752,27 +736,27 @@ const Gallery: React.FC = () => {
           {/* Album Header */}
           <motion.div 
             className="mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
           >
             <Button 
               variant="ghost" 
               onClick={handleBackToAlbums}
-              className="mb-4 flex items-center gap-2"
+              className="mb-6 flex items-center gap-2 hover:bg-muted/50"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Albums
             </Button>
             
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-4xl">{getAlbumIcon(selectedAlbum.title)}</span>
+            <div className="flex items-center gap-6 mb-8">
+              <div className="text-6xl">{getAlbumIcon(selectedAlbum.title)}</div>
               <div className="flex-1">
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
                   {selectedAlbum.title}
                 </h1>
                 {selectedAlbum.description && (
-                  <p className="text-muted-foreground mt-2">{selectedAlbum.description}</p>
+                  <p className="text-xl text-muted-foreground leading-relaxed">{selectedAlbum.description}</p>
                 )}
               </div>
               {user && selectedAlbum.user_id === user.id && (
@@ -809,9 +793,9 @@ const Gallery: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Badge variant="secondary">
-                  <Camera className="w-3 h-3 mr-1" />
+              <div className="flex items-center gap-6">
+                <Badge variant="secondary" className="text-sm">
+                  <Camera className="w-4 h-4 mr-2" />
                   {selectedAlbum.photo_count} photos in this collection
                 </Badge>
                 {location.state?.selectedAlbumId && (
@@ -821,24 +805,13 @@ const Gallery: React.FC = () => {
                 )}
                 {selectedAlbum.user_id && (
                   <Badge variant="outline">
-                    <User className="w-3 h-3 mr-1" />
+                    <User className="w-4 h-4 mr-2" />
                     Personal Album
                   </Badge>
                 )}
               </div>
               
               <div className="flex items-center gap-2">
-                {user && selectedAlbum.user_id === user.id && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => window.location.href = '/upload'}
-                    className="flex items-center gap-2"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Photo
-                  </Button>
-                )}
                 <Button
                   variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="sm"
@@ -859,41 +832,28 @@ const Gallery: React.FC = () => {
 
           {/* Photos Grid/List */}
           {selectedAlbum.photos.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="max-w-md mx-auto">
-                <div className="w-24 h-24 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
-                  <Camera className="w-12 h-12 text-muted-foreground" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">No photos yet</h3>
-                <p className="text-muted-foreground mb-6">
-                  This album is empty. Start building your collection by uploading your first photo.
-                </p>
-                {user && (
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <Button 
-                      onClick={() => window.location.href = '/upload'}
-                      className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Upload First Photo
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      onClick={() => window.location.href = '/gallery'}
-                    >
-                      Browse Other Albums
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
+            <motion.div 
+              className="text-center py-16"
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <div className="text-muted-foreground text-xl mb-4">No photos in this album yet</div>
+              <div className="text-muted-foreground mb-8">Photos will appear here once uploaded</div>
+              {user && (
+                <Button size="lg" onClick={() => navigate('/upload')}>
+                  <Plus className="w-5 h-5 mr-2" />
+                  Upload First Photo
+                </Button>
+              )}
+            </motion.div>
           ) : (
             <PhotoGrid
               photos={selectedAlbum.photos}
               viewMode={viewMode}
               onPhotoClick={(photo) => {
                 // Navigate to photo detail view
-                window.location.href = `/photo/${photo.id}`;
+                navigate(`/photo/${photo.id}`);
               }}
               showUserInfo={true}
               showActions={true}

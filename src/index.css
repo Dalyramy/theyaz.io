@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
 /* Custom video slider styling */
 .slider {
   -webkit-appearance: none;
@@ -110,7 +114,28 @@
     background-image: url('/icons/peace-watermark.svg');
     background-size: cover;
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* Typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  /* Gradient text utility */
+  .gradient-text {
+    background: linear-gradient(90deg, #00ff00 0%, #4b94cc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Orbitron font for branding */
+  .brand-font {
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.05em;
   }
 }
 

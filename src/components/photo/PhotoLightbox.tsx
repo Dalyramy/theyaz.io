@@ -8,7 +8,7 @@ import PhotoComments from '@/components/social/PhotoComments';
 import ShareButton from '@/components/social/ShareButton';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/contexts/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import UserProfileLink from '@/components/ui/UserProfileLink';
 

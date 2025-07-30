@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import OptimizedImage from '@/components/ui/OptimizedImage';
-import { useAuth } from '@/contexts/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 interface PhotoData {
@@ -168,18 +168,15 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
           >
             <Card className={`group overflow-hidden hover-lift rounded-2xl border-border transition-all duration-300 hover:shadow-xl ${viewMode === 'list' ? 'flex-1' : ''}`}>
               <div className={`overflow-hidden bg-muted relative ${viewMode === 'list' ? 'w-32 h-32' : 'aspect-square'}`}>
-                <img
+                <OptimizedImage
                   src={photo.image_url}
                   alt={photo.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 cursor-pointer"
+                  sizes={viewMode === 'list' 
+                    ? "(max-width: 768px) 100vw, 128px" 
+                    : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  }
                   onClick={() => onPhotoClick?.(photo)}
-                  onError={(e) => {
-                    console.error('Photo failed to load:', photo.image_url);
-                    e.currentTarget.style.display = 'none';
-                  }}
-                  onLoad={() => {
-                    console.log('Photo loaded successfully:', photo.image_url);
-                  }}
                 />
                 
                 {/* Overlay with actions */}
@@ -240,13 +237,11 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
                         {photo.profiles.avatar_url ? (
-                          <img
+                          <OptimizedImage
                             src={photo.profiles.avatar_url}
                             alt={photo.profiles.full_name}
                             className="w-6 h-6 rounded-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
+                            sizes="24px"
                           />
                         ) : (
                           <User className="w-3 h-3 text-muted-foreground" />
